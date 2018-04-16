@@ -26,7 +26,7 @@ public abstract class RedisHelper {
 	protected String pagesCountKey(String key) {
 		return String.format("%s:count", key);
 	}
-	
+
 	/**
 	 * Key of paging data
 	 * @param key
@@ -35,20 +35,6 @@ public abstract class RedisHelper {
 	 */
 	protected String pagingDataKey(String key, int pageIndex) {
 		return String.format("%s:%d", key, pageIndex);
-	}
-
-	/**
-	 * Calculate pages count for given total count and page size.
-	 * @param totalCount: Total records count.
-	 * @param pageSize: Page size
-	 * @return int
-	 */
-	protected int calculatePagesCount(int totalCount, int pageSize) {
-		if (totalCount % pageSize == 0) {
-			return totalCount / pageSize;
-		}
-
-		return totalCount / pageSize + 1;
 	}
 
 	/**

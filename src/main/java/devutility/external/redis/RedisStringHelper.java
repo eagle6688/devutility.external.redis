@@ -9,6 +9,7 @@ import java.util.List;
 
 import devutility.external.json.CompressUtils;
 import devutility.internal.dao.models.RedisInstance;
+import devutility.internal.data.PaginationUtils;
 import devutility.internal.lang.StringHelper;
 import devutility.internal.util.ArraysUtils;
 import devutility.internal.util.ListHelper;
@@ -194,7 +195,11 @@ public class RedisStringHelper extends RedisHelper {
 	 * @throws InvocationTargetException
 	 */
 	public <T> boolean setList(String key, int pageSize, List<T> list, Class<T> clazz, int expire) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException, IOException {
-		int pagesCount = getPagesCount(key);
+		if (StringHelper.isNullOrEmpty(key) || list == null || clazz == null) {
+			return false;
+		}
+
+		int pagesCount = PaginationUtils.calculatePagesCount(list.size(), pageSize);
 
 		if (pagesCount == 0) {
 			return setList(key, list, clazz, expire);
@@ -349,7 +354,7 @@ public class RedisStringHelper extends RedisHelper {
 			return false;
 		}
 
-		int pagesCount = calculatePagesCount(array.length, pageSize);
+		int pagesCount = PaginationUtils.calculatePagesCount(array.length, pageSize);
 
 		if (pagesCount == 1) {
 			return setObject(originalKey, array);
