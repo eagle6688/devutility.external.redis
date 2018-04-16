@@ -7,7 +7,7 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
-public class JedisFactory {
+public class RedisUtils {
 	/**
 	 * Create a JedisPoolConfig object by RedisInstance
 	 * @param redisInstance: RedisInstance object
@@ -36,7 +36,7 @@ public class JedisFactory {
 			return jedisPool;
 		}
 
-		synchronized (JedisFactory.class) {
+		synchronized (RedisUtils.class) {
 			if (jedisPool == null) {
 				JedisPoolConfig jedisPoolConfig = jedisPoolConfig(redisInstance);
 				jedisPool = SingletonFactory.save(key, new JedisPool(jedisPoolConfig, redisInstance.getHost(), redisInstance.getPort(), redisInstance.getTimeout()));

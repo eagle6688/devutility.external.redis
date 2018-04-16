@@ -1,4 +1,4 @@
-package devutility.external.redis.jedisfactory;
+package devutility.external.redis.redisutils;
 
 import devutility.internal.base.SingletonFactory;
 import devutility.internal.test.BaseTest;

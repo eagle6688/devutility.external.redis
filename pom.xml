@@ -23,7 +23,7 @@
 		<dependency>
 			<groupId>com.github.eagle6688</groupId>
 			<artifactId>devutility.external.json</artifactId>
-			<version>2.9.5.1</version>
+			<version>2.9.5.2</version>
 		</dependency>
 		<!-- devutility end -->
 		<!-- Test -->
