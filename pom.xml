@@ -12,5 +12,27 @@
 		<maven.compiler.target>9</maven.compiler.target>
 	</properties>
 	<dependencies>
+		<!-- Redis -->
+		<dependency>
+			<groupId>redis.clients</groupId>
+			<artifactId>jedis</artifactId>
+			<version>2.9.0</version>
+		</dependency>
+		<!-- Redis end -->
+		<!-- devutility -->
+		<dependency>
+			<groupId>com.github.eagle6688</groupId>
+			<artifactId>devutility.external.json</artifactId>
+			<version>2.9.5.1</version>
+		</dependency>
+		<!-- devutility end -->
+		<!-- Test -->
+		<dependency>
+			<groupId>com.devutility</groupId>
+			<artifactId>devutility.test.model</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<scope>test</scope>
+		</dependency>
+		<!-- Test end -->
 	</dependencies>
 </project>
