@@ -216,7 +216,7 @@ public class RedisStringHelper extends RedisHelper {
 			}
 		}
 
-		return true;
+		return setPagesCount(key, pagesCount);
 	}
 
 	/**
