@@ -1,6 +1,7 @@
 package devutility.external.redis;
 
 import java.io.IOException;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,17 +26,27 @@ public class RedisStringHelper extends RedisHelper {
 	}
 
 	/**
-	 * Get string value
+	 * Get string value, used for loop.
+	 * @param key: Redis key
+	 * @param jedis: Jedis object
+	 * @return String
+	 */
+	public String get(String key, Jedis jedis) {
+		if (StringHelper.isNullOrEmpty(key) || jedis == null) {
+			return null;
+		}
+
+		return jedis.get(key);
+	}
+
+	/**
+	 * Get string value.
 	 * @param key: Redis key
 	 * @return String
 	 */
 	public String get(String key) {
-		if (StringHelper.isNullOrEmpty(key)) {
-			return null;
-		}
-
 		try (Jedis jedis = RedisUtils.jedis(redisInstance)) {
-			return jedis.get(key);
+			return get(key, jedis);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
@@ -43,25 +54,37 @@ public class RedisStringHelper extends RedisHelper {
 	}
 
 	/**
-	 * Set string value.
+	 * Set string value, used for loop.
 	 * @param key: Redis key
 	 * @param value: Value
-	 * @param expireSeconds: Expire time in seconds.
+	 * @param jedis: Jedis object
+	 * @param expire: Expire time in seconds.
 	 * @return boolean
 	 */
-	public boolean set(String key, String value, int expire) {
-		if (StringHelper.isNullOrEmpty(key) || value == null) {
+	public boolean set(String key, String value, Jedis jedis, int expire) {
+		if (StringHelper.isNullOrEmpty(key) || value == null || jedis == null) {
 			return false;
 		}
 
+		jedis.set(key, value);
+
+		if (expire > 0) {
+			jedis.expire(key, expire);
+		}
+
+		return true;
+	}
+
+	/**
+	 * Set string value.
+	 * @param key: Redis key
+	 * @param value: Value
+	 * @param expire: Expire time in seconds.
+	 * @return boolean
+	 */
+	public boolean set(String key, String value, int expire) {
 		try (Jedis jedis = RedisUtils.jedis(redisInstance)) {
-			jedis.set(key, value);
-
-			if (expire > 0) {
-				jedis.expire(key, expire);
-			}
-
-			return true;
+			return set(key, value, jedis, expire);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
@@ -104,6 +127,24 @@ public class RedisStringHelper extends RedisHelper {
 	}
 
 	/**
+	 * Set Object, used for loop.
+	 * @param key: Redis key
+	 * @param object: Object
+	 * @param jedis: Jedis object
+	 * @param expire: Expire time in seconds.
+	 * @return boolean
+	 * @throws IOException
+	 */
+	public boolean setObject(String key, Object object, Jedis jedis, int expire) throws IOException {
+		if (object == null) {
+			return false;
+		}
+
+		String value = CompressUtils.compress(object);
+		return set(key, value, jedis, expire);
+	}
+
+	/**
 	 * Set Object
 	 * @param key: Redis key
 	 * @param object: Object
@@ -112,7 +153,7 @@ public class RedisStringHelper extends RedisHelper {
 	 * @throws IOException
 	 */
 	public boolean setObject(String key, Object object, int expire) throws IOException {
-		if (StringHelper.isNullOrEmpty(key) || object == null) {
+		if (object == null) {
 			return false;
 		}
 
@@ -135,6 +176,24 @@ public class RedisStringHelper extends RedisHelper {
 	 * Get object.
 	 * @param key: Redis key
 	 * @param clazz: Object
+	 * @param jedis: Jedis object
+	 * @return {@code T}
+	 * @throws IOException
+	 */
+	public <T> T getObject(String key, Class<T> clazz, Jedis jedis) throws IOException {
+		String value = get(key, jedis);
+
+		if (StringHelper.isNullOrEmpty(value)) {
+			return null;
+		}
+
+		return CompressUtils.decompress(value, clazz);
+	}
+
+	/**
+	 * Get object.
+	 * @param key: Redis key
+	 * @param clazz: Object
 	 * @return {@code T}
 	 * @throws IOException
 	 */
@@ -146,6 +205,60 @@ public class RedisStringHelper extends RedisHelper {
 		}
 
 		return CompressUtils.decompress(value, clazz);
+	}
+
+	/**
+	 * Set list data, used for loop.
+	 * @param key: Redis key
+	 * @param list: Entities list
+	 * @param clazz: Object
+	 * @param excludeAnnotations: Annotations want to be excluded.
+	 * @param jedis: Jedis object
+	 * @param expire: Expire time in seconds.
+	 * @return boolean
+	 * @throws IllegalArgumentException
+	 * @throws IllegalAccessException
+	 * @throws IOException
+	 * @throws InvocationTargetException
+	 */
+	public <T> boolean setList(String key, List<T> list, Class<T> clazz, List<Annotation> excludeAnnotations, Jedis jedis, int expire)
+			throws IllegalArgumentException, IllegalAccessException, InvocationTargetException, IOException {
+		String[][] arrays = ListHelper.toArrays(list, clazz, excludeAnnotations);
+		return setObject(key, arrays, jedis, expire);
+	}
+
+	/**
+	 * Set list data
+	 * @param key: Redis key
+	 * @param list: Entities list
+	 * @param clazz: Object
+	 * @param excludeAnnotations: Annotations want to be excluded.
+	 * @param expire: Expire time in seconds.
+	 * @return boolean
+	 * @throws IllegalArgumentException
+	 * @throws IllegalAccessException
+	 * @throws IOException
+	 * @throws InvocationTargetException
+	 */
+	public <T> boolean setList(String key, List<T> list, Class<T> clazz, List<Annotation> excludeAnnotations, int expire) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException, IOException {
+		String[][] arrays = ListHelper.toArrays(list, clazz, excludeAnnotations);
+		return setObject(key, arrays, expire);
+	}
+
+	/**
+	 * Set list data
+	 * @param key: Redis key
+	 * @param list: Entities list
+	 * @param clazz: Object
+	 * @param excludeAnnotations: Annotations want to be excluded.
+	 * @return boolean
+	 * @throws IllegalArgumentException
+	 * @throws IllegalAccessException
+	 * @throws IOException
+	 * @throws InvocationTargetException
+	 */
+	public <T> boolean setList(String key, List<T> list, Class<T> clazz, List<Annotation> excludeAnnotations) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException, IOException {
+		return setList(key, list, clazz, excludeAnnotations, 0);
 	}
 
 	/**
@@ -161,8 +274,7 @@ public class RedisStringHelper extends RedisHelper {
 	 * @throws InvocationTargetException
 	 */
 	public <T> boolean setList(String key, List<T> list, Class<T> clazz, int expire) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException, IOException {
-		String[][] arrays = ListHelper.toArrays(list, clazz);
-		return setObject(key, arrays, expire);
+		return setList(key, list, clazz, null, expire);
 	}
 
 	/**
@@ -177,8 +289,53 @@ public class RedisStringHelper extends RedisHelper {
 	 * @throws IOException
 	 */
 	public <T> boolean setList(String key, List<T> list, Class<T> clazz) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException, IOException {
-		String[][] arrays = ListHelper.toArrays(list, clazz);
-		return setObject(key, arrays);
+		return setList(key, list, clazz, 0);
+	}
+
+	/**
+	 * Set list data
+	 * @param key: Redis key
+	 * @param pageSize: Page size
+	 * @param list: Entities list
+	 * @param clazz: Object
+	 * @param excludeAnnotations: Annotations want to be excluded.
+	 * @param expire: Expire time in seconds.
+	 * @return boolean
+	 * @throws IllegalArgumentException
+	 * @throws IllegalAccessException
+	 * @throws IOException
+	 * @throws InvocationTargetException
+	 */
+	public <T> boolean setList(String key, int pageSize, List<T> list, Class<T> clazz, List<Annotation> excludeAnnotations, int expire)
+			throws IllegalArgumentException, IllegalAccessException, InvocationTargetException, IOException {
+		if (StringHelper.isNullOrEmpty(key) || pageSize < 1 || list == null || clazz == null) {
+			return false;
+		}
+
+		int pagesCount = PaginationUtils.calculatePagesCount(list.size(), pageSize);
+
+		if (pagesCount == 1) {
+			return setList(key, list, clazz, excludeAnnotations, expire);
+		}
+
+		boolean result = true;
+
+		try (Jedis jedis = RedisUtils.jedis(redisInstance)) {
+			for (int index = 0; index < pagesCount; index++) {
+				String pageKey = pagingDataKey(key, index);
+				List<T> listPage = ListHelper.paging(list, index, pageSize);
+				result = setList(pageKey, listPage, clazz, excludeAnnotations, jedis, expire);
+
+				if (!result) {
+					return result;
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+
+		return setPagesCount(key, pagesCount);
 	}
 
 	/**
@@ -195,28 +352,7 @@ public class RedisStringHelper extends RedisHelper {
 	 * @throws InvocationTargetException
 	 */
 	public <T> boolean setList(String key, int pageSize, List<T> list, Class<T> clazz, int expire) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException, IOException {
-		if (StringHelper.isNullOrEmpty(key) || list == null || clazz == null) {
-			return false;
-		}
-
-		int pagesCount = PaginationUtils.calculatePagesCount(list.size(), pageSize);
-
-		if (pagesCount == 0) {
-			return setList(key, list, clazz, expire);
-		}
-
-		boolean result = true;
-
-		for (int index = 0; index < pagesCount; index++) {
-			List<T> listPage = ListHelper.paging(list, index, pageSize);
-			result = setList(key, listPage, clazz, expire);
-
-			if (!result) {
-				return result;
-			}
-		}
-
-		return setPagesCount(key, pagesCount);
+		return setList(key, pageSize, list, clazz, null, expire);
 	}
 
 	/**
@@ -251,6 +387,22 @@ public class RedisStringHelper extends RedisHelper {
 	}
 
 	/**
+	 * Get list from Redis, used for loop.
+	 * @param key: Redis key
+	 * @param clazz: Class object
+	 * @param jedis: Jedis object
+	 * @return {@code List<T>}
+	 * @throws IOException
+	 * @throws IllegalAccessException
+	 * @throws IllegalArgumentException
+	 * @throws InvocationTargetException
+	 */
+	public <T> List<T> getList(String key, Class<T> clazz, Jedis jedis) throws IOException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		String[][] arrays = getObject(key, String[][].class, jedis);
+		return ListHelper.toEntities(arrays, clazz);
+	}
+
+	/**
 	 * Get list from Redis
 	 * @param key: Redis key
 	 * @param pageSize: Page size
@@ -264,7 +416,7 @@ public class RedisStringHelper extends RedisHelper {
 	public <T> List<T> getList(String key, int pageSize, Class<T> clazz) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, IOException {
 		int pagesCount = getPagesCount(key);
 
-		if (pagesCount == 0) {
+		if (pagesCount == 1) {
 			List<T> list = getList(key, clazz);
 
 			if (list != null) {
@@ -276,12 +428,18 @@ public class RedisStringHelper extends RedisHelper {
 
 		List<T> list = new LinkedList<>();
 
-		for (int index = 0; index < pagesCount; index++) {
-			List<T> listPage = getList(key, pageSize, clazz);
+		try (Jedis jedis = RedisUtils.jedis(redisInstance)) {
+			for (int index = 0; index < pagesCount; index++) {
+				String pageKey = pagingDataKey(key, index);
+				List<T> listPage = getList(pageKey, pageSize, clazz);
 
-			if (listPage != null) {
-				list.addAll(listPage);
+				if (listPage != null) {
+					list.addAll(listPage);
+				}
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ArrayList<>();
 		}
 
 		return new ArrayList<>(list);
@@ -289,103 +447,110 @@ public class RedisStringHelper extends RedisHelper {
 
 	/**
 	 * Set pages count
-	 * @param originalKey: Original key
+	 * @param key: Redis key
 	 * @param count: Pages count
 	 * @return boolean
 	 */
-	private boolean setPagesCount(String originalKey, int count) {
-		if (StringHelper.isNullOrEmpty(originalKey) || count < 1) {
+	private boolean setPagesCount(String key, int count) {
+		if (StringHelper.isNullOrEmpty(key) || count < 1) {
 			return false;
 		}
 
-		String key = pagesCountKey(originalKey);
-		return setInt(key, count);
+		String realKey = pagesCountKey(key);
+		return setInt(realKey, count);
 	}
 
 	/**
 	 * Get pages count
-	 * @param originalKey: Original key
+	 * @param key: Redis key
 	 * @return int
 	 */
-	private int getPagesCount(String originalKey) {
-		if (StringHelper.isNullOrEmpty(originalKey)) {
+	private int getPagesCount(String key) {
+		if (StringHelper.isNullOrEmpty(key)) {
 			return 0;
 		}
 
-		String key = pagesCountKey(originalKey);
-		return getInt(key);
+		String realKey = pagesCountKey(key);
+		return getInt(realKey);
 	}
 
 	/**
 	 * Set array page
-	 * @param originalKey: Original key
+	 * @param key: Redis key
 	 * @param pageIndex: Page index
 	 * @param array: Array data
+	 * @param jedis: Jedis object
 	 * @return boolean
 	 * @throws IOException
 	 */
-	private boolean setArrayPage(String originalKey, int pageIndex, String[][] array) throws IOException {
-		String key = pagingDataKey(originalKey, pageIndex);
-		return setObject(key, array);
+	private boolean setArrayPage(String key, int pageIndex, String[][] array, Jedis jedis) throws IOException {
+		String realKey = pagingDataKey(key, pageIndex);
+		return setObject(realKey, array, jedis, 0);
 	}
 
 	/***
 	 * Get array page
-	 * @param originalKey: Original key
+	 * @param key: Redis key
 	 * @param pageIndex: Page index
+	 * @param jedis: Jedis object
 	 * @return String[][]
 	 * @throws IOException
 	 */
-	private String[][] getArrayPage(String originalKey, int pageIndex) throws IOException {
-		String key = pagingDataKey(originalKey, pageIndex);
-		return getObject(key, String[][].class);
+	private String[][] getArrayPage(String key, int pageIndex, Jedis jedis) throws IOException {
+		String realKey = pagingDataKey(key, pageIndex);
+		return getObject(realKey, String[][].class, jedis);
 	}
 
 	/**
 	 * Set arrays data
-	 * @param originalKey: Original key
+	 * @param key: Redis key
 	 * @param pageSize: Page size
 	 * @param array: Array data
 	 * @return boolean
 	 * @throws IOException
 	 */
-	public boolean setArrays(String originalKey, int pageSize, String[][] array) throws IOException {
-		if (StringHelper.isNullOrEmpty(originalKey) || pageSize == 0 || array == null) {
+	public boolean setArrays(String key, int pageSize, String[][] array) throws IOException {
+		if (pageSize < 1 || array == null) {
 			return false;
 		}
 
 		int pagesCount = PaginationUtils.calculatePagesCount(array.length, pageSize);
 
 		if (pagesCount == 1) {
-			return setObject(originalKey, array);
+			return setObject(key, array);
 		}
 
 		boolean result = true;
 
-		for (int index = 0; index < pagesCount; index++) {
-			String[][] arrayPage = ArraysUtils.pageArray(array, index, pageSize);
-			result = setArrayPage(originalKey, index, arrayPage);
+		try (Jedis jedis = RedisUtils.jedis(redisInstance)) {
+			for (int index = 0; index < pagesCount; index++) {
+				String[][] arrayPage = ArraysUtils.pageArray(array, index, pageSize);
+				result = setArrayPage(key, index, arrayPage, jedis);
 
-			if (!result) {
-				return result;
+				if (!result) {
+					return result;
+				}
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
 		}
 
-		return setPagesCount(originalKey, pagesCount);
+		return setPagesCount(key, pagesCount);
 	}
 
 	/**
 	 * Get arrays
-	 * @param originalKey: Original key
+	 * @param key: Redis key
 	 * @param pageSize: Page size
 	 * @return String[][]
 	 * @throws IOException
 	 */
-	public String[][] getArrays(String originalKey, int pageSize) throws IOException {
-		int pagesCount = getPagesCount(originalKey);
+	public String[][] getArrays(String key, int pageSize) throws IOException {
+		int pagesCount = getPagesCount(key);
 
-		if (pagesCount == 0) {
-			String[][] arrays = getObject(originalKey, String[][].class);
+		if (pagesCount == 1) {
+			String[][] arrays = getObject(key, String[][].class);
 
 			if (arrays != null) {
 				return arrays;
@@ -396,12 +561,17 @@ public class RedisStringHelper extends RedisHelper {
 
 		List<String[]> list = new LinkedList<>();
 
-		for (int index = 0; index < pagesCount; index++) {
-			String[][] array = getArrayPage(originalKey, index);
+		try (Jedis jedis = RedisUtils.jedis(redisInstance)) {
+			for (int index = 0; index < pagesCount; index++) {
+				String[][] array = getArrayPage(key, index, jedis);
 
-			if (array != null) {
-				list.addAll(Arrays.asList(array));
+				if (array != null) {
+					list.addAll(Arrays.asList(array));
+				}
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new String[0][];
 		}
 
 		return list.toArray(new String[0][]);
