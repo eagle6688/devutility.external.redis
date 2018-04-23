@@ -15,6 +15,8 @@ public class GetArraysTest extends BaseTest {
 			for (String[] array : arrays) {
 				println(Arrays.toString(array));
 			}
+
+			println(arrays.length);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

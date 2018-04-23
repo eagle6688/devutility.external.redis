@@ -489,14 +489,14 @@ public class RedisStringHelper extends RedisHelper {
 	}
 
 	/***
-	 * Get array page
+	 * Get page array
 	 * @param key: Redis key
 	 * @param pageIndex: Page index
 	 * @param jedis: Jedis object
 	 * @return String[][]
 	 * @throws IOException
 	 */
-	private String[][] getArrayPage(String key, int pageIndex, Jedis jedis) throws IOException {
+	private String[][] getPageArray(String key, int pageIndex, Jedis jedis) throws IOException {
 		String realKey = pagingDataKey(key, pageIndex);
 		return getObject(realKey, String[][].class, jedis);
 	}
@@ -524,8 +524,8 @@ public class RedisStringHelper extends RedisHelper {
 
 		try (Jedis jedis = RedisUtils.jedis(redisInstance)) {
 			for (int index = 0; index < pagesCount; index++) {
-				String[][] arrayPage = ArraysUtils.pageArray(array, index, pageSize);
-				result = setArrayPage(key, index, arrayPage, jedis);
+				String[][] pageArray = ArraysUtils.pageArray(array, index, pageSize);
+				result = setArrayPage(key, index, pageArray, jedis);
 
 				if (!result) {
 					return result;
@@ -563,7 +563,7 @@ public class RedisStringHelper extends RedisHelper {
 
 		try (Jedis jedis = RedisUtils.jedis(redisInstance)) {
 			for (int index = 0; index < pagesCount; index++) {
-				String[][] array = getArrayPage(key, index, jedis);
+				String[][] array = getPageArray(key, index, jedis);
 
 				if (array != null) {
 					list.addAll(Arrays.asList(array));

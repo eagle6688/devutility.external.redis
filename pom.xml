@@ -26,17 +26,13 @@
 			<groupId>com.github.eagle6688</groupId>
 			<artifactId>devutility.internal</artifactId>
 			<version>1.0.9</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.github.eagle6688</groupId>
 			<artifactId>devutility.external.json</artifactId>
-			<version>2.9.5.1</version>
-			<exclusions>
-				<exclusion>
-					<groupId>com.github.eagle6688</groupId>
-					<artifactId>devutility.internal</artifactId>
-				</exclusion>
-			</exclusions>
+			<version>2.9.5.2</version>
+			<scope>provided</scope>
 		</dependency>
 		<!-- devutility end -->
 		<!-- Test -->
