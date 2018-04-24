@@ -6,22 +6,22 @@ import java.util.List;
 
 import com.devutility.test.json.User;
 
+import devutility.external.json.JsonUtils;
 import devutility.external.redis.BaseTest;
 import devutility.internal.test.TestExecutor;
 
-public class SetListTest extends BaseTest {
+public class GetListTest extends BaseTest {
 	@Override
 	public void run() {
-		List<User> list = User.list(109);
-
 		try {
-			redisStringHelper.setList("Test-Users", 10, list, User.class);
-		} catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException | IOException e) {
+			List<User> list = redisStringHelper.getList("Test-Users", 10, User.class);
+			println(JsonUtils.serialize(list));
+		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | IOException e) {
 			e.printStackTrace();
 		}
 	}
 
 	public static void main(String[] args) {
-		TestExecutor.run(SetListTest.class);
+		TestExecutor.run(GetListTest.class);
 	}
 }
