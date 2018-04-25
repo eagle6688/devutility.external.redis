@@ -431,7 +431,7 @@ public class RedisStringHelper extends RedisHelper {
 		try (Jedis jedis = RedisUtils.jedis(redisInstance)) {
 			for (int index = 0; index < pagesCount; index++) {
 				String pageKey = pagingDataKey(key, index);
-				List<T> listPage = getList(pageKey, pageSize, clazz);
+				List<T> listPage = getList(pageKey, clazz, jedis);
 
 				if (listPage != null) {
 					list.addAll(listPage);
