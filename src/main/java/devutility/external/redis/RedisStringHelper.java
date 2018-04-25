@@ -323,7 +323,7 @@ public class RedisStringHelper extends RedisHelper {
 		try (Jedis jedis = RedisUtils.jedis(redisInstance)) {
 			for (int index = 0; index < pagesCount; index++) {
 				String pageKey = pagingDataKey(key, index);
-				List<T> listPage = ListHelper.paging(list, index, pageSize);
+				List<T> listPage = ListHelper.paging(list, index + 1, pageSize);
 				result = setList(pageKey, listPage, clazz, excludeAnnotations, jedis, expire);
 
 				if (!result) {
@@ -524,7 +524,7 @@ public class RedisStringHelper extends RedisHelper {
 
 		try (Jedis jedis = RedisUtils.jedis(redisInstance)) {
 			for (int index = 0; index < pagesCount; index++) {
-				String[][] pageArray = ArraysUtils.pageArray(array, index, pageSize);
+				String[][] pageArray = ArraysUtils.pageArray(array, index + 1, pageSize);
 				result = setArrayPage(key, index, pageArray, jedis);
 
 				if (!result) {
