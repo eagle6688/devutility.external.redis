@@ -416,7 +416,7 @@ public class RedisStringHelper extends RedisHelper {
 	public <T> List<T> getList(String key, int pageSize, Class<T> clazz) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, IOException {
 		int pagesCount = getPagesCount(key);
 
-		if (pagesCount == 1) {
+		if (pagesCount < 1) {
 			List<T> list = getList(key, clazz);
 
 			if (list != null) {
