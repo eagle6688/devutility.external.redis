@@ -549,7 +549,7 @@ public class RedisStringHelper extends RedisHelper {
 	public String[][] getArrays(String key, int pageSize) throws IOException {
 		int pagesCount = getPagesCount(key);
 
-		if (pagesCount == 1) {
+		if (pagesCount < 1) {
 			String[][] arrays = getObject(key, String[][].class);
 
 			if (arrays != null) {

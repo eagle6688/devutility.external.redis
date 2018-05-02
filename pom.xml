@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.github.eagle6688</groupId>
 	<artifactId>devutility.external.redis</artifactId>
-	<version>2.9.0.2</version>
+	<version>2.9.0.3</version>
 	<packaging>jar</packaging>
 	<name>devutility.external.redis</name>
 	<description>Some utilities for Jedis version 2.9.*</description>
