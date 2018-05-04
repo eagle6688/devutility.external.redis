@@ -1,7 +1,6 @@
 package devutility.external.redis;
 
 import java.io.IOException;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,7 +10,9 @@ import java.util.List;
 import devutility.external.json.CompressUtils;
 import devutility.internal.dao.models.RedisInstance;
 import devutility.internal.data.PaginationUtils;
+import devutility.internal.lang.ClassHelper;
 import devutility.internal.lang.StringHelper;
+import devutility.internal.lang.models.EntityField;
 import devutility.internal.util.ArraysUtils;
 import devutility.internal.util.ListHelper;
 import redis.clients.jedis.Jedis;
@@ -212,7 +213,7 @@ public class RedisStringHelper extends RedisHelper {
 	 * @param key: Redis key
 	 * @param list: Entities list
 	 * @param clazz: Object
-	 * @param excludeAnnotations: Annotations want to be excluded.
+	 * @param entityFields: EntityField list for {@code T}.
 	 * @param jedis: Jedis object
 	 * @param expire: Expire time in seconds.
 	 * @return boolean
@@ -221,9 +222,9 @@ public class RedisStringHelper extends RedisHelper {
 	 * @throws IOException
 	 * @throws InvocationTargetException
 	 */
-	public <T> boolean setList(String key, List<T> list, Class<T> clazz, List<Annotation> excludeAnnotations, Jedis jedis, int expire)
-			throws IllegalArgumentException, IllegalAccessException, InvocationTargetException, IOException {
-		String[][] arrays = ListHelper.toArrays(list, clazz, excludeAnnotations);
+	public <T> boolean setList(String key, List<T> list, Class<T> clazz, List<EntityField> entityFields, Jedis jedis, int expire)
+			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, IOException {
+		String[][] arrays = ListHelper.toArrays(list, entityFields);
 		return setObject(key, arrays, jedis, expire);
 	}
 
@@ -232,7 +233,7 @@ public class RedisStringHelper extends RedisHelper {
 	 * @param key: Redis key
 	 * @param list: Entities list
 	 * @param clazz: Object
-	 * @param excludeAnnotations: Annotations want to be excluded.
+	 * @param excludeFields: Fields want to be excluded.
 	 * @param expire: Expire time in seconds.
 	 * @return boolean
 	 * @throws IllegalArgumentException
@@ -240,8 +241,9 @@ public class RedisStringHelper extends RedisHelper {
 	 * @throws IOException
 	 * @throws InvocationTargetException
 	 */
-	public <T> boolean setList(String key, List<T> list, Class<T> clazz, List<Annotation> excludeAnnotations, int expire) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException, IOException {
-		String[][] arrays = ListHelper.toArrays(list, clazz, excludeAnnotations);
+	public <T> boolean setList(String key, List<T> list, Class<T> clazz, List<String> excludeFields, int expire) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException, IOException {
+		List<EntityField> entityFields = ClassHelper.getEntityFields(clazz, excludeFields);
+		String[][] arrays = ListHelper.toArrays(list, entityFields);
 		return setObject(key, arrays, expire);
 	}
 
@@ -250,15 +252,15 @@ public class RedisStringHelper extends RedisHelper {
 	 * @param key: Redis key
 	 * @param list: Entities list
 	 * @param clazz: Object
-	 * @param excludeAnnotations: Annotations want to be excluded.
+	 * @param excludeFields: Fields want to be excluded.
 	 * @return boolean
 	 * @throws IllegalArgumentException
 	 * @throws IllegalAccessException
 	 * @throws IOException
 	 * @throws InvocationTargetException
 	 */
-	public <T> boolean setList(String key, List<T> list, Class<T> clazz, List<Annotation> excludeAnnotations) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException, IOException {
-		return setList(key, list, clazz, excludeAnnotations, 0);
+	public <T> boolean setList(String key, List<T> list, Class<T> clazz, List<String> excludeFields) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException, IOException {
+		return setList(key, list, clazz, excludeFields, 0);
 	}
 
 	/**
@@ -306,16 +308,17 @@ public class RedisStringHelper extends RedisHelper {
 	 * @throws IOException
 	 * @throws InvocationTargetException
 	 */
-	public <T> boolean setList(String key, int pageSize, List<T> list, Class<T> clazz, List<Annotation> excludeAnnotations, int expire)
+	public <T> boolean setList(String key, int pageSize, List<T> list, Class<T> clazz, List<String> excludeFields, int expire)
 			throws IllegalArgumentException, IllegalAccessException, InvocationTargetException, IOException {
 		if (StringHelper.isNullOrEmpty(key) || pageSize < 1 || list == null || clazz == null) {
 			return false;
 		}
 
+		List<EntityField> entityFields = ClassHelper.getEntityFields(clazz, excludeFields);
 		int pagesCount = PaginationUtils.calculatePagesCount(list.size(), pageSize);
 
 		if (pagesCount == 1) {
-			return setList(key, list, clazz, excludeAnnotations, expire);
+			return setList(key, list, clazz, excludeFields, expire);
 		}
 
 		boolean result = true;
@@ -324,7 +327,7 @@ public class RedisStringHelper extends RedisHelper {
 			for (int index = 0; index < pagesCount; index++) {
 				String pageKey = pagingDataKey(key, index);
 				List<T> listPage = ListHelper.paging(list, index + 1, pageSize);
-				result = setList(pageKey, listPage, clazz, excludeAnnotations, jedis, expire);
+				result = setList(pageKey, listPage, clazz, entityFields, jedis, expire);
 
 				if (!result) {
 					return result;
