@@ -233,7 +233,7 @@ public class RedisStringHelper extends RedisHelper {
 	 * @param key: Redis key
 	 * @param list: Entities list
 	 * @param clazz: Object
-	 * @param excludeFields: Fields want to be excluded.
+	 * @param excludeFields: Fields want to exclude.
 	 * @param expire: Expire time in seconds.
 	 * @return boolean
 	 * @throws IllegalArgumentException
@@ -252,7 +252,7 @@ public class RedisStringHelper extends RedisHelper {
 	 * @param key: Redis key
 	 * @param list: Entities list
 	 * @param clazz: Object
-	 * @param excludeFields: Fields want to be excluded.
+	 * @param excludeFields: Fields want to exclude.
 	 * @return boolean
 	 * @throws IllegalArgumentException
 	 * @throws IllegalAccessException
@@ -300,7 +300,7 @@ public class RedisStringHelper extends RedisHelper {
 	 * @param pageSize: Page size
 	 * @param list: Entities list
 	 * @param clazz: Object
-	 * @param excludeAnnotations: Annotations want to be excluded.
+	 * @param excludeFields: Fields want to excluded.
 	 * @param expire: Expire time in seconds.
 	 * @return boolean
 	 * @throws IllegalArgumentException
