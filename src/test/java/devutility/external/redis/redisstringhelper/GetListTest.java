@@ -15,6 +15,15 @@ public class GetListTest extends BaseTest {
 	public void run() {
 		try {
 			List<User> list = redisStringHelper.getList("Test-Users", 10, User.class);
+			println(list.size());
+			println(JsonUtils.serialize(list));
+		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | IOException e) {
+			e.printStackTrace();
+		}
+
+		try {
+			List<User> list = redisStringHelper.getList("Test-Users-onepage", 10, User.class);
+			println(list.size());
 			println(JsonUtils.serialize(list));
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | IOException e) {
 			e.printStackTrace();

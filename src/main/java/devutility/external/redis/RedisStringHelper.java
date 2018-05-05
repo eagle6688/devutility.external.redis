@@ -242,7 +242,7 @@ public class RedisStringHelper extends RedisHelper {
 	 * @throws InvocationTargetException
 	 */
 	public <T> boolean setList(String key, List<T> list, Class<T> clazz, List<String> excludeFields, int expire) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException, IOException {
-		List<EntityField> entityFields = ClassHelper.getEntityFields(clazz, excludeFields);
+		List<EntityField> entityFields = ClassHelper.getNonExcludedEntityFields(excludeFields, clazz);
 		String[][] arrays = ListHelper.toArrays(list, entityFields);
 		return setObject(key, arrays, expire);
 	}
@@ -314,7 +314,7 @@ public class RedisStringHelper extends RedisHelper {
 			return false;
 		}
 
-		List<EntityField> entityFields = ClassHelper.getEntityFields(clazz, excludeFields);
+		List<EntityField> entityFields = ClassHelper.getNonExcludedEntityFields(excludeFields, clazz);
 		int pagesCount = PaginationUtils.calculatePagesCount(list.size(), pageSize);
 
 		if (pagesCount == 1) {

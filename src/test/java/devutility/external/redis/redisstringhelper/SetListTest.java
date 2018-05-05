@@ -19,6 +19,14 @@ public class SetListTest extends BaseTest {
 		} catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException | IOException e) {
 			e.printStackTrace();
 		}
+
+		list = User.list(10);
+
+		try {
+			redisStringHelper.setList("Test-Users-onepage", 10, list, User.class);
+		} catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException | IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public static void main(String[] args) {
