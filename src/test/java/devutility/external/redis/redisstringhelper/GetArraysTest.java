@@ -10,13 +10,23 @@ public class GetArraysTest extends BaseTest {
 	@Override
 	public void run() {
 		try {
-			String[][] arrays = redisStringHelper.getArrays("Test", 10);
+			String[][] arrays = redisStringHelper.getArrays("Test-setArrays", 10);
+			println(arrays.length);
 
 			for (String[] array : arrays) {
 				println(Arrays.toString(array));
 			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
+		try {
+			String[][] arrays = redisStringHelper.getArrays("Test-setArrays-onepage", 10);
 			println(arrays.length);
+
+			for (String[] array : arrays) {
+				println(Arrays.toString(array));
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

@@ -13,12 +13,20 @@ public class SetArraysTest extends BaseTest {
 		String[][] arrays = ArrayData.getArrays(109);
 
 		try {
-			redisStringHelper.setArrays("Test", 10, arrays);
+			redisStringHelper.setArrays("Test-setArrays", 10, arrays);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
-		println("OK");
+		arrays = ArrayData.getArrays(10);
+
+		try {
+			redisStringHelper.setArrays("Test-setArrays-onepage", 10, arrays);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		println("Finished!");
 	}
 
 	public static void main(String[] args) {
