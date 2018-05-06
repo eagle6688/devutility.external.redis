@@ -14,7 +14,8 @@ import devutility.internal.lang.ClassHelper;
 import devutility.internal.lang.StringHelper;
 import devutility.internal.lang.models.EntityField;
 import devutility.internal.util.ArraysUtils;
-import devutility.internal.util.ListHelper;
+import devutility.internal.util.CollectionUtils;
+import devutility.internal.util.ListUtils;
 import redis.clients.jedis.Jedis;
 
 public class RedisStringHelper extends RedisHelper {
@@ -224,7 +225,7 @@ public class RedisStringHelper extends RedisHelper {
 	 */
 	public <T> boolean setList(String key, List<T> list, Class<T> clazz, List<EntityField> entityFields, Jedis jedis, int expire)
 			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, IOException {
-		String[][] arrays = ListHelper.toArrays(list, entityFields);
+		String[][] arrays = ListUtils.toArrays(list, entityFields);
 		return setObject(key, arrays, jedis, expire);
 	}
 
@@ -243,7 +244,7 @@ public class RedisStringHelper extends RedisHelper {
 	 */
 	public <T> boolean setList(String key, List<T> list, Class<T> clazz, List<String> excludeFields, int expire) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException, IOException {
 		List<EntityField> entityFields = ClassHelper.getNonExcludedEntityFields(excludeFields, clazz);
-		String[][] arrays = ListHelper.toArrays(list, entityFields);
+		String[][] arrays = ListUtils.toArrays(list, entityFields);
 		return setObject(key, arrays, expire);
 	}
 
@@ -326,7 +327,7 @@ public class RedisStringHelper extends RedisHelper {
 		try (Jedis jedis = RedisUtils.jedis(redisInstance)) {
 			for (int index = 0; index < pagesCount; index++) {
 				String pageKey = pagingDataKey(key, index);
-				List<T> listPage = ListHelper.paging(list, index + 1, pageSize);
+				List<T> listPage = CollectionUtils.paging(list, index + 1, pageSize);
 				result = setList(pageKey, listPage, clazz, entityFields, jedis, expire);
 
 				if (!result) {
@@ -386,7 +387,7 @@ public class RedisStringHelper extends RedisHelper {
 	 */
 	public <T> List<T> getList(String key, Class<T> clazz) throws IOException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		String[][] arrays = getObject(key, String[][].class);
-		return ListHelper.toEntities(arrays, clazz);
+		return ListUtils.toEntities(arrays, clazz);
 	}
 
 	/**
@@ -402,7 +403,7 @@ public class RedisStringHelper extends RedisHelper {
 	 */
 	public <T> List<T> getList(String key, Class<T> clazz, Jedis jedis) throws IOException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		String[][] arrays = getObject(key, String[][].class, jedis);
-		return ListHelper.toEntities(arrays, clazz);
+		return ListUtils.toEntities(arrays, clazz);
 	}
 
 	/**
