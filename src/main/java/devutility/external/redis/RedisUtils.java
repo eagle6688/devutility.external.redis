@@ -1,7 +1,7 @@
 package devutility.external.redis;
 
 import devutility.internal.base.SingletonFactory;
-import devutility.internal.dao.RedisInstanceHelper;
+import devutility.internal.dao.RedisInstanceUtils;
 import devutility.internal.dao.models.RedisInstance;
 import devutility.internal.lang.StringHelper;
 import redis.clients.jedis.Jedis;
@@ -71,12 +71,12 @@ public class RedisUtils {
 
 	/**
 	 * Create a RedisStringHelper object.
-	 * @param resource: Config file.
+	 * @param propertiesFile: Properties file name.
 	 * @param prefix: Prefix name.
 	 * @return RedisStringHelper
 	 */
-	public static RedisStringHelper redisStringHelper(String resource, String prefix) {
-		RedisInstance redisInstance = RedisInstanceHelper.getInstance(resource, prefix);
+	public static RedisStringHelper redisStringHelper(String propertiesFile, String prefix) {
+		RedisInstance redisInstance = RedisInstanceUtils.getInstance(propertiesFile, prefix);
 		return new RedisStringHelper(redisInstance);
 	}
 }
