@@ -1,5 +1,6 @@
 package devutility.external.redis;
 
+import devutility.external.redis.helper.RedisStringHelper;
 import devutility.internal.base.SingletonFactory;
 import devutility.internal.dao.RedisInstanceUtils;
 import devutility.internal.dao.models.RedisInstance;

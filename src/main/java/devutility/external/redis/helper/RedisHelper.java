@@ -1,5 +1,6 @@
-package devutility.external.redis;
+package devutility.external.redis.helper;
 
+import devutility.external.redis.RedisUtils;
 import devutility.internal.dao.models.RedisInstance;
 import devutility.internal.lang.StringHelper;
 import redis.clients.jedis.Jedis;

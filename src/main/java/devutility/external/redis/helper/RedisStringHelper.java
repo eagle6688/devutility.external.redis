@@ -1,4 +1,4 @@
-package devutility.external.redis;
+package devutility.external.redis.helper;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import devutility.external.json.CompressUtils;
+import devutility.external.redis.RedisUtils;
 import devutility.internal.dao.models.RedisInstance;
 import devutility.internal.data.PaginationUtils;
 import devutility.internal.lang.ClassHelper;
