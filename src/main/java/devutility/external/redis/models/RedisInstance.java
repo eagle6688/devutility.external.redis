@@ -1,4 +1,4 @@
-package devutility.external.redis.model;
+package devutility.external.redis.models;
 
 public class RedisInstance {
 	/**
@@ -51,6 +51,8 @@ public class RedisInstance {
 	 * Timeout milliseconds for redis connection.
 	 */
 	private int connectionTimeoutMillis;
+
+	private int commandTimeout;
 
 	public String getHost() {
 		return host;
@@ -130,5 +132,13 @@ public class RedisInstance {
 
 	public void setConnectionTimeoutMillis(int connectionTimeoutMillis) {
 		this.connectionTimeoutMillis = connectionTimeoutMillis;
+	}
+
+	public int getCommandTimeout() {
+		return commandTimeout;
+	}
+
+	public void setCommandTimeout(int commandTimeout) {
+		this.commandTimeout = commandTimeout;
 	}
 }

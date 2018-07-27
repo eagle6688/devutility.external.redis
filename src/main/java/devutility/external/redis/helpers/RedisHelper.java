@@ -1,4 +1,4 @@
-package devutility.external.redis.helper;
+package devutility.external.redis.helpers;
 
 import devutility.external.redis.RedisUtils;
 import devutility.internal.dao.models.RedisInstance;

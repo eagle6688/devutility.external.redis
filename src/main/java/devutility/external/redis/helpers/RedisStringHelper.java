@@ -1,4 +1,4 @@
-package devutility.external.redis.helper;
+package devutility.external.redis.helpers;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;

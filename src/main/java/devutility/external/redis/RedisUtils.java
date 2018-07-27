@@ -1,10 +1,11 @@
 package devutility.external.redis;
 
-import devutility.external.redis.helper.RedisStringHelper;
+import devutility.external.redis.helpers.RedisStringHelper;
 import devutility.internal.base.SingletonFactory;
 import devutility.internal.dao.RedisInstanceUtils;
 import devutility.internal.dao.models.RedisInstance;
 import devutility.internal.lang.StringHelper;
+
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
