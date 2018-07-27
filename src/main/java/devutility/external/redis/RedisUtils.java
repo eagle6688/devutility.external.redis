@@ -1,30 +1,21 @@
 package devutility.external.redis;
 
-import devutility.external.redis.helpers.RedisStringHelper;
-import devutility.internal.base.SingletonFactory;
-import devutility.internal.dao.RedisInstanceUtils;
-import devutility.internal.dao.models.RedisInstance;
-import devutility.internal.lang.StringHelper;
+import java.util.HashSet;
+import java.util.Set;
 
+import devutility.external.redis.helpers.RedisStringHelper;
+import devutility.external.redis.models.RedisInstance;
+import devutility.internal.base.SingletonFactory;
+import devutility.internal.lang.StringHelper;
+import redis.clients.jedis.HostAndPort;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
 public class RedisUtils {
 	/**
-	 * Create a JedisPoolConfig object by RedisInstance
-	 * @param redisInstance: RedisInstance object
-	 * @return JedisPoolConfig
-	 */
-	public static JedisPoolConfig jedisPoolConfig(RedisInstance redisInstance) {
-		JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
-		jedisPoolConfig.setMaxTotal(redisInstance.getMaxConnections());
-		return jedisPoolConfig;
-	}
-
-	/**
 	 * Create a singleton JedisPool object.
-	 * @param redisInstance: RedisInstance object
+	 * @param redisInstance: RedisInstance object.
 	 * @return JedisPool
 	 */
 	public static JedisPool jedisPool(RedisInstance redisInstance) {
@@ -42,11 +33,66 @@ public class RedisUtils {
 		synchronized (RedisUtils.class) {
 			if (jedisPool == null) {
 				JedisPoolConfig jedisPoolConfig = jedisPoolConfig(redisInstance);
-				jedisPool = SingletonFactory.save(key, new JedisPool(jedisPoolConfig, redisInstance.getHost(), redisInstance.getPort(), redisInstance.getTimeout()));
+				jedisPool = SingletonFactory.save(key, new JedisPool(jedisPoolConfig, redisInstance.getHost(), redisInstance.getPort(), redisInstance.getConnectionTimeoutMillis()));
 			}
 		}
 
 		return jedisPool;
+	}
+
+	/**
+	 * Create a JedisPoolConfig object by RedisInstance
+	 * @param redisInstance: RedisInstance object
+	 * @return JedisPoolConfig
+	 */
+	public static JedisPoolConfig jedisPoolConfig(RedisInstance redisInstance) {
+		JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
+
+		if (redisInstance.getMaxConnections() != 0) {
+			jedisPoolConfig.setMaxTotal(redisInstance.getMaxConnections());
+		}
+
+		if (redisInstance.getMinIdle() != 0) {
+			jedisPoolConfig.setMinIdle(redisInstance.getMinIdle());
+		}
+
+		if (redisInstance.getMaxIdle() != 0) {
+			jedisPoolConfig.setMaxIdle(redisInstance.getMaxIdle());
+		}
+
+		if (redisInstance.getMaxWaitMillis() != 0) {
+			jedisPoolConfig.setMaxWaitMillis(redisInstance.getMaxWaitMillis());
+		}
+
+		return jedisPoolConfig;
+	}
+
+	/**
+	 * Get a set of HostAndPort by nodes.
+	 * @param nodes: Valid format as {server}:{port}[,{server}:{port}], this is a
+	 *            string value.
+	 * @return Set<HostAndPort>
+	 */
+	public static Set<HostAndPort> clusterNodes(String nodes) {
+		if (StringHelper.isNullOrEmpty(nodes)) {
+			throw new IllegalArgumentException("Nodes cannot be null!");
+		}
+
+		Set<HostAndPort> set = new HashSet<>();
+		String[] servers = nodes.split(",");
+
+		for (String server : servers) {
+			String[] array = server.split(":");
+
+			if (array.length != 2 || StringHelper.isNullOrEmpty(array[0])) {
+				throw new IllegalArgumentException("Invalid nodes format! ");
+			}
+
+			int port = Integer.parseInt(array[1]);
+			set.add(new HostAndPort(array[0], port));
+		}
+
+		return set;
 	}
 
 	/**
@@ -65,7 +111,7 @@ public class RedisUtils {
 		Jedis jedis = jedisPool.getResource();
 
 		if (jedis != null) {
-			jedis.select(redisInstance.getDBIndex());
+			jedis.select(redisInstance.getDatabase());
 		}
 
 		return jedis;
@@ -78,7 +124,8 @@ public class RedisUtils {
 	 * @return RedisStringHelper
 	 */
 	public static RedisStringHelper redisStringHelper(String propertiesFile, String prefix) {
-		RedisInstance redisInstance = RedisInstanceUtils.getInstance(propertiesFile, prefix);
-		return new RedisStringHelper(redisInstance);
+		RedisInstance redisInstance = RedisInstanceUtils.get(propertiesFile, prefix);
+		//return new RedisStringHelper(redisInstance);
+		return null;
 	}
 }

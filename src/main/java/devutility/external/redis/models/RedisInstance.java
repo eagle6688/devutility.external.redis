@@ -45,7 +45,7 @@ public class RedisInstance {
 	/**
 	 * Max waiting milliseconds when get a redis connection, -1 is not limitation.
 	 */
-	private int maxWaitMillis;
+	private long maxWaitMillis;
 
 	/**
 	 * Timeout milliseconds for redis connection.
@@ -118,11 +118,11 @@ public class RedisInstance {
 		this.maxIdle = maxIdle;
 	}
 
-	public int getMaxWaitMillis() {
+	public long getMaxWaitMillis() {
 		return maxWaitMillis;
 	}
 
-	public void setMaxWaitMillis(int maxWaitMillis) {
+	public void setMaxWaitMillis(long maxWaitMillis) {
 		this.maxWaitMillis = maxWaitMillis;
 	}
 
