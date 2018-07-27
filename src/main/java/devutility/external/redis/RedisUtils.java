@@ -16,7 +16,7 @@ public class RedisUtils {
 	 * @param redisInstance: RedisInstance object
 	 * @return JedisPoolConfig
 	 */
-	private static JedisPoolConfig jedisPoolConfig(RedisInstance redisInstance) {
+	public static JedisPoolConfig jedisPoolConfig(RedisInstance redisInstance) {
 		JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
 		jedisPoolConfig.setMaxTotal(redisInstance.getMaxConnections());
 		return jedisPoolConfig;
