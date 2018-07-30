@@ -8,11 +8,13 @@ import devutility.external.redis.models.RedisInstance;
 import devutility.internal.base.SingletonFactory;
 import devutility.internal.lang.StringHelper;
 import devutility.internal.security.SHA256Utils;
+import devutility.internal.util.CollectionUtils;
 import redis.clients.jedis.HostAndPort;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisCluster;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
+import redis.clients.jedis.JedisSentinelPool;
 import redis.clients.jedis.exceptions.JedisConnectionException;
 
 public class RedisUtils {
@@ -41,6 +43,35 @@ public class RedisUtils {
 		}
 
 		return jedisPool;
+	}
+
+	/**
+	 * Get a singleton JedisSentinelPool object.
+	 * @param redisInstance: RedisInstance object.
+	 * @return JedisSentinelPool
+	 */
+	public static JedisSentinelPool jedisSentinelPool(RedisInstance redisInstance) {
+		if (redisInstance == null || StringHelper.isNullOrEmpty(redisInstance.getNodes())) {
+			throw new IllegalArgumentException("Illegal parameter redisInstance!");
+		}
+
+		String key = getKey(redisInstance);
+		JedisSentinelPool jedisSentinelPool = SingletonFactory.get(key, JedisSentinelPool.class);
+
+		if (jedisSentinelPool != null) {
+			return jedisSentinelPool;
+		}
+
+		synchronized (RedisUtils.class) {
+			if (jedisSentinelPool == null) {
+				JedisPoolConfig jedisPoolConfig = jedisPoolConfig(redisInstance);
+				Set<HostAndPort> sentinels = clusterNodes(redisInstance.getNodes());
+				Set<String> sentinelNodes = CollectionUtils.mapToSet(sentinels, i -> i.toString());
+				jedisSentinelPool = SingletonFactory.save(key, new JedisSentinelPool(redisInstance.getMasterName(), sentinelNodes, jedisPoolConfig));
+			}
+		}
+
+		return jedisSentinelPool;
 	}
 
 	/**

@@ -17,6 +17,11 @@ public class RedisInstance {
 	private String password;
 
 	/**
+	 * Name of master Redis server.
+	 */
+	private String masterName;
+
+	/**
 	 * Redis cluster servers.
 	 */
 	private String nodes;
@@ -76,6 +81,14 @@ public class RedisInstance {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public String getMasterName() {
+		return masterName;
+	}
+
+	public void setMasterName(String masterName) {
+		this.masterName = masterName;
 	}
 
 	public String getNodes() {
