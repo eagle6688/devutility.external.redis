@@ -64,14 +64,36 @@ public class RedisUtils {
 
 		synchronized (RedisUtils.class) {
 			if (jedisSentinelPool == null) {
-				JedisPoolConfig jedisPoolConfig = jedisPoolConfig(redisInstance);
-				Set<HostAndPort> sentinels = clusterNodes(redisInstance.getNodes());
-				Set<String> sentinelNodes = CollectionUtils.mapToSet(sentinels, i -> i.toString());
-				jedisSentinelPool = SingletonFactory.save(key, new JedisSentinelPool(redisInstance.getMasterName(), sentinelNodes, jedisPoolConfig));
+				jedisSentinelPool = SingletonFactory.save(key, createJedisSentinelPool(redisInstance));
 			}
 		}
 
 		return jedisSentinelPool;
+	}
+
+	/**
+	 * Create a JedisSentinelPool object.
+	 * @param redisInstance: RedisInstance object.
+	 * @return JedisSentinelPool
+	 */
+	public static JedisSentinelPool createJedisSentinelPool(RedisInstance redisInstance) {
+		JedisPoolConfig jedisPoolConfig = jedisPoolConfig(redisInstance);
+		Set<HostAndPort> sentinels = clusterNodes(redisInstance.getNodes());
+		Set<String> sentinelNodes = CollectionUtils.mapToSet(sentinels, i -> i.toString());
+
+		if (redisInstance.getConnectionTimeoutMillis() != 0 && redisInstance.getPassword() != null) {
+			return new JedisSentinelPool(redisInstance.getMasterName(), sentinelNodes, jedisPoolConfig, redisInstance.getConnectionTimeoutMillis(), redisInstance.getPassword());
+		}
+
+		if (redisInstance.getConnectionTimeoutMillis() != 0) {
+			return new JedisSentinelPool(redisInstance.getMasterName(), sentinelNodes, jedisPoolConfig, redisInstance.getConnectionTimeoutMillis());
+		}
+
+		if (redisInstance.getPassword() != null) {
+			return new JedisSentinelPool(redisInstance.getMasterName(), sentinelNodes, jedisPoolConfig, redisInstance.getPassword());
+		}
+
+		return new JedisSentinelPool(redisInstance.getMasterName(), sentinelNodes, jedisPoolConfig);
 	}
 
 	/**
@@ -93,13 +115,27 @@ public class RedisUtils {
 
 		synchronized (RedisUtils.class) {
 			if (jedisCluster == null) {
-				JedisPoolConfig jedisPoolConfig = jedisPoolConfig(redisInstance);
-				Set<HostAndPort> clusterNodes = clusterNodes(redisInstance.getNodes());
-				jedisCluster = SingletonFactory.save(key, new JedisCluster(clusterNodes, redisInstance.getCommandTimeout(), jedisPoolConfig));
+				jedisCluster = SingletonFactory.save(key, createJedisCluster(redisInstance));
 			}
 		}
 
 		return jedisCluster;
+	}
+
+	/**
+	 * Create a JedisCluster object.
+	 * @param redisInstance: RedisInstance object.
+	 * @return JedisCluster
+	 */
+	public static JedisCluster createJedisCluster(RedisInstance redisInstance) {
+		JedisPoolConfig jedisPoolConfig = jedisPoolConfig(redisInstance);
+		Set<HostAndPort> clusterNodes = clusterNodes(redisInstance.getNodes());
+
+		if (redisInstance.getCommandTimeout() != 0) {
+			return new JedisCluster(clusterNodes, redisInstance.getCommandTimeout(), jedisPoolConfig);
+		}
+
+		return new JedisCluster(clusterNodes, jedisPoolConfig);
 	}
 
 	/**
