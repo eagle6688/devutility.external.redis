@@ -9,7 +9,7 @@ import java.util.List;
 
 import devutility.external.json.CompressUtils;
 import devutility.external.redis.RedisUtils;
-import devutility.internal.dao.models.RedisInstance;
+import devutility.external.redis.models.RedisInstance;
 import devutility.internal.data.PaginationUtils;
 import devutility.internal.lang.ClassHelper;
 import devutility.internal.lang.StringHelper;
@@ -17,6 +17,7 @@ import devutility.internal.lang.models.EntityField;
 import devutility.internal.util.ArraysUtils;
 import devutility.internal.util.CollectionUtils;
 import devutility.internal.util.ListUtils;
+
 import redis.clients.jedis.Jedis;
 
 public class RedisStringHelper extends RedisHelper {

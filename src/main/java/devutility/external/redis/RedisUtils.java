@@ -7,23 +7,26 @@ import devutility.external.redis.helpers.RedisStringHelper;
 import devutility.external.redis.models.RedisInstance;
 import devutility.internal.base.SingletonFactory;
 import devutility.internal.lang.StringHelper;
+import devutility.internal.security.SHA256Utils;
 import redis.clients.jedis.HostAndPort;
 import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisCluster;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
+import redis.clients.jedis.exceptions.JedisConnectionException;
 
 public class RedisUtils {
 	/**
-	 * Create a singleton JedisPool object.
+	 * Get a singleton JedisPool object.
 	 * @param redisInstance: RedisInstance object.
 	 * @return JedisPool
 	 */
 	public static JedisPool jedisPool(RedisInstance redisInstance) {
 		if (redisInstance == null || StringHelper.isNullOrEmpty(redisInstance.getHost())) {
-			return null;
+			throw new IllegalArgumentException("Illegal parameter redisInstance!");
 		}
 
-		String key = String.format("%s.%s", JedisPool.class.getName(), redisInstance.getHost());
+		String key = getKey(redisInstance);
 		JedisPool jedisPool = SingletonFactory.get(key, JedisPool.class);
 
 		if (jedisPool != null) {
@@ -38,6 +41,48 @@ public class RedisUtils {
 		}
 
 		return jedisPool;
+	}
+
+	/**
+	 * Get a singleton JedisCluster object.
+	 * @param redisInstance: RedisInstance object.
+	 * @return JedisCluster
+	 */
+	public static JedisCluster jedisCluster(RedisInstance redisInstance) {
+		if (redisInstance == null || StringHelper.isNullOrEmpty(redisInstance.getNodes())) {
+			throw new IllegalArgumentException("Illegal parameter redisInstance!");
+		}
+
+		String key = getKey(redisInstance);
+		JedisCluster jedisCluster = SingletonFactory.get(key, JedisCluster.class);
+
+		if (jedisCluster != null) {
+			return jedisCluster;
+		}
+
+		synchronized (RedisUtils.class) {
+			if (jedisCluster == null) {
+				JedisPoolConfig jedisPoolConfig = jedisPoolConfig(redisInstance);
+				Set<HostAndPort> clusterNodes = clusterNodes(redisInstance.getNodes());
+				jedisCluster = SingletonFactory.save(key, new JedisCluster(clusterNodes, redisInstance.getCommandTimeout(), jedisPoolConfig));
+			}
+		}
+
+		return jedisCluster;
+	}
+
+	/**
+	 * Get key use RedisInstance object.
+	 * @param redisInstance: RedisInstance object.
+	 * @return String
+	 */
+	private static String getKey(RedisInstance redisInstance) {
+		if (StringHelper.isNotEmpty(redisInstance.getNodes())) {
+			String value = SHA256Utils.encipherToHex(redisInstance.getNodes());
+			return String.format("%s.%s", RedisUtils.class.getName(), value);
+		}
+
+		return String.format("%s.%s.%d", RedisUtils.class.getName(), redisInstance.getHost(), redisInstance.getPort());
 	}
 
 	/**
@@ -99,19 +144,30 @@ public class RedisUtils {
 	 * Create a Jedis instance.
 	 * @param redisInstance: RedisInstance object
 	 * @return Jedis
-	 * @throws NullPointerException
 	 */
-	public static Jedis jedis(RedisInstance redisInstance) throws NullPointerException {
+	public static Jedis jedis(RedisInstance redisInstance) {
+		Jedis jedis = null;
+
+		int maxRetryCount = 3;
 		JedisPool jedisPool = jedisPool(redisInstance);
 
 		if (jedisPool == null) {
 			return null;
 		}
 
-		Jedis jedis = jedisPool.getResource();
+		for (int i = 0; i < maxRetryCount; i++) {
+			try {
+				jedis = jedisPool.getResource();
 
-		if (jedis != null) {
-			jedis.select(redisInstance.getDatabase());
+				if (jedisPool != null) {
+					jedis.select(redisInstance.getDatabase());
+					break;
+				}
+			} catch (Exception e) {
+				if (!(e instanceof JedisConnectionException)) {
+					throw e;
+				}
+			}
 		}
 
 		return jedis;

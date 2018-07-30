@@ -1,7 +1,7 @@
 package devutility.external.redis.helpers;
 
 import devutility.external.redis.RedisUtils;
-import devutility.internal.dao.models.RedisInstance;
+import devutility.external.redis.models.RedisInstance;
 import devutility.internal.lang.StringHelper;
 import redis.clients.jedis.Jedis;
 
@@ -12,7 +12,7 @@ public abstract class RedisHelper {
 	protected RedisInstance redisInstance;
 
 	/**
-	 * RedisBulkHelper
+	 * RedisHelper
 	 * @param redisInstance
 	 */
 	public RedisHelper(RedisInstance redisInstance) {
@@ -39,23 +39,23 @@ public abstract class RedisHelper {
 	}
 
 	/**
-	 * Set DbIndex
-	 * @param dbIndex: Redis Db index
+	 * Set database index.
+	 * @param database: Redis database index.
 	 */
-	public void setDbIndex(int dbIndex) {
-		redisInstance.setDBIndex(dbIndex);
+	public void setDatabase(int database) {
+		redisInstance.setDatabase(database);
 	}
 
 	/**
-	 * Get DbIndex
+	 * Get database index.
 	 * @return int
 	 */
-	public int getDbIndex() {
-		return redisInstance.getDBIndex();
+	public int getDatabase() {
+		return redisInstance.getDatabase();
 	}
 
 	/**
-	 * Expire one item
+	 * Expire one item.
 	 * @param key: Redis key
 	 * @param seconds: Expire seconds
 	 * @return boolean
@@ -74,8 +74,23 @@ public abstract class RedisHelper {
 	}
 
 	/**
-	 * Remove one item from Redis
-	 * @param key: Redis key
+	 * Expire one item.
+	 * @param jedis: Jedis object.
+	 * @param key: Key value.
+	 * @param seconds: Expired seconds.
+	 * @return boolean
+	 */
+	public boolean expire(Jedis jedis, String key, int seconds) {
+		if (jedis == null || StringHelper.isNullOrEmpty(key)) {
+			return false;
+		}
+
+		return jedis.expire(key, seconds) == 1;
+	}
+
+	/**
+	 * Remove one item from Redis.
+	 * @param key: Redis key.
 	 * @return boolean
 	 */
 	public boolean remove(String key) {
@@ -89,5 +104,19 @@ public abstract class RedisHelper {
 			e.printStackTrace();
 			return false;
 		}
+	}
+
+	/**
+	 * Remove one item from Redis.
+	 * @param jedis: Jedis object.
+	 * @param key: Redis key.
+	 * @return boolean
+	 */
+	public boolean remove(Jedis jedis, String key) {
+		if (jedis == null || StringHelper.isNullOrEmpty(key)) {
+			return false;
+		}
+
+		return jedis.del(key) > 0;
 	}
 }
