@@ -181,7 +181,6 @@ public class RedisUtils {
 	 */
 	public static RedisStringHelper redisStringHelper(String propertiesFile, String prefix) {
 		RedisInstance redisInstance = RedisInstanceUtils.get(propertiesFile, prefix);
-		//return new RedisStringHelper(redisInstance);
-		return null;
+		return new RedisStringHelper(redisInstance);
 	}
 }
