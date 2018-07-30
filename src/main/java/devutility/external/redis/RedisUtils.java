@@ -37,12 +37,34 @@ public class RedisUtils {
 
 		synchronized (RedisUtils.class) {
 			if (jedisPool == null) {
-				JedisPoolConfig jedisPoolConfig = jedisPoolConfig(redisInstance);
-				jedisPool = SingletonFactory.save(key, new JedisPool(jedisPoolConfig, redisInstance.getHost(), redisInstance.getPort(), redisInstance.getConnectionTimeoutMillis()));
+				jedisPool = SingletonFactory.save(key, createJedisPool(redisInstance));
 			}
 		}
 
 		return jedisPool;
+	}
+
+	/**
+	 * Create a JedisPool object.
+	 * @param redisInstance: RedisInstance object.
+	 * @return JedisPool
+	 */
+	public static JedisPool createJedisPool(RedisInstance redisInstance) {
+		JedisPoolConfig jedisPoolConfig = jedisPoolConfig(redisInstance);
+
+		if (redisInstance.getPort() > 0 && redisInstance.getConnectionTimeoutMillis() != 0 && redisInstance.getPassword() != null) {
+			return new JedisPool(jedisPoolConfig, redisInstance.getHost(), redisInstance.getPort(), redisInstance.getConnectionTimeoutMillis(), redisInstance.getPassword());
+		}
+
+		if (redisInstance.getPort() > 0 && redisInstance.getConnectionTimeoutMillis() != 0) {
+			return new JedisPool(jedisPoolConfig, redisInstance.getHost(), redisInstance.getPort(), redisInstance.getConnectionTimeoutMillis());
+		}
+
+		if (redisInstance.getPort() > 0) {
+			return new JedisPool(jedisPoolConfig, redisInstance.getHost(), redisInstance.getPort());
+		}
+
+		return new JedisPool(jedisPoolConfig, redisInstance.getHost());
 	}
 
 	/**
