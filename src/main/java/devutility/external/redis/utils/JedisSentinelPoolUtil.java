@@ -18,7 +18,7 @@ public class JedisSentinelPoolUtil extends JedisBaseUtils {
 	 * @return JedisSentinelPool
 	 */
 	public static JedisSentinelPool jedisSentinelPool(RedisInstance redisInstance) {
-		if (redisInstance == null || StringHelper.isNullOrEmpty(redisInstance.getNodes())) {
+		if (redisInstance == null || StringHelper.isNullOrEmpty(redisInstance.getNodes()) || StringHelper.isNullOrEmpty(redisInstance.getMasterName())) {
 			throw new IllegalArgumentException("Illegal parameter redisInstance!");
 		}
 
