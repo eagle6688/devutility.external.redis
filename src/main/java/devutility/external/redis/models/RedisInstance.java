@@ -57,7 +57,15 @@ public class RedisInstance {
 	 */
 	private int connectionTimeoutMillis;
 
+	/**
+	 * Timeout milliseconds for command.
+	 */
 	private int commandTimeout;
+
+	/**
+	 * Max retry count after get Jedis failed.
+	 */
+	private int maxRetryCount = 3;
 
 	public String getHost() {
 		return host;
@@ -153,5 +161,13 @@ public class RedisInstance {
 
 	public void setCommandTimeout(int commandTimeout) {
 		this.commandTimeout = commandTimeout;
+	}
+
+	public int getMaxRetryCount() {
+		return maxRetryCount;
+	}
+
+	public void setMaxRetryCount(int maxRetryCount) {
+		this.maxRetryCount = maxRetryCount;
 	}
 }

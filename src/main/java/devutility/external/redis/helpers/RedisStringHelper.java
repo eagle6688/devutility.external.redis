@@ -8,8 +8,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import devutility.external.json.CompressUtils;
-import devutility.external.redis.RedisUtils;
 import devutility.external.redis.models.RedisInstance;
+import devutility.external.redis.utils.JedisPoolUtil;
 import devutility.internal.data.PaginationUtils;
 import devutility.internal.lang.ClassHelper;
 import devutility.internal.lang.StringHelper;
@@ -49,7 +49,7 @@ public class RedisStringHelper extends RedisHelper {
 	 * @return String
 	 */
 	public String get(String key) {
-		try (Jedis jedis = RedisUtils.jedis(redisInstance)) {
+		try (Jedis jedis = JedisPoolUtil.jedis(redisInstance)) {
 			return get(key, jedis);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -87,7 +87,7 @@ public class RedisStringHelper extends RedisHelper {
 	 * @return boolean
 	 */
 	public boolean set(String key, String value, int expire) {
-		try (Jedis jedis = RedisUtils.jedis(redisInstance)) {
+		try (Jedis jedis = JedisPoolUtil.jedis(redisInstance)) {
 			return set(key, value, jedis, expire);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -326,7 +326,7 @@ public class RedisStringHelper extends RedisHelper {
 
 		boolean result = true;
 
-		try (Jedis jedis = RedisUtils.jedis(redisInstance)) {
+		try (Jedis jedis = JedisPoolUtil.jedis(redisInstance)) {
 			for (int index = 0; index < pagesCount; index++) {
 				String pageKey = pagingDataKey(key, index);
 				List<T> listPage = CollectionUtils.paging(list, index + 1, pageSize);
@@ -434,7 +434,7 @@ public class RedisStringHelper extends RedisHelper {
 
 		List<T> list = new LinkedList<>();
 
-		try (Jedis jedis = RedisUtils.jedis(redisInstance)) {
+		try (Jedis jedis = JedisPoolUtil.jedis(redisInstance)) {
 			for (int index = 0; index < pagesCount; index++) {
 				String pageKey = pagingDataKey(key, index);
 				List<T> listPage = getList(pageKey, clazz, jedis);
@@ -528,7 +528,7 @@ public class RedisStringHelper extends RedisHelper {
 
 		boolean result = true;
 
-		try (Jedis jedis = RedisUtils.jedis(redisInstance)) {
+		try (Jedis jedis = JedisPoolUtil.jedis(redisInstance)) {
 			for (int index = 0; index < pagesCount; index++) {
 				String[][] pageArray = ArraysUtils.pageArray(array, index + 1, pageSize);
 				result = setArrayPage(key, index, pageArray, jedis);
@@ -567,7 +567,7 @@ public class RedisStringHelper extends RedisHelper {
 
 		List<String[]> list = new LinkedList<>();
 
-		try (Jedis jedis = RedisUtils.jedis(redisInstance)) {
+		try (Jedis jedis = JedisPoolUtil.jedis(redisInstance)) {
 			for (int index = 0; index < pagesCount; index++) {
 				String[][] array = getPageArray(key, index, jedis);
 

@@ -1,7 +1,7 @@
 package devutility.external.redis.helpers;
 
-import devutility.external.redis.RedisUtils;
 import devutility.external.redis.models.RedisInstance;
+import devutility.external.redis.utils.JedisPoolUtil;
 import devutility.internal.lang.StringHelper;
 import redis.clients.jedis.Jedis;
 
@@ -65,7 +65,7 @@ public abstract class RedisHelper {
 			return false;
 		}
 
-		try (Jedis jedis = RedisUtils.jedis(redisInstance)) {
+		try (Jedis jedis = JedisPoolUtil.jedis(redisInstance)) {
 			return jedis.expire(key, seconds) == 1;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -98,7 +98,7 @@ public abstract class RedisHelper {
 			return false;
 		}
 
-		try (Jedis jedis = RedisUtils.jedis(redisInstance)) {
+		try (Jedis jedis = JedisPoolUtil.jedis(redisInstance)) {
 			return jedis.del(key) > 0;
 		} catch (Exception e) {
 			e.printStackTrace();
