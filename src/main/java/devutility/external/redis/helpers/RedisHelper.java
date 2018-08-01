@@ -6,21 +6,21 @@ import redis.clients.jedis.Jedis;
 
 public abstract class RedisHelper {
 	/**
-	 * RedisInstance object
+	 * RedisInstance object.
 	 */
 	protected RedisInstance redisInstance;
 
 	/**
-	 * Constructor
-	 * @param redisInstance
+	 * Constructor.
+	 * @param redisInstance: RedisInstance object.
 	 */
 	public RedisHelper(RedisInstance redisInstance) {
 		this.redisInstance = redisInstance;
 	}
 
 	/**
-	 * Key of Pages count
-	 * @param key: Redis key
+	 * Key of data pages count.
+	 * @param key: Prefix key.
 	 * @return String
 	 */
 	protected String pagesCountKey(String key) {
