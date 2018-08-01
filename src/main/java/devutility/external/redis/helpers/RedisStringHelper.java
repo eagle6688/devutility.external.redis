@@ -5,6 +5,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import devutility.external.json.CompressUtils;
+import devutility.external.redis.com.StatusCodeUtils;
 import devutility.external.redis.models.RedisInstance;
 import devutility.internal.lang.StringHelper;
 import devutility.internal.lang.models.EntityField;
@@ -35,8 +36,8 @@ public class RedisStringHelper extends RedisHelper {
 	}
 
 	/**
-	 * Set string value, used for loop.
-	 * @param key: Redis key
+	 * Set string value.
+	 * @param key: Redis key.
 	 * @param value: Value
 	 * @param jedis: Jedis object
 	 * @param expire: Expire time in seconds.
@@ -44,34 +45,38 @@ public class RedisStringHelper extends RedisHelper {
 	 */
 	public boolean set(String key, String value, Jedis jedis, int expire) {
 		if (StringHelper.isNullOrEmpty(key) || value == null || jedis == null) {
+			throw new IllegalArgumentException("Illegal parameters!");
+		}
+
+		String status = jedis.set(key, value);
+
+		if (!StatusCodeUtils.isSetOk(status)) {
 			return false;
 		}
 
-		jedis.set(key, value);
-
-		if (expire > 0) {
-			jedis.expire(key, expire);
+		if (expire > 0 && jedis.expire(key, expire) != 1) {
+			return false;
 		}
 
 		return true;
 	}
 
 	/**
-	 * Set Object, used for loop.
-	 * @param key: Redis key
-	 * @param object: Object
-	 * @param jedis: Jedis object
+	 * Set Object value.
+	 * @param key: Redis key.
+	 * @param value: Object value.
+	 * @param jedis: Jedis object.
 	 * @param expire: Expire time in seconds.
 	 * @return boolean
 	 * @throws IOException
 	 */
-	public boolean setObject(String key, Object object, Jedis jedis, int expire) throws IOException {
-		if (object == null) {
+	public boolean setObject(String key, Object value, Jedis jedis, int expire) throws IOException {
+		if (value == null) {
 			return false;
 		}
 
-		String value = CompressUtils.compress(object);
-		return set(key, value, jedis, expire);
+		String compressedValue = CompressUtils.compress(value);
+		return set(key, compressedValue, jedis, expire);
 	}
 
 	/**
@@ -126,6 +131,14 @@ public class RedisStringHelper extends RedisHelper {
 	public <T> List<T> getList(String key, Class<T> clazz, Jedis jedis) throws IOException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		String[][] arrays = getObject(key, String[][].class, jedis);
 		return ListUtils.toEntities(arrays, clazz);
+	}
+
+	public <T> boolean pagingSetList(String key, int pageSize, List<T> list, List<String> excludeFields, int expire, Jedis jedis, Class<T> clazz) {
+		if (StringHelper.isNullOrEmpty(key) || pageSize < 1 || list == null || clazz == null) {
+			throw new IllegalArgumentException("Illegal parameters!");
+		}
+
+		return true;
 	}
 
 	/**
