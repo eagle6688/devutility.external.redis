@@ -3,7 +3,7 @@ package devutility.external.redis.utils;
 import java.util.Set;
 
 import devutility.external.redis.RedisHelperFactory;
-import devutility.external.redis.models.RedisInstance;
+import devutility.external.redis.models.ClusterRedisInstance;
 import devutility.internal.base.SingletonFactory;
 import devutility.internal.lang.StringHelper;
 
@@ -14,10 +14,10 @@ import redis.clients.jedis.JedisPoolConfig;
 public class JedisClusterUtil extends JedisBaseUtils {
 	/**
 	 * Get a singleton JedisCluster object.
-	 * @param redisInstance: RedisInstance object.
+	 * @param redisInstance: ClusterRedisInstance object.
 	 * @return JedisCluster
 	 */
-	public static JedisCluster jedisCluster(RedisInstance redisInstance) {
+	public static JedisCluster jedisCluster(ClusterRedisInstance redisInstance) {
 		if (redisInstance == null || StringHelper.isNullOrEmpty(redisInstance.getNodes())) {
 			throw new IllegalArgumentException("Illegal parameter redisInstance!");
 		}
@@ -40,10 +40,10 @@ public class JedisClusterUtil extends JedisBaseUtils {
 
 	/**
 	 * Create a JedisCluster object.
-	 * @param redisInstance: RedisInstance object.
+	 * @param redisInstance: ClusterRedisInstance object.
 	 * @return JedisCluster
 	 */
-	public static JedisCluster createJedisCluster(RedisInstance redisInstance) {
+	public static JedisCluster createJedisCluster(ClusterRedisInstance redisInstance) {
 		JedisPoolConfig jedisPoolConfig = JedisPoolConfigUtil.jedisPoolConfig(redisInstance);
 		Set<HostAndPort> clusterNodes = hostAndPortSet(redisInstance.getNodes());
 

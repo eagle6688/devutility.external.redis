@@ -4,24 +4,30 @@ import java.util.HashSet;
 import java.util.Set;
 
 import devutility.external.redis.RedisHelperFactory;
-import devutility.external.redis.models.RedisInstance;
+import devutility.external.redis.models.ClusterRedisInstance;
+import devutility.external.redis.models.SingleRedisInstance;
 import devutility.internal.lang.StringHelper;
 import devutility.internal.security.SHA256Utils;
 import redis.clients.jedis.HostAndPort;
 
 public abstract class JedisBaseUtils {
 	/**
-	 * Get key use RedisInstance object.
-	 * @param redisInstance: RedisInstance object.
+	 * Get key use SingleRedisInstance object.
+	 * @param redisInstance: SingleRedisInstance object.
 	 * @return String
 	 */
-	protected static String getKey(RedisInstance redisInstance) {
-		if (StringHelper.isNotEmpty(redisInstance.getNodes())) {
-			String value = SHA256Utils.encipherToHex(redisInstance.getNodes());
-			return String.format("%s.%s", RedisHelperFactory.class.getName(), value);
-		}
-
+	protected static String getKey(SingleRedisInstance redisInstance) {
 		return String.format("%s.%s.%d", RedisHelperFactory.class.getName(), redisInstance.getHost(), redisInstance.getPort());
+	}
+
+	/**
+	 * Get key use ClusterRedisInstance object.
+	 * @param redisInstance: ClusterRedisInstance object.
+	 * @return String
+	 */
+	protected static String getKey(ClusterRedisInstance redisInstance) {
+		String value = SHA256Utils.encipherToHex(redisInstance.getNodes());
+		return String.format("%s.%s", RedisHelperFactory.class.getName(), value);
 	}
 
 	/**

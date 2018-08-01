@@ -1,7 +1,6 @@
 package devutility.external.redis.helpers;
 
 import devutility.external.redis.models.RedisInstance;
-import devutility.external.redis.utils.JedisPoolUtil;
 import devutility.internal.lang.StringHelper;
 import redis.clients.jedis.Jedis;
 
@@ -12,7 +11,7 @@ public abstract class RedisHelper {
 	protected RedisInstance redisInstance;
 
 	/**
-	 * RedisHelper
+	 * Constructor
 	 * @param redisInstance
 	 */
 	public RedisHelper(RedisInstance redisInstance) {
@@ -56,25 +55,6 @@ public abstract class RedisHelper {
 
 	/**
 	 * Expire one item.
-	 * @param key: Redis key
-	 * @param seconds: Expire seconds
-	 * @return boolean
-	 */
-	public boolean expire(String key, int seconds) {
-		if (StringHelper.isNullOrEmpty(key)) {
-			return false;
-		}
-
-		try (Jedis jedis = JedisPoolUtil.jedis(redisInstance)) {
-			return jedis.expire(key, seconds) == 1;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
-		}
-	}
-
-	/**
-	 * Expire one item.
 	 * @param jedis: Jedis object.
 	 * @param key: Key value.
 	 * @param seconds: Expired seconds.
@@ -86,24 +66,6 @@ public abstract class RedisHelper {
 		}
 
 		return jedis.expire(key, seconds) == 1;
-	}
-
-	/**
-	 * Remove one item from Redis.
-	 * @param key: Redis key.
-	 * @return boolean
-	 */
-	public boolean remove(String key) {
-		if (StringHelper.isNullOrEmpty(key)) {
-			return false;
-		}
-
-		try (Jedis jedis = JedisPoolUtil.jedis(redisInstance)) {
-			return jedis.del(key) > 0;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
-		}
 	}
 
 	/**

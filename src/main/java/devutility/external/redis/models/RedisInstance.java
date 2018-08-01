@@ -2,29 +2,9 @@ package devutility.external.redis.models;
 
 public class RedisInstance {
 	/**
-	 * Redis server host.
-	 */
-	private String host;
-
-	/**
-	 * Redis server port.
-	 */
-	private int port;
-
-	/**
 	 * Redis server password.
 	 */
 	private String password;
-
-	/**
-	 * Name of master Redis server.
-	 */
-	private String masterName;
-
-	/**
-	 * Redis cluster servers.
-	 */
-	private String nodes;
 
 	/**
 	 * Database index.
@@ -67,44 +47,12 @@ public class RedisInstance {
 	 */
 	private int maxRetryCount = 3;
 
-	public String getHost() {
-		return host;
-	}
-
-	public void setHost(String host) {
-		this.host = host;
-	}
-
-	public int getPort() {
-		return port;
-	}
-
-	public void setPort(int port) {
-		this.port = port;
-	}
-
 	public String getPassword() {
 		return password;
 	}
 
 	public void setPassword(String password) {
 		this.password = password;
-	}
-
-	public String getMasterName() {
-		return masterName;
-	}
-
-	public void setMasterName(String masterName) {
-		this.masterName = masterName;
-	}
-
-	public String getNodes() {
-		return nodes;
-	}
-
-	public void setNodes(String nodes) {
-		this.nodes = nodes;
 	}
 
 	public int getDatabase() {

@@ -1,7 +1,7 @@
 package devutility.external.redis.utils;
 
 import devutility.external.redis.RedisHelperFactory;
-import devutility.external.redis.models.RedisInstance;
+import devutility.external.redis.models.SingleRedisInstance;
 import devutility.internal.base.SingletonFactory;
 import devutility.internal.lang.StringHelper;
 import redis.clients.jedis.Jedis;
@@ -12,10 +12,10 @@ import redis.clients.jedis.exceptions.JedisConnectionException;
 public class JedisPoolUtil extends JedisBaseUtils {
 	/**
 	 * Get a singleton JedisPool object.
-	 * @param redisInstance: RedisInstance object.
+	 * @param redisInstance: SingleRedisInstance object.
 	 * @return JedisPool
 	 */
-	public static JedisPool jedisPool(RedisInstance redisInstance) {
+	public static JedisPool jedisPool(SingleRedisInstance redisInstance) {
 		if (redisInstance == null || StringHelper.isNullOrEmpty(redisInstance.getHost())) {
 			throw new IllegalArgumentException("Illegal parameter redisInstance!");
 		}
@@ -38,10 +38,10 @@ public class JedisPoolUtil extends JedisBaseUtils {
 
 	/**
 	 * Create a JedisPool object.
-	 * @param redisInstance: RedisInstance object.
+	 * @param redisInstance: SingleRedisInstance object.
 	 * @return JedisPool
 	 */
-	public static JedisPool createJedisPool(RedisInstance redisInstance) {
+	public static JedisPool createJedisPool(SingleRedisInstance redisInstance) {
 		JedisPoolConfig jedisPoolConfig = JedisPoolConfigUtil.jedisPoolConfig(redisInstance);
 
 		if (redisInstance.getPort() > 0 && redisInstance.getConnectionTimeoutMillis() != 0 && redisInstance.getPassword() != null) {
@@ -61,10 +61,10 @@ public class JedisPoolUtil extends JedisBaseUtils {
 
 	/**
 	 * Create a Jedis instance.
-	 * @param redisInstance: RedisInstance object
+	 * @param redisInstance: SingleRedisInstance object
 	 * @return Jedis
 	 */
-	public static Jedis jedis(RedisInstance redisInstance) {
+	public static Jedis jedis(SingleRedisInstance redisInstance) {
 		Jedis jedis = null;
 		JedisPool jedisPool = jedisPool(redisInstance);
 
