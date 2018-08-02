@@ -250,12 +250,13 @@ public class SingleRedisStringHelper extends SingleRedisHelper {
 	 * @param key: Redis key.
 	 * @param arrays: Arrays data.
 	 * @param pageSize: Page size.
+	 * @param expire: Expire time in seconds, 0 is permanent item.
 	 * @return boolean
 	 * @throws IOException
 	 */
-	public boolean pagingSetArrays(String key, String[][] arrays, int pageSize) throws IOException {
+	public boolean pagingSetArrays(String key, String[][] arrays, int pageSize, int expire) throws IOException {
 		try (Jedis jedis = JedisPoolUtil.jedis(redisInstance)) {
-			return pagingSetArrays(jedis, key, arrays, pageSize, 0);
+			return pagingSetArrays(jedis, key, arrays, pageSize, expire);
 		} catch (IOException e) {
 			throw e;
 		}

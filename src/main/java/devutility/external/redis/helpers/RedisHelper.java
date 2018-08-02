@@ -19,29 +19,6 @@ public abstract class RedisHelper {
 	}
 
 	/**
-	 * Key of data pages count.
-	 * @param key: Prefix key.
-	 * @return String
-	 */
-	public String pagesCountKey(String key) {
-		if (key == null) {
-			throw new IllegalArgumentException("Illegal parameter!");
-		}
-
-		return String.format("%s:count", key);
-	}
-
-	/**
-	 * Get key of paging data.
-	 * @param key: Prefix key.
-	 * @param pageIndex: Page index.
-	 * @return String
-	 */
-	public String pagingDataKey(String key, int pageIndex) {
-		return String.format("%s:%d", key, pageIndex);
-	}
-
-	/**
 	 * Set database index.
 	 * @param database: Redis database index.
 	 */

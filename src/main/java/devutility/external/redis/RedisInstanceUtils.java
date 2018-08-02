@@ -90,7 +90,11 @@ public class RedisInstanceUtils {
 		instance.setMaxWaitMillis(PropertiesUtils.getIntProperty(properties, getPropertyKey(prefix, "max-wait")));
 		instance.setConnectionTimeoutMillis(PropertiesUtils.getIntProperty(properties, getPropertyKey(prefix, "timeout")));
 		instance.setCommandTimeout(PropertiesUtils.getIntProperty(properties, getPropertyKey(prefix, "command-timeout")));
-		instance.setMaxRetryCount(PropertiesUtils.getIntProperty(properties, getPropertyKey(prefix, "max-retry-count")));
+		int maxRetryCount = PropertiesUtils.getIntProperty(properties, getPropertyKey(prefix, "max-retry-count"));
+
+		if (maxRetryCount > 0) {
+			instance.setMaxRetryCount(maxRetryCount);
+		}
 	}
 
 	/**

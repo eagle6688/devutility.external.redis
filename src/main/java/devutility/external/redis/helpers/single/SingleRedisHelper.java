@@ -3,7 +3,6 @@ package devutility.external.redis.helpers.single;
 import devutility.external.redis.helpers.RedisStringHelper;
 import devutility.external.redis.models.SingleRedisInstance;
 import devutility.external.redis.utils.JedisPoolUtil;
-import devutility.internal.lang.StringHelper;
 import redis.clients.jedis.Jedis;
 
 public abstract class SingleRedisHelper extends RedisStringHelper {
@@ -22,18 +21,14 @@ public abstract class SingleRedisHelper extends RedisStringHelper {
 	}
 
 	/**
-	 * Expire one item.
-	 * @param key: Redis key
-	 * @param seconds: Expire seconds
+	 * Set expired time for the item with the specified key.
+	 * @param key: Redis key.
+	 * @param seconds: Expire seconds.
 	 * @return boolean
 	 */
 	public boolean expire(String key, int seconds) {
-		if (StringHelper.isNullOrEmpty(key)) {
-			return false;
-		}
-
 		try (Jedis jedis = JedisPoolUtil.jedis(redisInstance)) {
-			return jedis.expire(key, seconds) == 1;
+			return expire(jedis, key, seconds);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
@@ -41,17 +36,13 @@ public abstract class SingleRedisHelper extends RedisStringHelper {
 	}
 
 	/**
-	 * Remove one item from Redis.
+	 * Remove the item with the specified key.
 	 * @param key: Redis key.
 	 * @return boolean
 	 */
 	public boolean remove(String key) {
-		if (StringHelper.isNullOrEmpty(key)) {
-			return false;
-		}
-
 		try (Jedis jedis = JedisPoolUtil.jedis(redisInstance)) {
-			return jedis.del(key) > 0;
+			return remove(jedis, key);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;

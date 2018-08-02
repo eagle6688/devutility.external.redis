@@ -358,4 +358,27 @@ public class RedisStringHelper extends RedisHelper {
 		String realKey = pagesCountKey(key);
 		return getInt(jedis, realKey);
 	}
+
+	/**
+	 * Key of data pages count.
+	 * @param key: Prefix key.
+	 * @return String
+	 */
+	private String pagesCountKey(String key) {
+		if (key == null) {
+			throw new IllegalArgumentException("Illegal parameter!");
+		}
+
+		return String.format("%s:count", key);
+	}
+
+	/**
+	 * Get key of paging data.
+	 * @param key: Prefix key.
+	 * @param pageIndex: Page index.
+	 * @return String
+	 */
+	private String pagingDataKey(String key, int pageIndex) {
+		return String.format("%s:%d", key, pageIndex);
+	}
 }

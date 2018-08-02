@@ -13,7 +13,7 @@ public class PagingSetArraysTest extends BaseTest {
 		String[][] arrays = ArrayData.getArrays(109);
 
 		try {
-			singleRedisStringHelper.pagingSetArrays("Test-setArrays", arrays, 10);
+			singleRedisStringHelper.pagingSetArrays("Test-setArrays", arrays, 10, 0);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -21,7 +21,7 @@ public class PagingSetArraysTest extends BaseTest {
 		arrays = ArrayData.getArrays(10);
 
 		try {
-			singleRedisStringHelper.pagingSetArrays("Test-setArrays-onepage", arrays, 10);
+			singleRedisStringHelper.pagingSetArrays("Test-setArrays-onepage", arrays, 10, 0);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
