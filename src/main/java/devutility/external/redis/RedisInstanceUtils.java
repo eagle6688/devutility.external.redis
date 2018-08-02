@@ -103,7 +103,7 @@ public class RedisInstanceUtils {
 	 * @param properties: Properties object.
 	 * @param prefix: Prefix of key.
 	 */
-	public static void set(SingleRedisInstance instance, Properties properties, String prefix) {
+	private static void set(SingleRedisInstance instance, Properties properties, String prefix) {
 		set((RedisInstance) instance, properties, prefix);
 		instance.setHost(PropertiesUtils.getProperty(properties, getPropertyKey(prefix, "host")));
 		instance.setPort(PropertiesUtils.getIntProperty(properties, getPropertyKey(prefix, "port")));
@@ -115,7 +115,7 @@ public class RedisInstanceUtils {
 	 * @param properties: Properties object.
 	 * @param prefix: Prefix of key.
 	 */
-	public static void set(ClusterRedisInstance instance, Properties properties, String prefix) {
+	private static void set(ClusterRedisInstance instance, Properties properties, String prefix) {
 		set((RedisInstance) instance, properties, prefix);
 		instance.setNodes(PropertiesUtils.getProperty(properties, getPropertyKey(prefix, "nodes")));
 	}
@@ -126,7 +126,7 @@ public class RedisInstanceUtils {
 	 * @param properties: Properties object.
 	 * @param prefix: Prefix of key.
 	 */
-	public static void set(SentinelRedisInstance instance, Properties properties, String prefix) {
+	private static void set(SentinelRedisInstance instance, Properties properties, String prefix) {
 		set((ClusterRedisInstance) instance, properties, prefix);
 		instance.setMasterName(PropertiesUtils.getProperty(properties, getPropertyKey(prefix, "master-name")));
 	}
