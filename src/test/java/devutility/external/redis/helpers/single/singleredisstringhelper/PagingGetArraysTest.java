@@ -1,4 +1,4 @@
-package devutility.external.redis.redisstringhelper;
+package devutility.external.redis.helpers.single.singleredisstringhelper;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -6,11 +6,11 @@ import java.util.Arrays;
 import devutility.external.redis.BaseTest;
 import devutility.internal.test.TestExecutor;
 
-public class GetArraysTest extends BaseTest {
+public class PagingGetArraysTest extends BaseTest {
 	@Override
 	public void run() {
 		try {
-			String[][] arrays = redisStringHelper.getArrays("Test-setArrays", 10);
+			String[][] arrays = singleRedisStringHelper.pagingGetArrays("Test-setArrays");
 			println(arrays.length);
 
 			for (String[] array : arrays) {
@@ -21,7 +21,7 @@ public class GetArraysTest extends BaseTest {
 		}
 
 		try {
-			String[][] arrays = redisStringHelper.getArrays("Test-setArrays-onepage", 10);
+			String[][] arrays = singleRedisStringHelper.pagingGetArrays("Test-setArrays-onepage");
 			println(arrays.length);
 
 			for (String[] array : arrays) {
@@ -33,6 +33,6 @@ public class GetArraysTest extends BaseTest {
 	}
 
 	public static void main(String[] args) {
-		TestExecutor.run(GetArraysTest.class);
+		TestExecutor.run(PagingGetArraysTest.class);
 	}
 }

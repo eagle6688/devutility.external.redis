@@ -1,4 +1,4 @@
-package devutility.external.redis.redisstringhelper;
+package devutility.external.redis.helpers.single.singleredisstringhelper;
 
 import devutility.external.redis.BaseTest;
 

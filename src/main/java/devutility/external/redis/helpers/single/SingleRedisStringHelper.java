@@ -1,28 +1,17 @@
 package devutility.external.redis.helpers.single;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 
-import devutility.external.json.CompressUtils;
 import devutility.external.redis.models.SingleRedisInstance;
 import devutility.external.redis.utils.JedisPoolUtil;
-import devutility.internal.data.PaginationUtils;
-import devutility.internal.lang.ClassHelper;
-import devutility.internal.lang.StringHelper;
 import devutility.internal.lang.models.EntityField;
-import devutility.internal.util.ArraysUtils;
-import devutility.internal.util.CollectionUtils;
-import devutility.internal.util.ListUtils;
 
 import redis.clients.jedis.Jedis;
 
 public class SingleRedisStringHelper extends SingleRedisHelper {
 	/**
-	 * Constructor
+	 * Constructor.
 	 * @param redisInstance
 	 */
 	public SingleRedisStringHelper(SingleRedisInstance redisInstance) {
@@ -30,29 +19,15 @@ public class SingleRedisStringHelper extends SingleRedisHelper {
 	}
 
 	/**
-	 * Get string value.
-	 * @param key: Redis key
-	 * @return String
-	 */
-	public String get(String key) {
-		try (Jedis jedis = JedisPoolUtil.jedis(redisInstance)) {
-			return get(key, jedis);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
-
-	/**
 	 * Set string value.
-	 * @param key: Redis key
-	 * @param value: Value
-	 * @param expire: Expire time in seconds.
+	 * @param key: Redis key.
+	 * @param value: String value.
+	 * @param expire: Expire time in seconds, 0 is permanent item.
 	 * @return boolean
 	 */
 	public boolean set(String key, String value, int expire) {
 		try (Jedis jedis = JedisPoolUtil.jedis(redisInstance)) {
-			return set(key, value, jedis, expire);
+			return set(jedis, key, value, expire);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
@@ -61,8 +36,8 @@ public class SingleRedisStringHelper extends SingleRedisHelper {
 
 	/**
 	 * Set string value.
-	 * @param key: Redis key
-	 * @param value: Value
+	 * @param key: Redis key.
+	 * @param value: String value.
 	 * @return boolean
 	 */
 	public boolean set(String key, String value) {
@@ -70,381 +45,233 @@ public class SingleRedisStringHelper extends SingleRedisHelper {
 	}
 
 	/**
-	 * Get int value
-	 * @param key: Redis key
-	 * @return int
+	 * Get string value.
+	 * @param key: Redis key.
+	 * @return String
 	 */
-	public int getInt(String key) {
-		String value = get(key);
-
-		if (StringHelper.isNullOrEmpty(value)) {
-			return 0;
+	public String get(String key) {
+		try (Jedis jedis = JedisPoolUtil.jedis(redisInstance)) {
+			return get(jedis, key);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
 		}
-
-		return Integer.parseInt(value);
 	}
 
 	/**
-	 * Set int value
-	 * @param key: Redis key
-	 * @param value: Value
+	 * Set int value.
+	 * @param key: Redis key.
+	 * @param value: Int value.
+	 * @param expire: Expire time in seconds, 0 is permanent item.
+	 * @return boolean
+	 */
+	public boolean setInt(String key, int value, int expire) {
+		try (Jedis jedis = JedisPoolUtil.jedis(redisInstance)) {
+			return setInt(jedis, key, value, expire);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	/**
+	 * Set int value.
+	 * @param key: Redis key.
+	 * @param value: Int value.
 	 * @return boolean
 	 */
 	public boolean setInt(String key, int value) {
-		return set(key, String.valueOf(value));
+		return setInt(key, value, 0);
 	}
 
 	/**
-	 * Set Object
-	 * @param key: Redis key
-	 * @param object: Object
-	 * @param expire: Expire time in seconds.
-	 * @return boolean
-	 * @throws IOException
+	 * Get int value.
+	 * @param key: Redis key.
+	 * @return int
 	 */
-	public boolean setObject(String key, Object object, int expire) throws IOException {
-		if (object == null) {
-			return false;
+	public int getInt(String key) {
+		try (Jedis jedis = JedisPoolUtil.jedis(redisInstance)) {
+			return getInt(jedis, key);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return 0;
 		}
-
-		String value = CompressUtils.compress(object);
-		return set(key, value, expire);
 	}
 
 	/**
-	 * Set Object
-	 * @param key: Redis key
-	 * @param object: Object
+	 * Set object value.
+	 * @param key: Redis key.
+	 * @param value: Object value.
+	 * @param expire: Expire time in seconds, 0 is permanent item.
 	 * @return boolean
 	 * @throws IOException
 	 */
-	public boolean setObject(String key, Object object) throws IOException {
-		return setObject(key, object, 0);
+	public boolean setObject(String key, Object value, int expire) throws IOException {
+		try (Jedis jedis = JedisPoolUtil.jedis(redisInstance)) {
+			return setObject(jedis, key, value, expire);
+		} catch (IOException e) {
+			throw e;
+		}
+	}
+
+	/**
+	 * Set object value.
+	 * @param key: Redis key.
+	 * @param value: Object value.
+	 * @return boolean
+	 * @throws IOException
+	 */
+	public boolean setObject(String key, Object value) throws IOException {
+		return setObject(key, value, 0);
 	}
 
 	/**
 	 * Get object.
-	 * @param key: Redis key
-	 * @param clazz: Object
+	 * @param key: Redis key.
+	 * @param clazz: Class object.
 	 * @return {@code T}
 	 * @throws IOException
 	 */
 	public <T> T getObject(String key, Class<T> clazz) throws IOException {
-		String value = get(key);
-
-		if (StringHelper.isNullOrEmpty(value)) {
-			return null;
-		}
-
-		return CompressUtils.decompress(value, clazz);
-	}
-
-	/**
-	 * Set list data
-	 * @param key: Redis key
-	 * @param list: Entities list
-	 * @param clazz: Object
-	 * @param excludeFields: Fields want to exclude.
-	 * @param expire: Expire time in seconds.
-	 * @return boolean
-	 * @throws IllegalArgumentException
-	 * @throws IllegalAccessException
-	 * @throws IOException
-	 * @throws InvocationTargetException
-	 */
-	public <T> boolean setList(String key, List<T> list, Class<T> clazz, List<String> excludeFields, int expire) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException, IOException {
-		List<EntityField> entityFields = ClassHelper.getNonExcludedEntityFields(excludeFields, clazz);
-		String[][] arrays = ListUtils.toArrays(list, entityFields);
-		return setObject(key, arrays, expire);
-	}
-
-	/**
-	 * Set list data
-	 * @param key: Redis key
-	 * @param list: Entities list
-	 * @param clazz: Object
-	 * @param excludeFields: Fields want to exclude.
-	 * @return boolean
-	 * @throws IllegalArgumentException
-	 * @throws IllegalAccessException
-	 * @throws IOException
-	 * @throws InvocationTargetException
-	 */
-	public <T> boolean setList(String key, List<T> list, Class<T> clazz, List<String> excludeFields) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException, IOException {
-		return setList(key, list, clazz, excludeFields, 0);
-	}
-
-	/**
-	 * Set list data
-	 * @param key: Redis key
-	 * @param list: Entities list
-	 * @param clazz: Object
-	 * @param expire: Expire time in seconds.
-	 * @return boolean
-	 * @throws IllegalArgumentException
-	 * @throws IllegalAccessException
-	 * @throws IOException
-	 * @throws InvocationTargetException
-	 */
-	public <T> boolean setList(String key, List<T> list, Class<T> clazz, int expire) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException, IOException {
-		return setList(key, list, clazz, null, expire);
-	}
-
-	/**
-	 * Set list data
-	 * @param key: Redis key
-	 * @param list: Entities list
-	 * @param clazz: Object
-	 * @return boolean
-	 * @throws IllegalArgumentException
-	 * @throws IllegalAccessException
-	 * @throws InvocationTargetException
-	 * @throws IOException
-	 */
-	public <T> boolean setList(String key, List<T> list, Class<T> clazz) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException, IOException {
-		return setList(key, list, clazz, 0);
-	}
-
-	/**
-	 * Set list data
-	 * @param key: Redis key
-	 * @param pageSize: Page size
-	 * @param list: Entities list
-	 * @param clazz: Object
-	 * @param excludeFields: Fields want to excluded.
-	 * @param expire: Expire time in seconds.
-	 * @return boolean
-	 * @throws IllegalArgumentException
-	 * @throws IllegalAccessException
-	 * @throws IOException
-	 * @throws InvocationTargetException
-	 */
-	public <T> boolean setList(String key, int pageSize, List<T> list, Class<T> clazz, List<String> excludeFields, int expire)
-			throws IllegalArgumentException, IllegalAccessException, InvocationTargetException, IOException {
-		if (StringHelper.isNullOrEmpty(key) || pageSize < 1 || list == null || clazz == null) {
-			return false;
-		}
-
-		List<EntityField> entityFields = ClassHelper.getNonExcludedEntityFields(excludeFields, clazz);
-		int pagesCount = PaginationUtils.calculatePagesCount(list.size(), pageSize);
-
-		if (pagesCount == 1) {
-			return setList(key, list, clazz, excludeFields, expire);
-		}
-
-		boolean result = true;
-
 		try (Jedis jedis = JedisPoolUtil.jedis(redisInstance)) {
-			for (int index = 0; index < pagesCount; index++) {
-				String pageKey = pagingDataKey(key, index);
-				List<T> listPage = CollectionUtils.paging(list, index + 1, pageSize);
-				result = setList(pageKey, listPage, clazz, entityFields, jedis, expire);
-
-				if (!result) {
-					return result;
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
+			return getObject(jedis, key, clazz);
+		} catch (IOException e) {
+			throw e;
 		}
-
-		return setPagesCount(key, pagesCount);
 	}
 
 	/**
-	 * Set list data
-	 * @param key: Redis key
-	 * @param pageSize: Page size
-	 * @param list: Entities list
-	 * @param clazz: Object
-	 * @param expire: Expire time in seconds.
+	 * Set list data. Treat list as a single object, convert it to string format and compress it.
+	 * @param key: Redis key.
+	 * @param list: List data.
+	 * @param entityFields: EntityField list for {@code T}.
+	 * @param expire: Expire time in seconds, 0 is permanent item.
 	 * @return boolean
-	 * @throws IllegalArgumentException
-	 * @throws IllegalAccessException
-	 * @throws IOException
-	 * @throws InvocationTargetException
+	 * @throws Exception
 	 */
-	public <T> boolean setList(String key, int pageSize, List<T> list, Class<T> clazz, int expire) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException, IOException {
-		return setList(key, pageSize, list, clazz, null, expire);
+	public <T> boolean setList(String key, List<T> list, int expire, List<EntityField> entityFields) throws Exception {
+		try (Jedis jedis = JedisPoolUtil.jedis(redisInstance)) {
+			return setList(jedis, key, list, expire, entityFields);
+		} catch (Exception e) {
+			throw e;
+		}
 	}
 
 	/**
-	 * Set list data
-	 * @param key: Redis key
-	 * @param pageSize: Page size
-	 * @param list: Entities list
-	 * @param clazz: Object
+	 * Set list data. Treat list as a single object, convert it to string format and compress it.
+	 * @param key: Redis key.
+	 * @param list: List data.
+	 * @param expire: Expire time in seconds, 0 is permanent item.
+	 * @param excludeFields: Exclude fields in Class {@code T}.
+	 * @param clazz: Class object.
 	 * @return boolean
-	 * @throws IllegalArgumentException
-	 * @throws IllegalAccessException
-	 * @throws IOException
-	 * @throws InvocationTargetException
+	 * @throws Exception
 	 */
-	public <T> boolean setList(String key, int pageSize, List<T> list, Class<T> clazz) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException, IOException {
-		return setList(key, pageSize, list, clazz, 0);
+	public <T> boolean setList(String key, List<T> list, int expire, List<String> excludeFields, Class<T> clazz) throws Exception {
+		try (Jedis jedis = JedisPoolUtil.jedis(redisInstance)) {
+			return setList(jedis, key, list, expire, excludeFields, clazz);
+		} catch (Exception e) {
+			throw e;
+		}
 	}
 
 	/**
-	 * Get list from Redis
-	 * @param key: Redis key
-	 * @param clazz: Class object
+	 * Get list data from Redis.
+	 * @param key: Redis key.
+	 * @param clazz: Class object.
 	 * @return {@code List<T>}
-	 * @throws IOException
-	 * @throws IllegalAccessException
-	 * @throws IllegalArgumentException
-	 * @throws InvocationTargetException
+	 * @throws Exception
 	 */
-	public <T> List<T> getList(String key, Class<T> clazz) throws IOException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		String[][] arrays = getObject(key, String[][].class);
-		return ListUtils.toEntities(arrays, clazz);
+	public <T> List<T> getList(String key, Class<T> clazz) throws Exception {
+		try (Jedis jedis = JedisPoolUtil.jedis(redisInstance)) {
+			return getList(jedis, key, clazz);
+		} catch (Exception e) {
+			throw e;
+		}
 	}
 
 	/**
-	 * Get list from Redis
-	 * @param key: Redis key
-	 * @param pageSize: Page size
-	 * @param clazz: Class object
+	 * Paging set list data. Separate list data to several page data accoding to the specified page size. We treat each page
+	 * data as a sigle object and use setList method to save them.
+	 * @param key: Redis key.
+	 * @param pageSize: Page size.
+	 * @param list: List data.
+	 * @param expire: Expire time in seconds, 0 is permanent item.
+	 * @param excludeFields: Exclude fields in Class {@code T}.
+	 * @param clazz: Class object.
+	 * @return boolean
+	 * @throws Exception
+	 */
+	public <T> boolean pagingSetList(String key, int pageSize, List<T> list, int expire, List<String> excludeFields, Class<T> clazz) throws Exception {
+		try (Jedis jedis = JedisPoolUtil.jedis(redisInstance)) {
+			return pagingSetList(jedis, key, pageSize, list, expire, excludeFields, clazz);
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	/**
+	 * Paging set list data. Separate list data to several page data accoding to the specified page size. We treat each page
+	 * data as a sigle object and use setList method to save them.
+	 * @param key: Redis key.
+	 * @param pageSize: Page size.
+	 * @param list: List data.
+	 * @param expire: Expire time in seconds, 0 is permanent item.
+	 * @param entityFields: Exclude fields in Class {@code T}.
+	 * @return boolean
+	 * @throws Exception
+	 */
+	public <T> boolean pagingSetList(String key, int pageSize, List<T> list, int expire, List<EntityField> entityFields) throws Exception {
+		try (Jedis jedis = JedisPoolUtil.jedis(redisInstance)) {
+			return pagingSetList(jedis, key, pageSize, list, expire, entityFields);
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	/**
+	 * Get paging list data.
+	 * @param key: Redis key.
+	 * @param clazz: Class object.
 	 * @return {@code List<T>}
-	 * @throws IOException
-	 * @throws IllegalAccessException
-	 * @throws IllegalArgumentException
-	 * @throws InvocationTargetException
+	 * @throws Exception
 	 */
-	public <T> List<T> getList(String key, int pageSize, Class<T> clazz) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, IOException {
-		int pagesCount = getPagesCount(key);
-
-		if (pagesCount < 1) {
-			List<T> list = getList(key, clazz);
-
-			if (list != null) {
-				return list;
-			}
-
-			return new ArrayList<>();
-		}
-
-		List<T> list = new LinkedList<>();
-
+	public <T> List<T> pagingGetList(String key, Class<T> clazz) throws Exception {
 		try (Jedis jedis = JedisPoolUtil.jedis(redisInstance)) {
-			for (int index = 0; index < pagesCount; index++) {
-				String pageKey = pagingDataKey(key, index);
-				List<T> listPage = getList(pageKey, clazz, jedis);
-
-				if (listPage != null) {
-					list.addAll(listPage);
-				}
-			}
+			return pagingGetList(jedis, key, clazz);
 		} catch (Exception e) {
-			e.printStackTrace();
-			return new ArrayList<>();
+			throw e;
 		}
-
-		return new ArrayList<>(list);
 	}
 
 	/**
-	 * Set pages count
-	 * @param key: Redis key
-	 * @param count: Pages count
-	 * @return boolean
-	 */
-	private boolean setPagesCount(String key, int count) {
-		if (StringHelper.isNullOrEmpty(key) || count < 1) {
-			return false;
-		}
-
-		String realKey = pagesCountKey(key);
-		return setInt(realKey, count);
-	}
-
-	/**
-	 * Get pages count
-	 * @param key: Redis key
-	 * @return int
-	 */
-	private int getPagesCount(String key) {
-		if (StringHelper.isNullOrEmpty(key)) {
-			return 0;
-		}
-
-		String realKey = pagesCountKey(key);
-		return getInt(realKey);
-	}
-
-	/**
-	 * Set arrays data
-	 * @param key: Redis key
-	 * @param pageSize: Page size
-	 * @param array: Array data
+	 * Paging set arrays data. Separate arrays data to several arrays data accoding to the specified page size. We treat
+	 * each page data as a sigle object and use setList method to save them.
+	 * @param key: Redis key.
+	 * @param arrays: Arrays data.
+	 * @param pageSize: Page size.
 	 * @return boolean
 	 * @throws IOException
 	 */
-	public boolean setArrays(String key, int pageSize, String[][] array) throws IOException {
-		if (pageSize < 1 || array == null) {
-			return false;
-		}
-
-		int pagesCount = PaginationUtils.calculatePagesCount(array.length, pageSize);
-
-		if (pagesCount == 1) {
-			return setObject(key, array);
-		}
-
-		boolean result = true;
-
+	public boolean pagingSetArrays(String key, String[][] arrays, int pageSize) throws IOException {
 		try (Jedis jedis = JedisPoolUtil.jedis(redisInstance)) {
-			for (int index = 0; index < pagesCount; index++) {
-				String[][] pageArray = ArraysUtils.pageArray(array, index + 1, pageSize);
-				result = setArrayPage(key, index, pageArray, jedis);
-
-				if (!result) {
-					return result;
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
+			return pagingSetArrays(jedis, key, arrays, pageSize, 0);
+		} catch (IOException e) {
+			throw e;
 		}
-
-		return setPagesCount(key, pagesCount);
 	}
 
 	/**
-	 * Get arrays
-	 * @param key: Redis key
-	 * @param pageSize: Page size
+	 * Get paging arrays data.
+	 * @param key: Redis key.
 	 * @return String[][]
 	 * @throws IOException
 	 */
-	public String[][] getArrays(String key, int pageSize) throws IOException {
-		int pagesCount = getPagesCount(key);
-
-		if (pagesCount < 1) {
-			String[][] arrays = getObject(key, String[][].class);
-
-			if (arrays != null) {
-				return arrays;
-			}
-
-			return new String[0][];
-		}
-
-		List<String[]> list = new LinkedList<>();
-
+	public String[][] pagingGetArrays(String key) throws IOException {
 		try (Jedis jedis = JedisPoolUtil.jedis(redisInstance)) {
-			for (int index = 0; index < pagesCount; index++) {
-				String[][] array = getPageArray(key, index, jedis);
-
-				if (array != null) {
-					list.addAll(Arrays.asList(array));
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			return new String[0][];
+			return pagingGetArrays(jedis, key);
+		} catch (IOException e) {
+			throw e;
 		}
-
-		return list.toArray(new String[0][]);
 	}
 }

@@ -23,17 +23,21 @@ public abstract class RedisHelper {
 	 * @param key: Prefix key.
 	 * @return String
 	 */
-	protected String pagesCountKey(String key) {
+	public String pagesCountKey(String key) {
+		if (key == null) {
+			throw new IllegalArgumentException("Illegal parameter!");
+		}
+
 		return String.format("%s:count", key);
 	}
 
 	/**
-	 * Key of paging data
-	 * @param key
-	 * @param pageIndex
+	 * Get key of paging data.
+	 * @param key: Prefix key.
+	 * @param pageIndex: Page index.
 	 * @return String
 	 */
-	protected String pagingDataKey(String key, int pageIndex) {
+	public String pagingDataKey(String key, int pageIndex) {
 		return String.format("%s:%d", key, pageIndex);
 	}
 
@@ -54,7 +58,7 @@ public abstract class RedisHelper {
 	}
 
 	/**
-	 * Expire one item.
+	 * Set expired time for the item with the specified key.
 	 * @param jedis: Jedis object.
 	 * @param key: Key value.
 	 * @param seconds: Expired seconds.
@@ -62,21 +66,21 @@ public abstract class RedisHelper {
 	 */
 	public boolean expire(Jedis jedis, String key, int seconds) {
 		if (jedis == null || StringHelper.isNullOrEmpty(key)) {
-			return false;
+			throw new IllegalArgumentException("Illegal parameters!");
 		}
 
 		return jedis.expire(key, seconds) == 1;
 	}
 
 	/**
-	 * Remove one item from Redis.
+	 * Remove the item with the specified key.
 	 * @param jedis: Jedis object.
 	 * @param key: Redis key.
 	 * @return boolean
 	 */
 	public boolean remove(Jedis jedis, String key) {
 		if (jedis == null || StringHelper.isNullOrEmpty(key)) {
-			return false;
+			throw new IllegalArgumentException("Illegal parameters!");
 		}
 
 		return jedis.del(key) > 0;

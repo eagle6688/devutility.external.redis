@@ -10,7 +10,7 @@ public class RedisHelperFactory {
 	 * @param prefix: Prefix name.
 	 * @return RedisStringHelper
 	 */
-	public static SingleRedisStringHelper redisStringHelper(String propertiesFile, String prefix) {
+	public static SingleRedisStringHelper singleRedisStringHelper(String propertiesFile, String prefix) {
 		SingleRedisInstance redisInstance = RedisInstanceUtils.get(propertiesFile, prefix, SingleRedisInstance.class);
 		return new SingleRedisStringHelper(redisInstance);
 	}
