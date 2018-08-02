@@ -32,8 +32,7 @@ public abstract class JedisBaseUtils {
 
 	/**
 	 * Get a set of HostAndPort by nodes.
-	 * @param nodes: Valid format as {server}:{port}[,{server}:{port}], this is a
-	 *            string value.
+	 * @param nodes: Valid format as {server}:{port}[,{server}:{port}], this is a string value.
 	 * @return Set<HostAndPort>
 	 */
 	public static Set<HostAndPort> hostAndPortSet(String nodes) {
