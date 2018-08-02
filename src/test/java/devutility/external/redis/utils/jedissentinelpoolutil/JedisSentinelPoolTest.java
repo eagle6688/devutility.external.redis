@@ -9,7 +9,6 @@ import redis.clients.jedis.JedisSentinelPool;
 public class JedisSentinelPoolTest extends BaseTest {
 	@Override
 	public void run() {
-		sentinel_RedisInstance.setMasterName("mymaster");
 		JedisSentinelPool jedisSentinelPool = JedisSentinelPoolUtil.jedisSentinelPool(sentinel_RedisInstance);
 		HostAndPort master = jedisSentinelPool.getCurrentHostMaster();
 		println(master.toString());
