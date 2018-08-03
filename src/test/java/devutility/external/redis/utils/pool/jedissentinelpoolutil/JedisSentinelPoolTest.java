@@ -1,4 +1,4 @@
-package devutility.external.redis.utils.jedissentinelpoolutil;
+package devutility.external.redis.utils.pool.jedissentinelpoolutil;
 
 import devutility.external.redis.BaseTest;
 import devutility.external.redis.utils.pool.JedisSentinelPoolUtil;
