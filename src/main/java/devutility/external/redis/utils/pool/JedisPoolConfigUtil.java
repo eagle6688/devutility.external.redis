@@ -1,4 +1,4 @@
-package devutility.external.redis.utils;
+package devutility.external.redis.utils.pool;
 
 import devutility.external.redis.models.RedisInstance;
 import redis.clients.jedis.JedisPoolConfig;

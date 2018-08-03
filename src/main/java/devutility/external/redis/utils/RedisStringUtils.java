@@ -1,4 +1,4 @@
-package devutility.external.redis.helpers;
+package devutility.external.redis.utils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -8,7 +8,6 @@ import java.util.List;
 
 import devutility.external.json.CompressUtils;
 import devutility.external.redis.com.StatusCodeUtils;
-import devutility.external.redis.models.RedisInstance;
 import devutility.internal.data.PaginationUtils;
 import devutility.internal.lang.ClassHelper;
 import devutility.internal.lang.StringHelper;
@@ -18,15 +17,7 @@ import devutility.internal.util.CollectionUtils;
 import devutility.internal.util.ListUtils;
 import redis.clients.jedis.Jedis;
 
-public class RedisStringHelper extends RedisHelper {
-	/**
-	 * Constructor.
-	 * @param redisInstance: RedisInstance object.
-	 */
-	public RedisStringHelper(RedisInstance redisInstance) {
-		super(redisInstance);
-	}
-
+public class RedisStringUtils extends RedisBaseUtils {
 	/**
 	 * Set string value.
 	 * @param jedis: Jedis object.
@@ -35,7 +26,7 @@ public class RedisStringHelper extends RedisHelper {
 	 * @param expire: Expire time in seconds, 0 is permanent item.
 	 * @return boolean
 	 */
-	public boolean set(Jedis jedis, String key, String value, int expire) {
+	public static boolean set(Jedis jedis, String key, String value, int expire) {
 		if (jedis == null || StringHelper.isNullOrEmpty(key) || value == null) {
 			throw new IllegalArgumentException("Illegal parameters!");
 		}
@@ -59,7 +50,7 @@ public class RedisStringHelper extends RedisHelper {
 	 * @param key: Redis key.
 	 * @return String
 	 */
-	public String get(Jedis jedis, String key) {
+	public static String get(Jedis jedis, String key) {
 		if (jedis == null || StringHelper.isNullOrEmpty(key)) {
 			throw new IllegalArgumentException("Illegal parameters!");
 		}
@@ -75,7 +66,7 @@ public class RedisStringHelper extends RedisHelper {
 	 * @param expire: Expire time in seconds, 0 is permanent item.
 	 * @return boolean
 	 */
-	public boolean setInt(Jedis jedis, String key, int value, int expire) {
+	public static boolean setInt(Jedis jedis, String key, int value, int expire) {
 		return set(jedis, key, String.valueOf(value), expire);
 	}
 
@@ -85,7 +76,7 @@ public class RedisStringHelper extends RedisHelper {
 	 * @param key: Redis key.
 	 * @return int
 	 */
-	public int getInt(Jedis jedis, String key) {
+	public static int getInt(Jedis jedis, String key) {
 		String value = get(jedis, key);
 
 		if (StringHelper.isNullOrEmpty(value)) {
@@ -104,7 +95,7 @@ public class RedisStringHelper extends RedisHelper {
 	 * @return boolean
 	 * @throws IOException
 	 */
-	public boolean setObject(Jedis jedis, String key, Object value, int expire) throws IOException {
+	public static boolean setObject(Jedis jedis, String key, Object value, int expire) throws IOException {
 		if (value == null) {
 			throw new IllegalArgumentException("Illegal parameters!");
 		}
@@ -121,7 +112,7 @@ public class RedisStringHelper extends RedisHelper {
 	 * @return {@code T}
 	 * @throws IOException
 	 */
-	public <T> T getObject(Jedis jedis, String key, Class<T> clazz) throws IOException {
+	public static <T> T getObject(Jedis jedis, String key, Class<T> clazz) throws IOException {
 		String value = get(jedis, key);
 
 		if (StringHelper.isNullOrEmpty(value)) {
@@ -141,7 +132,7 @@ public class RedisStringHelper extends RedisHelper {
 	 * @return boolean
 	 * @throws Exception
 	 */
-	public <T> boolean setList(Jedis jedis, String key, List<T> list, int expire, List<EntityField> entityFields) throws Exception {
+	public static <T> boolean setList(Jedis jedis, String key, List<T> list, int expire, List<EntityField> entityFields) throws Exception {
 		String[][] arrays = ListUtils.toArrays(list, entityFields);
 		return setObject(jedis, key, arrays, expire);
 	}
@@ -157,7 +148,7 @@ public class RedisStringHelper extends RedisHelper {
 	 * @return boolean
 	 * @throws Exception
 	 */
-	public <T> boolean setList(Jedis jedis, String key, List<T> list, int expire, List<String> excludeFields, Class<T> clazz) throws Exception {
+	public static <T> boolean setList(Jedis jedis, String key, List<T> list, int expire, List<String> excludeFields, Class<T> clazz) throws Exception {
 		List<EntityField> entityFields = ClassHelper.getNonExcludedEntityFields(excludeFields, clazz);
 		return setList(jedis, key, list, expire, entityFields);
 	}
@@ -170,7 +161,7 @@ public class RedisStringHelper extends RedisHelper {
 	 * @return {@code List<T>}
 	 * @throws Exception
 	 */
-	public <T> List<T> getList(Jedis jedis, String key, Class<T> clazz) throws Exception {
+	public static <T> List<T> getList(Jedis jedis, String key, Class<T> clazz) throws Exception {
 		String[][] arrays = getObject(jedis, key, String[][].class);
 		return ListUtils.toEntities(arrays, clazz);
 	}
@@ -187,7 +178,7 @@ public class RedisStringHelper extends RedisHelper {
 	 * @return boolean
 	 * @throws Exception
 	 */
-	public <T> boolean pagingSetList(Jedis jedis, String key, int pageSize, List<T> list, int expire, List<EntityField> entityFields) throws Exception {
+	public static <T> boolean pagingSetList(Jedis jedis, String key, int pageSize, List<T> list, int expire, List<EntityField> entityFields) throws Exception {
 		if (pageSize < 1 || list == null) {
 			throw new IllegalArgumentException("Illegal parameters!");
 		}
@@ -223,7 +214,7 @@ public class RedisStringHelper extends RedisHelper {
 	 * @return boolean
 	 * @throws Exception
 	 */
-	public <T> boolean pagingSetList(Jedis jedis, String key, int pageSize, List<T> list, int expire, List<String> excludeFields, Class<T> clazz) throws Exception {
+	public static <T> boolean pagingSetList(Jedis jedis, String key, int pageSize, List<T> list, int expire, List<String> excludeFields, Class<T> clazz) throws Exception {
 		List<EntityField> entityFields = ClassHelper.getNonExcludedEntityFields(excludeFields, clazz);
 		return pagingSetList(jedis, key, pageSize, list, expire, entityFields);
 	}
@@ -236,7 +227,7 @@ public class RedisStringHelper extends RedisHelper {
 	 * @return {@code List<T>}
 	 * @throws Exception
 	 */
-	public <T> List<T> pagingGetList(Jedis jedis, String key, Class<T> clazz) throws Exception {
+	public static <T> List<T> pagingGetList(Jedis jedis, String key, Class<T> clazz) throws Exception {
 		int pagesCount = getPagesCount(jedis, key);
 
 		if (pagesCount < 1) {
@@ -274,7 +265,7 @@ public class RedisStringHelper extends RedisHelper {
 	 * @return boolean
 	 * @throws IOException
 	 */
-	public boolean pagingSetArrays(Jedis jedis, String key, String[][] arrays, int pageSize, int expire) throws IOException {
+	public static boolean pagingSetArrays(Jedis jedis, String key, String[][] arrays, int pageSize, int expire) throws IOException {
 		if (arrays == null || pageSize < 1) {
 			throw new IllegalArgumentException("Illegal parameters!");
 		}
@@ -304,7 +295,7 @@ public class RedisStringHelper extends RedisHelper {
 	 * @return String[][]
 	 * @throws IOException
 	 */
-	public String[][] pagingGetArrays(Jedis jedis, String key) throws IOException {
+	public static String[][] pagingGetArrays(Jedis jedis, String key) throws IOException {
 		int pagesCount = getPagesCount(jedis, key);
 
 		if (pagesCount < 1) {
@@ -339,7 +330,7 @@ public class RedisStringHelper extends RedisHelper {
 	 * @param expire: Expire time in seconds, 0 is permanent item.
 	 * @return boolean
 	 */
-	private boolean setPagesCount(Jedis jedis, String key, int count, int expire) {
+	private static boolean setPagesCount(Jedis jedis, String key, int count, int expire) {
 		if (count < 1) {
 			throw new IllegalArgumentException("Illegal parameters!");
 		}
@@ -354,7 +345,7 @@ public class RedisStringHelper extends RedisHelper {
 	 * @param key: Redis key.
 	 * @return int
 	 */
-	private int getPagesCount(Jedis jedis, String key) {
+	private static int getPagesCount(Jedis jedis, String key) {
 		String realKey = pagesCountKey(key);
 		return getInt(jedis, realKey);
 	}
@@ -364,7 +355,7 @@ public class RedisStringHelper extends RedisHelper {
 	 * @param key: Prefix key.
 	 * @return String
 	 */
-	private String pagesCountKey(String key) {
+	private static String pagesCountKey(String key) {
 		if (key == null) {
 			throw new IllegalArgumentException("Illegal parameter!");
 		}
@@ -378,7 +369,7 @@ public class RedisStringHelper extends RedisHelper {
 	 * @param pageIndex: Page index.
 	 * @return String
 	 */
-	private String pagingDataKey(String key, int pageIndex) {
+	private static String pagingDataKey(String key, int pageIndex) {
 		return String.format("%s:%d", key, pageIndex);
 	}
 }

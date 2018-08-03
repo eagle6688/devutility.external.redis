@@ -1,18 +1,22 @@
-package devutility.external.redis.utils;
+package devutility.external.redis.utils.pool;
 
 import java.util.Set;
 
 import devutility.external.redis.RedisHelperFactory;
+import devutility.external.redis.RedisInstanceUtils;
+import devutility.external.redis.models.ClusterRedisInstance;
 import devutility.external.redis.models.SentinelRedisInstance;
+import devutility.external.redis.utils.RedisBaseUtils;
 import devutility.internal.base.SingletonFactory;
 import devutility.internal.lang.StringHelper;
+import devutility.internal.security.SHA256Utils;
 import devutility.internal.util.CollectionUtils;
 
 import redis.clients.jedis.HostAndPort;
 import redis.clients.jedis.JedisPoolConfig;
 import redis.clients.jedis.JedisSentinelPool;
 
-public class JedisSentinelPoolUtil extends JedisBaseUtils {
+public class JedisSentinelPoolUtil extends RedisBaseUtils {
 	/**
 	 * Get a singleton JedisSentinelPool object.
 	 * @param redisInstance: SentinelRedisInstance object.
@@ -46,7 +50,7 @@ public class JedisSentinelPoolUtil extends JedisBaseUtils {
 	 */
 	public static JedisSentinelPool createJedisSentinelPool(SentinelRedisInstance redisInstance) {
 		JedisPoolConfig jedisPoolConfig = JedisPoolConfigUtil.jedisPoolConfig(redisInstance);
-		Set<HostAndPort> sentinels = hostAndPortSet(redisInstance.getNodes());
+		Set<HostAndPort> sentinels = RedisInstanceUtils.hostAndPortSet(redisInstance.getNodes());
 		Set<String> sentinelNodes = CollectionUtils.mapToSet(sentinels, i -> i.toString());
 
 		if (redisInstance.getConnectionTimeoutMillis() != 0 && redisInstance.getPassword() != null) {
@@ -62,5 +66,15 @@ public class JedisSentinelPoolUtil extends JedisBaseUtils {
 		}
 
 		return new JedisSentinelPool(redisInstance.getMasterName(), sentinelNodes, jedisPoolConfig);
+	}
+
+	/**
+	 * Get key use ClusterRedisInstance object.
+	 * @param redisInstance: ClusterRedisInstance object.
+	 * @return String
+	 */
+	private static String getKey(ClusterRedisInstance redisInstance) {
+		String value = SHA256Utils.encipherToHex(redisInstance.getNodes());
+		return String.format("%s.%s", JedisSentinelPoolUtil.class.getName(), value);
 	}
 }

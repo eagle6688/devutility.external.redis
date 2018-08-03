@@ -1,11 +1,12 @@
 package devutility.external.redis.helpers.single;
 
-import devutility.external.redis.helpers.RedisStringHelper;
+import devutility.external.redis.helpers.RedisHelper;
 import devutility.external.redis.models.SingleRedisInstance;
-import devutility.external.redis.utils.JedisPoolUtil;
+import devutility.external.redis.utils.RedisBaseUtils;
+import devutility.external.redis.utils.pool.JedisPoolUtil;
 import redis.clients.jedis.Jedis;
 
-public abstract class SingleRedisHelper extends RedisStringHelper {
+public abstract class SingleRedisHelper extends RedisHelper {
 	/**
 	 * RedisInstance object
 	 */
@@ -28,7 +29,7 @@ public abstract class SingleRedisHelper extends RedisStringHelper {
 	 */
 	public boolean expire(String key, int seconds) {
 		try (Jedis jedis = JedisPoolUtil.jedis(redisInstance)) {
-			return expire(jedis, key, seconds);
+			return RedisBaseUtils.expire(jedis, key, seconds);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
@@ -42,7 +43,7 @@ public abstract class SingleRedisHelper extends RedisStringHelper {
 	 */
 	public boolean remove(String key) {
 		try (Jedis jedis = JedisPoolUtil.jedis(redisInstance)) {
-			return remove(jedis, key);
+			return RedisBaseUtils.remove(jedis, key);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;

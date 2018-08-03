@@ -1,7 +1,7 @@
 package devutility.external.redis.utils.jedissentinelpoolutil;
 
 import devutility.external.redis.BaseTest;
-import devutility.external.redis.utils.JedisSentinelPoolUtil;
+import devutility.external.redis.utils.pool.JedisSentinelPoolUtil;
 import devutility.internal.test.TestExecutor;
 import redis.clients.jedis.HostAndPort;
 import redis.clients.jedis.JedisSentinelPool;

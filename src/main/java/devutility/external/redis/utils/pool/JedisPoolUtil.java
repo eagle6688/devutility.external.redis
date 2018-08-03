@@ -1,4 +1,4 @@
-package devutility.external.redis.utils;
+package devutility.external.redis.utils.pool;
 
 import devutility.external.redis.RedisHelperFactory;
 import devutility.external.redis.models.SingleRedisInstance;
@@ -9,7 +9,7 @@ import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 import redis.clients.jedis.exceptions.JedisConnectionException;
 
-public class JedisPoolUtil extends JedisBaseUtils {
+public class JedisPoolUtil {
 	/**
 	 * Get a singleton JedisPool object.
 	 * @param redisInstance: SingleRedisInstance object.
@@ -20,7 +20,7 @@ public class JedisPoolUtil extends JedisBaseUtils {
 			throw new IllegalArgumentException("Illegal parameter redisInstance!");
 		}
 
-		String key = getKey(redisInstance);
+		String key = String.format("%s.%s.%d", JedisPoolUtil.class.getName(), redisInstance.getHost(), redisInstance.getPort());
 		JedisPool jedisPool = SingletonFactory.get(key, JedisPool.class);
 
 		if (jedisPool != null) {

@@ -4,7 +4,8 @@ import java.io.IOException;
 import java.util.List;
 
 import devutility.external.redis.models.SingleRedisInstance;
-import devutility.external.redis.utils.JedisPoolUtil;
+import devutility.external.redis.utils.RedisStringUtils;
+import devutility.external.redis.utils.pool.JedisPoolUtil;
 import devutility.internal.lang.models.EntityField;
 
 import redis.clients.jedis.Jedis;
@@ -27,7 +28,7 @@ public class SingleRedisStringHelper extends SingleRedisHelper {
 	 */
 	public boolean set(String key, String value, int expire) {
 		try (Jedis jedis = JedisPoolUtil.jedis(redisInstance)) {
-			return set(jedis, key, value, expire);
+			return RedisStringUtils.set(jedis, key, value, expire);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
@@ -51,7 +52,7 @@ public class SingleRedisStringHelper extends SingleRedisHelper {
 	 */
 	public String get(String key) {
 		try (Jedis jedis = JedisPoolUtil.jedis(redisInstance)) {
-			return get(jedis, key);
+			return RedisStringUtils.get(jedis, key);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
@@ -67,7 +68,7 @@ public class SingleRedisStringHelper extends SingleRedisHelper {
 	 */
 	public boolean setInt(String key, int value, int expire) {
 		try (Jedis jedis = JedisPoolUtil.jedis(redisInstance)) {
-			return setInt(jedis, key, value, expire);
+			return RedisStringUtils.setInt(jedis, key, value, expire);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
@@ -91,7 +92,7 @@ public class SingleRedisStringHelper extends SingleRedisHelper {
 	 */
 	public int getInt(String key) {
 		try (Jedis jedis = JedisPoolUtil.jedis(redisInstance)) {
-			return getInt(jedis, key);
+			return RedisStringUtils.getInt(jedis, key);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return 0;
@@ -108,7 +109,7 @@ public class SingleRedisStringHelper extends SingleRedisHelper {
 	 */
 	public boolean setObject(String key, Object value, int expire) throws IOException {
 		try (Jedis jedis = JedisPoolUtil.jedis(redisInstance)) {
-			return setObject(jedis, key, value, expire);
+			return RedisStringUtils.setObject(jedis, key, value, expire);
 		} catch (IOException e) {
 			throw e;
 		}
@@ -134,7 +135,7 @@ public class SingleRedisStringHelper extends SingleRedisHelper {
 	 */
 	public <T> T getObject(String key, Class<T> clazz) throws IOException {
 		try (Jedis jedis = JedisPoolUtil.jedis(redisInstance)) {
-			return getObject(jedis, key, clazz);
+			return RedisStringUtils.getObject(jedis, key, clazz);
 		} catch (IOException e) {
 			throw e;
 		}
@@ -151,7 +152,7 @@ public class SingleRedisStringHelper extends SingleRedisHelper {
 	 */
 	public <T> boolean setList(String key, List<T> list, int expire, List<EntityField> entityFields) throws Exception {
 		try (Jedis jedis = JedisPoolUtil.jedis(redisInstance)) {
-			return setList(jedis, key, list, expire, entityFields);
+			return RedisStringUtils.setList(jedis, key, list, expire, entityFields);
 		} catch (Exception e) {
 			throw e;
 		}
@@ -169,7 +170,7 @@ public class SingleRedisStringHelper extends SingleRedisHelper {
 	 */
 	public <T> boolean setList(String key, List<T> list, int expire, List<String> excludeFields, Class<T> clazz) throws Exception {
 		try (Jedis jedis = JedisPoolUtil.jedis(redisInstance)) {
-			return setList(jedis, key, list, expire, excludeFields, clazz);
+			return RedisStringUtils.setList(jedis, key, list, expire, excludeFields, clazz);
 		} catch (Exception e) {
 			throw e;
 		}
@@ -184,7 +185,7 @@ public class SingleRedisStringHelper extends SingleRedisHelper {
 	 */
 	public <T> List<T> getList(String key, Class<T> clazz) throws Exception {
 		try (Jedis jedis = JedisPoolUtil.jedis(redisInstance)) {
-			return getList(jedis, key, clazz);
+			return RedisStringUtils.getList(jedis, key, clazz);
 		} catch (Exception e) {
 			throw e;
 		}
@@ -204,7 +205,7 @@ public class SingleRedisStringHelper extends SingleRedisHelper {
 	 */
 	public <T> boolean pagingSetList(String key, int pageSize, List<T> list, int expire, List<String> excludeFields, Class<T> clazz) throws Exception {
 		try (Jedis jedis = JedisPoolUtil.jedis(redisInstance)) {
-			return pagingSetList(jedis, key, pageSize, list, expire, excludeFields, clazz);
+			return RedisStringUtils.pagingSetList(jedis, key, pageSize, list, expire, excludeFields, clazz);
 		} catch (Exception e) {
 			throw e;
 		}
@@ -223,7 +224,7 @@ public class SingleRedisStringHelper extends SingleRedisHelper {
 	 */
 	public <T> boolean pagingSetList(String key, int pageSize, List<T> list, int expire, List<EntityField> entityFields) throws Exception {
 		try (Jedis jedis = JedisPoolUtil.jedis(redisInstance)) {
-			return pagingSetList(jedis, key, pageSize, list, expire, entityFields);
+			return RedisStringUtils.pagingSetList(jedis, key, pageSize, list, expire, entityFields);
 		} catch (Exception e) {
 			throw e;
 		}
@@ -238,7 +239,7 @@ public class SingleRedisStringHelper extends SingleRedisHelper {
 	 */
 	public <T> List<T> pagingGetList(String key, Class<T> clazz) throws Exception {
 		try (Jedis jedis = JedisPoolUtil.jedis(redisInstance)) {
-			return pagingGetList(jedis, key, clazz);
+			return RedisStringUtils.pagingGetList(jedis, key, clazz);
 		} catch (Exception e) {
 			throw e;
 		}
@@ -256,7 +257,7 @@ public class SingleRedisStringHelper extends SingleRedisHelper {
 	 */
 	public boolean pagingSetArrays(String key, String[][] arrays, int pageSize, int expire) throws IOException {
 		try (Jedis jedis = JedisPoolUtil.jedis(redisInstance)) {
-			return pagingSetArrays(jedis, key, arrays, pageSize, expire);
+			return RedisStringUtils.pagingSetArrays(jedis, key, arrays, pageSize, expire);
 		} catch (IOException e) {
 			throw e;
 		}
@@ -270,7 +271,7 @@ public class SingleRedisStringHelper extends SingleRedisHelper {
 	 */
 	public String[][] pagingGetArrays(String key) throws IOException {
 		try (Jedis jedis = JedisPoolUtil.jedis(redisInstance)) {
-			return pagingGetArrays(jedis, key);
+			return RedisStringUtils.pagingGetArrays(jedis, key);
 		} catch (IOException e) {
 			throw e;
 		}
