@@ -3,7 +3,7 @@ package devutility.external.redis.utils.pool;
 import devutility.external.redis.RedisHelperFactory;
 import devutility.external.redis.models.SingleRedisInstance;
 import devutility.internal.base.SingletonFactory;
-import devutility.internal.lang.StringHelper;
+import devutility.internal.lang.StringUtils;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
@@ -16,7 +16,7 @@ public class JedisPoolUtil {
 	 * @return JedisPool
 	 */
 	public static JedisPool jedisPool(SingleRedisInstance redisInstance) {
-		if (redisInstance == null || StringHelper.isNullOrEmpty(redisInstance.getHost())) {
+		if (redisInstance == null || StringUtils.isNullOrEmpty(redisInstance.getHost())) {
 			throw new IllegalArgumentException("Illegal parameter redisInstance!");
 		}
 

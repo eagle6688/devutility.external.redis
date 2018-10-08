@@ -1,6 +1,6 @@
 package devutility.external.redis.utils;
 
-import devutility.internal.lang.StringHelper;
+import devutility.internal.lang.StringUtils;
 import redis.clients.jedis.Jedis;
 
 public class RedisBaseUtils {
@@ -12,7 +12,7 @@ public class RedisBaseUtils {
 	 * @return boolean
 	 */
 	public static boolean expire(Jedis jedis, String key, int seconds) {
-		if (jedis == null || StringHelper.isNullOrEmpty(key)) {
+		if (jedis == null || StringUtils.isNullOrEmpty(key)) {
 			throw new IllegalArgumentException("Illegal parameters!");
 		}
 
@@ -26,7 +26,7 @@ public class RedisBaseUtils {
 	 * @return boolean
 	 */
 	public static boolean remove(Jedis jedis, String key) {
-		if (jedis == null || StringHelper.isNullOrEmpty(key)) {
+		if (jedis == null || StringUtils.isNullOrEmpty(key)) {
 			throw new IllegalArgumentException("Illegal parameters!");
 		}
 

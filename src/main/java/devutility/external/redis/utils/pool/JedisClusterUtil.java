@@ -6,7 +6,7 @@ import devutility.external.redis.RedisHelperFactory;
 import devutility.external.redis.RedisInstanceUtils;
 import devutility.external.redis.models.ClusterRedisInstance;
 import devutility.internal.base.SingletonFactory;
-import devutility.internal.lang.StringHelper;
+import devutility.internal.lang.StringUtils;
 import devutility.internal.security.SHA256Utils;
 import redis.clients.jedis.HostAndPort;
 import redis.clients.jedis.JedisCluster;
@@ -19,7 +19,7 @@ public class JedisClusterUtil {
 	 * @return JedisCluster
 	 */
 	public static JedisCluster jedisCluster(ClusterRedisInstance redisInstance) {
-		if (redisInstance == null || StringHelper.isNullOrEmpty(redisInstance.getNodes())) {
+		if (redisInstance == null || StringUtils.isNullOrEmpty(redisInstance.getNodes())) {
 			throw new IllegalArgumentException("Illegal parameter redisInstance!");
 		}
 

@@ -8,7 +8,7 @@ import devutility.external.redis.models.ClusterRedisInstance;
 import devutility.external.redis.models.SentinelRedisInstance;
 import devutility.external.redis.utils.RedisBaseUtils;
 import devutility.internal.base.SingletonFactory;
-import devutility.internal.lang.StringHelper;
+import devutility.internal.lang.StringUtils;
 import devutility.internal.security.SHA256Utils;
 import devutility.internal.util.CollectionUtils;
 
@@ -23,7 +23,7 @@ public class JedisSentinelPoolUtil extends RedisBaseUtils {
 	 * @return JedisSentinelPool
 	 */
 	public static JedisSentinelPool jedisSentinelPool(SentinelRedisInstance redisInstance) {
-		if (redisInstance == null || StringHelper.isNullOrEmpty(redisInstance.getNodes()) || StringHelper.isNullOrEmpty(redisInstance.getMasterName())) {
+		if (redisInstance == null || StringUtils.isNullOrEmpty(redisInstance.getNodes()) || StringUtils.isNullOrEmpty(redisInstance.getMasterName())) {
 			throw new IllegalArgumentException("Illegal parameter redisInstance!");
 		}
 

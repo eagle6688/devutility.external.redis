@@ -9,8 +9,8 @@ import devutility.external.redis.models.ClusterRedisInstance;
 import devutility.external.redis.models.RedisInstance;
 import devutility.external.redis.models.SentinelRedisInstance;
 import devutility.external.redis.models.SingleRedisInstance;
-import devutility.internal.lang.ClassHelper;
-import devutility.internal.lang.StringHelper;
+import devutility.internal.lang.ClassUtils;
+import devutility.internal.lang.StringUtils;
 import devutility.internal.util.PropertiesUtils;
 import redis.clients.jedis.HostAndPort;
 
@@ -57,7 +57,7 @@ public class RedisInstanceUtils {
 	 * @return {@code T}
 	 */
 	public static <T extends RedisInstance> T get(String propertiesFile, String prefix, Class<T> clazz) {
-		T instance = ClassHelper.instance(clazz);
+		T instance = ClassUtils.instance(clazz);
 		Properties properties = PropertiesUtils.getProperties(propertiesFile);
 
 		if (clazz.equals(RedisInstance.class)) {
@@ -151,7 +151,7 @@ public class RedisInstanceUtils {
 	 * @return Set<HostAndPort>
 	 */
 	public static Set<HostAndPort> hostAndPortSet(String nodes) {
-		if (StringHelper.isNullOrEmpty(nodes)) {
+		if (StringUtils.isNullOrEmpty(nodes)) {
 			throw new IllegalArgumentException("Nodes cannot be null!");
 		}
 
@@ -161,7 +161,7 @@ public class RedisInstanceUtils {
 		for (String server : servers) {
 			String[] array = server.split(":");
 
-			if (array.length != 2 || StringHelper.isNullOrEmpty(array[0])) {
+			if (array.length != 2 || StringUtils.isNullOrEmpty(array[0])) {
 				throw new IllegalArgumentException("Invalid nodes format! ");
 			}
 
