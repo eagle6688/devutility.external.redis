@@ -54,7 +54,7 @@ public class RedisInstanceUtils {
 	 * @param propertiesFile: Properties file.
 	 * @param prefix: Prefix of key.
 	 * @param clazz: Class object.
-	 * @return {@code T}
+	 * @return {@code: T}
 	 */
 	public static <T extends RedisInstance> T get(String propertiesFile, String prefix, Class<T> clazz) {
 		T instance = ClassUtils.instance(clazz);
@@ -148,7 +148,7 @@ public class RedisInstanceUtils {
 	/**
 	 * Get a set of HostAndPort by nodes.
 	 * @param nodes: Valid format as {server}:{port}[,{server}:{port}], this is a string value.
-	 * @return Set<HostAndPort>
+	 * @return {@code: Set<HostAndPort>}
 	 */
 	public static Set<HostAndPort> hostAndPortSet(String nodes) {
 		if (StringUtils.isNullOrEmpty(nodes)) {
