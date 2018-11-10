@@ -86,7 +86,6 @@
 			<version>2.9.7</version>
 			<scope>test</scope>
 		</dependency>
-
 		<dependency>
 			<groupId>com.github.eagle6688</groupId>
 			<artifactId>devutility.test.model</artifactId>
