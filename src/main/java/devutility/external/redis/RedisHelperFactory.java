@@ -14,4 +14,13 @@ public class RedisHelperFactory {
 		SingleRedisInstance redisInstance = RedisInstanceUtils.get(propertiesFile, prefix, SingleRedisInstance.class);
 		return new SingleRedisStringHelper(redisInstance);
 	}
+
+	/**
+	 * Create a RedisStringHelper object.
+	 * @param singleRedisInstance: SingleRedisInstance object.
+	 * @return SingleRedisStringHelper
+	 */
+	public static SingleRedisStringHelper singleRedisStringHelper(SingleRedisInstance singleRedisInstance) {
+		return new SingleRedisStringHelper(singleRedisInstance);
+	}
 }
