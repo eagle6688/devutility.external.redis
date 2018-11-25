@@ -68,7 +68,7 @@
 		<dependency>
 			<groupId>com.github.eagle6688</groupId>
 			<artifactId>devutility.internal</artifactId>
-			<version>1.2.1</version>
+			<version>1.2.5</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
