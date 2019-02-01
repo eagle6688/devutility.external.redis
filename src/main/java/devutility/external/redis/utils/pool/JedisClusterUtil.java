@@ -15,7 +15,7 @@ import redis.clients.jedis.JedisPoolConfig;
 public class JedisClusterUtil {
 	/**
 	 * Get a singleton JedisCluster object.
-	 * @param redisInstance: ClusterRedisInstance object.
+	 * @param redisInstance ClusterRedisInstance object.
 	 * @return JedisCluster
 	 */
 	public static JedisCluster jedisCluster(ClusterRedisInstance redisInstance) {
@@ -41,7 +41,7 @@ public class JedisClusterUtil {
 
 	/**
 	 * Create a JedisCluster object.
-	 * @param redisInstance: ClusterRedisInstance object.
+	 * @param redisInstance ClusterRedisInstance object.
 	 * @return JedisCluster
 	 */
 	public static JedisCluster createJedisCluster(ClusterRedisInstance redisInstance) {
@@ -57,7 +57,7 @@ public class JedisClusterUtil {
 
 	/**
 	 * Get key use ClusterRedisInstance object.
-	 * @param redisInstance: ClusterRedisInstance object.
+	 * @param redisInstance ClusterRedisInstance object.
 	 * @return String
 	 */
 	private static String getKey(ClusterRedisInstance redisInstance) {

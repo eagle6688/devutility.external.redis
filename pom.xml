@@ -2,10 +2,10 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.github.eagle6688</groupId>
 	<artifactId>devutility.external.redis</artifactId>
-	<version>2.9.0.8</version>
+	<version>3.0.1</version>
 	<packaging>jar</packaging>
 	<name>devutility.external.redis</name>
-	<description>Some utilities for Jedis version 2.9.*</description>
+	<description>Some utilities for Jedis version 3.*</description>
 	<url>https://github.com/eagle6688/devutility.external.redis</url>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -59,7 +59,7 @@
 		<dependency>
 			<groupId>redis.clients</groupId>
 			<artifactId>jedis</artifactId>
-			<version>2.9.0</version>
+			<version>3.0.1</version>
 			<scope>provided</scope>
 		</dependency>
 		<!-- Redis end -->

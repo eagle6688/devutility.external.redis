@@ -19,7 +19,7 @@ import redis.clients.jedis.JedisSentinelPool;
 public class JedisSentinelPoolUtil extends RedisBaseUtils {
 	/**
 	 * Get a singleton JedisSentinelPool object.
-	 * @param redisInstance: SentinelRedisInstance object.
+	 * @param redisInstance SentinelRedisInstance object.
 	 * @return JedisSentinelPool
 	 */
 	public static JedisSentinelPool jedisSentinelPool(SentinelRedisInstance redisInstance) {
@@ -45,7 +45,7 @@ public class JedisSentinelPoolUtil extends RedisBaseUtils {
 
 	/**
 	 * Create a JedisSentinelPool object.
-	 * @param redisInstance: RedisInstance object.
+	 * @param redisInstance RedisInstance object.
 	 * @return JedisSentinelPool
 	 */
 	public static JedisSentinelPool createJedisSentinelPool(SentinelRedisInstance redisInstance) {
@@ -70,7 +70,7 @@ public class JedisSentinelPoolUtil extends RedisBaseUtils {
 
 	/**
 	 * Get key use ClusterRedisInstance object.
-	 * @param redisInstance: ClusterRedisInstance object.
+	 * @param redisInstance ClusterRedisInstance object.
 	 * @return String
 	 */
 	private static String getKey(ClusterRedisInstance redisInstance) {

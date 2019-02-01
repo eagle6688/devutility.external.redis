@@ -12,7 +12,7 @@ import redis.clients.jedis.exceptions.JedisConnectionException;
 public class JedisPoolUtil {
 	/**
 	 * Get a singleton JedisPool object.
-	 * @param redisInstance: SingleRedisInstance object.
+	 * @param redisInstance SingleRedisInstance object.
 	 * @return JedisPool
 	 */
 	public static JedisPool jedisPool(SingleRedisInstance redisInstance) {
@@ -38,7 +38,7 @@ public class JedisPoolUtil {
 
 	/**
 	 * Create a JedisPool object.
-	 * @param redisInstance: SingleRedisInstance object.
+	 * @param redisInstance SingleRedisInstance object.
 	 * @return JedisPool
 	 */
 	public static JedisPool createJedisPool(SingleRedisInstance redisInstance) {
@@ -61,7 +61,7 @@ public class JedisPoolUtil {
 
 	/**
 	 * Create a Jedis instance.
-	 * @param redisInstance: SingleRedisInstance object
+	 * @param redisInstance SingleRedisInstance object
 	 * @return Jedis
 	 */
 	public static Jedis jedis(SingleRedisInstance redisInstance) {

@@ -6,7 +6,7 @@ import redis.clients.jedis.JedisPoolConfig;
 public class JedisPoolConfigUtil {
 	/**
 	 * Create a JedisPoolConfig object by RedisInstance
-	 * @param redisInstance: RedisInstance object
+	 * @param redisInstance RedisInstance object
 	 * @return JedisPoolConfig
 	 */
 	public static JedisPoolConfig jedisPoolConfig(RedisInstance redisInstance) {

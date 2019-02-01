@@ -20,10 +20,10 @@ import redis.clients.jedis.Jedis;
 public class RedisStringUtils extends RedisBaseUtils {
 	/**
 	 * Set string value.
-	 * @param jedis: Jedis object.
-	 * @param key: Redis key.
-	 * @param value: String value.
-	 * @param expire: Expire time in seconds, 0 is permanent item.
+	 * @param jedis Jedis object.
+	 * @param key Redis key.
+	 * @param value String value.
+	 * @param expire Expire time in seconds, 0 is permanent item.
 	 * @return boolean
 	 */
 	public static boolean set(Jedis jedis, String key, String value, int expire) {
@@ -46,8 +46,8 @@ public class RedisStringUtils extends RedisBaseUtils {
 
 	/**
 	 * Get string value.
-	 * @param jedis: Jedis object.
-	 * @param key: Redis key.
+	 * @param jedis Jedis object.
+	 * @param key Redis key.
 	 * @return String
 	 */
 	public static String get(Jedis jedis, String key) {
@@ -60,10 +60,10 @@ public class RedisStringUtils extends RedisBaseUtils {
 
 	/**
 	 * Set int value.
-	 * @param jedis: Jedis object.
-	 * @param key: Redis key.
-	 * @param value: Int value.
-	 * @param expire: Expire time in seconds, 0 is permanent item.
+	 * @param jedis Jedis object.
+	 * @param key Redis key.
+	 * @param value Int value.
+	 * @param expire Expire time in seconds, 0 is permanent item.
 	 * @return boolean
 	 */
 	public static boolean setInt(Jedis jedis, String key, int value, int expire) {
@@ -72,8 +72,8 @@ public class RedisStringUtils extends RedisBaseUtils {
 
 	/**
 	 * Get int value.
-	 * @param jedis: Jedis object.
-	 * @param key: Redis key.
+	 * @param jedis Jedis object.
+	 * @param key Redis key.
 	 * @return int
 	 */
 	public static int getInt(Jedis jedis, String key) {
@@ -88,10 +88,10 @@ public class RedisStringUtils extends RedisBaseUtils {
 
 	/**
 	 * Set Object value. Convert object value to string format and compress it.
-	 * @param jedis: Jedis object.
-	 * @param key: Redis key.
-	 * @param value: Object value.
-	 * @param expire: Expire time in seconds, 0 is permanent item.
+	 * @param jedis Jedis object.
+	 * @param key Redis key.
+	 * @param value Object value.
+	 * @param expire Expire time in seconds, 0 is permanent item.
 	 * @return boolean
 	 * @throws IOException
 	 */
@@ -106,9 +106,9 @@ public class RedisStringUtils extends RedisBaseUtils {
 
 	/**
 	 * Get Object value. Convert object value to string format and compress it.
-	 * @param jedis: Jedis object.
-	 * @param key: Redis key.
-	 * @param clazz: Class object.
+	 * @param jedis Jedis object.
+	 * @param key Redis key.
+	 * @param clazz Class object.
 	 * @return {@code T}
 	 * @throws IOException
 	 */
@@ -124,11 +124,11 @@ public class RedisStringUtils extends RedisBaseUtils {
 
 	/**
 	 * Set list data. Treat list as a single object, convert it to string format and compress it.
-	 * @param jedis: Jedis object.
-	 * @param key: Redis key.
-	 * @param list: List data.
-	 * @param expire: Expire time in seconds, 0 is permanent item.
-	 * @param entityFields: EntityField list for {@code T}.
+	 * @param jedis Jedis object.
+	 * @param key Redis key.
+	 * @param list List data.
+	 * @param expire Expire time in seconds, 0 is permanent item.
+	 * @param entityFields EntityField list for {@code T}.
 	 * @return boolean
 	 * @throws Exception
 	 */
@@ -139,12 +139,12 @@ public class RedisStringUtils extends RedisBaseUtils {
 
 	/**
 	 * Set list data. Treat list as a single object, convert it to string format and compress it.
-	 * @param jedis: Jedis object.
-	 * @param key: Redis key.
-	 * @param list: List data.
-	 * @param excludeFields: Exclude fields in Class {@code T}.
-	 * @param expire: Expire time in seconds, 0 is permanent item.
-	 * @param clazz: Class object.
+	 * @param jedis Jedis object.
+	 * @param key Redis key.
+	 * @param list List data.
+	 * @param excludeFields Exclude fields in Class {@code T}.
+	 * @param expire Expire time in seconds, 0 is permanent item.
+	 * @param clazz Class object.
 	 * @return boolean
 	 * @throws Exception
 	 */
@@ -155,9 +155,9 @@ public class RedisStringUtils extends RedisBaseUtils {
 
 	/**
 	 * Get list data from Redis. Treat list as a single object, convert it to string format and compress it.
-	 * @param jedis: Jedis object.
-	 * @param key: Redis key.
-	 * @param clazz: Class object.
+	 * @param jedis Jedis object.
+	 * @param key Redis key.
+	 * @param clazz Class object.
 	 * @return {@code List<T>}
 	 * @throws Exception
 	 */
@@ -169,12 +169,12 @@ public class RedisStringUtils extends RedisBaseUtils {
 	/**
 	 * Paging set list data. Separate list data to several page data accoding to the specified page size. We treat each page
 	 * data as a sigle object and use setList method to save them.
-	 * @param jedis: Jedis object.
-	 * @param key: Redis key.
-	 * @param pageSize: Page size.
-	 * @param list: List data.
-	 * @param expire: Expire time in seconds, 0 is permanent item.
-	 * @param entityFields: EntityField list for {@code T}.
+	 * @param jedis Jedis object.
+	 * @param key Redis key.
+	 * @param pageSize Page size.
+	 * @param list List data.
+	 * @param expire Expire time in seconds, 0 is permanent item.
+	 * @param entityFields EntityField list for {@code T}.
 	 * @return boolean
 	 * @throws Exception
 	 */
@@ -204,13 +204,13 @@ public class RedisStringUtils extends RedisBaseUtils {
 	/**
 	 * Paging set list data. Separate list data to several page data accoding to the specified page size. We treat each page
 	 * data as a sigle object and use setList method to save them.
-	 * @param jedis: Jedis object.
-	 * @param key: Redis key.
-	 * @param pageSize: Page size.
-	 * @param list: List data.
-	 * @param expire: Expire time in seconds, 0 is permanent item.
-	 * @param excludeFields: Exclude fields in Class {@code T}.
-	 * @param clazz: Class object.
+	 * @param jedis Jedis object.
+	 * @param key Redis key.
+	 * @param pageSize Page size.
+	 * @param list List data.
+	 * @param expire Expire time in seconds, 0 is permanent item.
+	 * @param excludeFields Exclude fields in Class {@code T}.
+	 * @param clazz Class object.
 	 * @return boolean
 	 * @throws Exception
 	 */
@@ -221,9 +221,9 @@ public class RedisStringUtils extends RedisBaseUtils {
 
 	/**
 	 * Get paging list data.
-	 * @param jedis: Jedis object.
-	 * @param key: Redis key.
-	 * @param clazz: Class object.
+	 * @param jedis Jedis object.
+	 * @param key Redis key.
+	 * @param clazz Class object.
 	 * @return {@code List<T>}
 	 * @throws Exception
 	 */
@@ -257,11 +257,11 @@ public class RedisStringUtils extends RedisBaseUtils {
 	/**
 	 * Paging set arrays data. Separate arrays data to several arrays data accoding to the specified page size. We treat
 	 * each page data as a sigle object and use setList method to save them.
-	 * @param jedis: Jedis object.
-	 * @param key: Redis key.
-	 * @param arrays: Arrays data.
-	 * @param pageSize: Page size.
-	 * @param expire: Expire time in seconds, 0 is permanent item.
+	 * @param jedis Jedis object.
+	 * @param key Redis key.
+	 * @param arrays Arrays data.
+	 * @param pageSize Page size.
+	 * @param expire Expire time in seconds, 0 is permanent item.
 	 * @return boolean
 	 * @throws IOException
 	 */
@@ -290,8 +290,8 @@ public class RedisStringUtils extends RedisBaseUtils {
 
 	/**
 	 * Get paging arrays data.
-	 * @param jedis: Jedis object.
-	 * @param key: Redis key.
+	 * @param jedis Jedis object.
+	 * @param key Redis key.
 	 * @return String[][]
 	 * @throws IOException
 	 */
@@ -324,10 +324,10 @@ public class RedisStringUtils extends RedisBaseUtils {
 
 	/**
 	 * Set pages count.
-	 * @param jedis: Jedis object.
-	 * @param key: Redis key.
-	 * @param count: Pages count.
-	 * @param expire: Expire time in seconds, 0 is permanent item.
+	 * @param jedis Jedis object.
+	 * @param key Redis key.
+	 * @param count Pages count.
+	 * @param expire Expire time in seconds, 0 is permanent item.
 	 * @return boolean
 	 */
 	private static boolean setPagesCount(Jedis jedis, String key, int count, int expire) {
@@ -341,8 +341,8 @@ public class RedisStringUtils extends RedisBaseUtils {
 
 	/**
 	 * Get pages count.
-	 * @param jedis: Jedis object.
-	 * @param key: Redis key.
+	 * @param jedis Jedis object.
+	 * @param key Redis key.
 	 * @return int
 	 */
 	private static int getPagesCount(Jedis jedis, String key) {
@@ -352,7 +352,7 @@ public class RedisStringUtils extends RedisBaseUtils {
 
 	/**
 	 * Key of data pages count.
-	 * @param key: Prefix key.
+	 * @param key Prefix key.
 	 * @return String
 	 */
 	private static String pagesCountKey(String key) {
@@ -365,8 +365,8 @@ public class RedisStringUtils extends RedisBaseUtils {
 
 	/**
 	 * Get key of paging data.
-	 * @param key: Prefix key.
-	 * @param pageIndex: Page index.
+	 * @param key Prefix key.
+	 * @param pageIndex Page index.
 	 * @return String
 	 */
 	private static String pagingDataKey(String key, int pageIndex) {
