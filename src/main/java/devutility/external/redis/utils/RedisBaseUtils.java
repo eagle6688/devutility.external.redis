@@ -3,6 +3,7 @@ package devutility.external.redis.utils;
 import java.util.Set;
 
 import devutility.internal.lang.StringUtils;
+import devutility.internal.util.CollectionUtils;
 import redis.clients.jedis.Jedis;
 
 public class RedisBaseUtils {
@@ -47,6 +48,11 @@ public class RedisBaseUtils {
 		}
 
 		Set<String> keys = jedis.keys(pattern);
+
+		if (CollectionUtils.isNullOrEmpty(keys)) {
+			return false;
+		}
+
 		return jedis.del(keys.toArray(new String[0])) == keys.size();
 	}
 }
