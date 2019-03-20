@@ -12,8 +12,7 @@ public class RedisInstance {
 	private int database = 0;
 
 	/**
-	 * Max count of connections for redis, -1 is not limitation, default value is
-	 * 8.
+	 * Max count of connections for redis, -1 is not limitation, default value is 8.
 	 */
 	private int maxConnections;
 

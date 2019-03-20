@@ -1,7 +1,15 @@
 package devutility.external.redis.com;
 
 public enum StatusCode {
-	OK("OK"), MULTIOK("+OK");
+	/**
+	 * Successful operation.
+	 */
+	OK("OK"),
+
+	/**
+	 * Successful operations.
+	 */
+	MULTIOK("+OK");
 	private String value;
 
 	StatusCode(String value) {
