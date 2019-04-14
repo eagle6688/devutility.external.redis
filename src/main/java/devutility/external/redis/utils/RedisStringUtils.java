@@ -162,8 +162,21 @@ public class RedisStringUtils extends BaseRedisUtils {
 	 * @throws Exception
 	 */
 	public static <T> List<T> getList(Jedis jedis, String key, Class<T> clazz) throws Exception {
+		return getList(jedis, key, ClassUtils.getEntityFields(clazz), clazz);
+	}
+
+	/**
+	 * Get list data from Redis. Treat list as a single object, convert it to string format and compress it.
+	 * @param jedis Jedis object.
+	 * @param key Redis key.
+	 * @param entityFields EntityField list.
+	 * @param clazz Class object.
+	 * @return {@code List<T>}
+	 * @throws Exception From getObject and ListUtils.toEntities.
+	 */
+	public static <T> List<T> getList(Jedis jedis, String key, List<EntityField> entityFields, Class<T> clazz) throws Exception {
 		String[][] arrays = getObject(jedis, key, String[][].class);
-		return ListUtils.toEntities(arrays, clazz);
+		return ListUtils.toEntities(arrays, clazz, entityFields);
 	}
 
 	/**
@@ -241,10 +254,11 @@ public class RedisStringUtils extends BaseRedisUtils {
 		}
 
 		List<T> list = new LinkedList<>();
+		List<EntityField> entityFields = ClassUtils.getEntityFields(clazz);
 
 		for (int index = 0; index < pagesCount; index++) {
 			String pageKey = pagingDataKey(key, index);
-			List<T> pageData = getList(jedis, pageKey, clazz);
+			List<T> pageData = getList(jedis, pageKey, entityFields, clazz);
 
 			if (pageData != null) {
 				list.addAll(pageData);
