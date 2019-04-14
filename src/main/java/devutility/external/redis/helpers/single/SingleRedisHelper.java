@@ -2,7 +2,7 @@ package devutility.external.redis.helpers.single;
 
 import devutility.external.redis.helpers.RedisHelper;
 import devutility.external.redis.models.SingleRedisInstance;
-import devutility.external.redis.utils.RedisBaseUtils;
+import devutility.external.redis.utils.BaseRedisUtils;
 import devutility.external.redis.utils.pool.JedisPoolUtil;
 import redis.clients.jedis.Jedis;
 
@@ -29,7 +29,7 @@ public abstract class SingleRedisHelper extends RedisHelper {
 	 */
 	public boolean expire(String key, int seconds) {
 		try (Jedis jedis = JedisPoolUtil.jedis(redisInstance)) {
-			return RedisBaseUtils.expire(jedis, key, seconds);
+			return BaseRedisUtils.expire(jedis, key, seconds);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
@@ -43,7 +43,7 @@ public abstract class SingleRedisHelper extends RedisHelper {
 	 */
 	public boolean remove(String key) {
 		try (Jedis jedis = JedisPoolUtil.jedis(redisInstance)) {
-			return RedisBaseUtils.remove(jedis, key);
+			return BaseRedisUtils.remove(jedis, key);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;

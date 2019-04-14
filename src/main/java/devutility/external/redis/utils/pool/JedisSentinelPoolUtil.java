@@ -4,19 +4,17 @@ import java.util.Set;
 
 import devutility.external.redis.RedisHelperFactory;
 import devutility.external.redis.RedisInstanceUtils;
-import devutility.external.redis.models.ClusterRedisInstance;
 import devutility.external.redis.models.SentinelRedisInstance;
-import devutility.external.redis.utils.RedisBaseUtils;
+import devutility.external.redis.utils.BaseRedisUtils;
 import devutility.internal.base.SingletonFactory;
 import devutility.internal.lang.StringUtils;
-import devutility.internal.security.Sha256Utils;
 import devutility.internal.util.CollectionUtils;
 
 import redis.clients.jedis.HostAndPort;
 import redis.clients.jedis.JedisPoolConfig;
 import redis.clients.jedis.JedisSentinelPool;
 
-public class JedisSentinelPoolUtil extends RedisBaseUtils {
+public class JedisSentinelPoolUtil extends BaseRedisUtils {
 	/**
 	 * Get a singleton JedisSentinelPool object.
 	 * @param redisInstance SentinelRedisInstance object.
@@ -27,7 +25,7 @@ public class JedisSentinelPoolUtil extends RedisBaseUtils {
 			throw new IllegalArgumentException("Illegal parameter redisInstance!");
 		}
 
-		String key = getKey(redisInstance);
+		String key = getCacheKeyForClusterRedis(redisInstance);
 		JedisSentinelPool jedisSentinelPool = SingletonFactory.get(key, JedisSentinelPool.class);
 
 		if (jedisSentinelPool != null) {
@@ -66,15 +64,5 @@ public class JedisSentinelPoolUtil extends RedisBaseUtils {
 		}
 
 		return new JedisSentinelPool(redisInstance.getMasterName(), sentinelNodes, jedisPoolConfig);
-	}
-
-	/**
-	 * Get key use ClusterRedisInstance object.
-	 * @param redisInstance ClusterRedisInstance object.
-	 * @return String
-	 */
-	private static String getKey(ClusterRedisInstance redisInstance) {
-		String value = Sha256Utils.encipherToHex(redisInstance.getNodes());
-		return String.format("%s.%s", JedisSentinelPoolUtil.class.getName(), value);
 	}
 }

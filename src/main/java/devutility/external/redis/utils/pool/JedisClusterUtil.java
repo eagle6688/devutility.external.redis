@@ -5,14 +5,14 @@ import java.util.Set;
 import devutility.external.redis.RedisHelperFactory;
 import devutility.external.redis.RedisInstanceUtils;
 import devutility.external.redis.models.ClusterRedisInstance;
+import devutility.external.redis.utils.BaseRedisUtils;
 import devutility.internal.base.SingletonFactory;
 import devutility.internal.lang.StringUtils;
-import devutility.internal.security.Sha256Utils;
 import redis.clients.jedis.HostAndPort;
 import redis.clients.jedis.JedisCluster;
 import redis.clients.jedis.JedisPoolConfig;
 
-public class JedisClusterUtil {
+public class JedisClusterUtil extends BaseRedisUtils {
 	/**
 	 * Get a singleton JedisCluster object.
 	 * @param redisInstance ClusterRedisInstance object.
@@ -23,7 +23,7 @@ public class JedisClusterUtil {
 			throw new IllegalArgumentException("Illegal parameter redisInstance!");
 		}
 
-		String key = getKey(redisInstance);
+		String key = getCacheKeyForClusterRedis(redisInstance);
 		JedisCluster jedisCluster = SingletonFactory.get(key, JedisCluster.class);
 
 		if (jedisCluster != null) {
@@ -53,15 +53,5 @@ public class JedisClusterUtil {
 		}
 
 		return new JedisCluster(clusterNodes, jedisPoolConfig);
-	}
-
-	/**
-	 * Get key use ClusterRedisInstance object.
-	 * @param redisInstance ClusterRedisInstance object.
-	 * @return String
-	 */
-	private static String getKey(ClusterRedisInstance redisInstance) {
-		String value = Sha256Utils.encipherToHex(redisInstance.getNodes());
-		return String.format("%s.%s", JedisClusterUtil.class.getName(), value);
 	}
 }

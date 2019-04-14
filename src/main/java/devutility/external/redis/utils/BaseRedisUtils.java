@@ -3,13 +3,12 @@ package devutility.external.redis.utils;
 import java.util.Set;
 
 import devutility.external.redis.models.ClusterRedisInstance;
-import devutility.external.redis.utils.pool.JedisSentinelPoolUtil;
 import devutility.internal.lang.StringUtils;
 import devutility.internal.security.Sha256Utils;
 import devutility.internal.util.CollectionUtils;
 import redis.clients.jedis.Jedis;
 
-public class RedisBaseUtils {
+public abstract class BaseRedisUtils {
 	/**
 	 * Set expired time for the item with the specified key.
 	 * @param jedis Jedis object.
@@ -60,11 +59,11 @@ public class RedisBaseUtils {
 	}
 
 	/**
-	 * getKeyForClusterRedis
-	 * @param redisInstance
+	 * Get cache key for ClusterRedisInstance object.
+	 * @param redisInstance ClusterRedisInstance object.
 	 * @return String
 	 */
-	protected static String getKeyForClusterRedis(ClusterRedisInstance redisInstance) {
+	protected static String getCacheKeyForClusterRedis(ClusterRedisInstance redisInstance) {
 		String value = Sha256Utils.encipherToHex(redisInstance.getNodes());
 		return String.format("%s.%s", redisInstance.getClass().getName(), value);
 	}
