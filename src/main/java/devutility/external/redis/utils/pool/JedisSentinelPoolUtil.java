@@ -9,7 +9,7 @@ import devutility.external.redis.models.SentinelRedisInstance;
 import devutility.external.redis.utils.RedisBaseUtils;
 import devutility.internal.base.SingletonFactory;
 import devutility.internal.lang.StringUtils;
-import devutility.internal.security.SHA256Utils;
+import devutility.internal.security.Sha256Utils;
 import devutility.internal.util.CollectionUtils;
 
 import redis.clients.jedis.HostAndPort;
@@ -74,7 +74,7 @@ public class JedisSentinelPoolUtil extends RedisBaseUtils {
 	 * @return String
 	 */
 	private static String getKey(ClusterRedisInstance redisInstance) {
-		String value = SHA256Utils.encipherToHex(redisInstance.getNodes());
+		String value = Sha256Utils.encipherToHex(redisInstance.getNodes());
 		return String.format("%s.%s", JedisSentinelPoolUtil.class.getName(), value);
 	}
 }

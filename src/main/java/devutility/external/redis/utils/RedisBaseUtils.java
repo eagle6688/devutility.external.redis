@@ -2,7 +2,10 @@ package devutility.external.redis.utils;
 
 import java.util.Set;
 
+import devutility.external.redis.models.ClusterRedisInstance;
+import devutility.external.redis.utils.pool.JedisSentinelPoolUtil;
 import devutility.internal.lang.StringUtils;
+import devutility.internal.security.Sha256Utils;
 import devutility.internal.util.CollectionUtils;
 import redis.clients.jedis.Jedis;
 
@@ -54,5 +57,15 @@ public class RedisBaseUtils {
 		}
 
 		return jedis.del(keys.toArray(new String[0])) == keys.size();
+	}
+
+	/**
+	 * getKeyForClusterRedis
+	 * @param redisInstance
+	 * @return String
+	 */
+	protected static String getKeyForClusterRedis(ClusterRedisInstance redisInstance) {
+		String value = Sha256Utils.encipherToHex(redisInstance.getNodes());
+		return String.format("%s.%s", redisInstance.getClass().getName(), value);
 	}
 }
