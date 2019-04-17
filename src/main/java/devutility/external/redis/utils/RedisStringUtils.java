@@ -7,7 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import devutility.external.json.CompressUtils;
-import devutility.external.redis.com.StatusCodeUtils;
+import devutility.external.redis.com.StatusCode;
 import devutility.internal.data.SearchUtils;
 import devutility.internal.lang.ClassUtils;
 import devutility.internal.lang.StringUtils;
@@ -33,7 +33,7 @@ public class RedisStringUtils extends BaseRedisUtils {
 
 		String status = jedis.set(key, value);
 
-		if (!StatusCodeUtils.isSetOk(status)) {
+		if (!StatusCode.isSetOk(status)) {
 			return false;
 		}
 

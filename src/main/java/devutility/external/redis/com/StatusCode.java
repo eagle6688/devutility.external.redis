@@ -10,6 +10,7 @@ public enum StatusCode {
 	 * Successful operations.
 	 */
 	MULTIOK("+OK");
+
 	private String value;
 
 	StatusCode(String value) {
@@ -18,5 +19,14 @@ public enum StatusCode {
 
 	public String getValue() {
 		return value;
+	}
+
+	/**
+	 * Is set Ok or not.
+	 * @param status: Jedis status.
+	 * @return boolean
+	 */
+	public static boolean isSetOk(String status) {
+		return StatusCode.OK.getValue().equals(status) || StatusCode.MULTIOK.getValue().equals(status);
 	}
 }
