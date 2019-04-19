@@ -2,9 +2,8 @@ package devutility.external.redis.helpers.single.singleredisstringhelper;
 
 import java.util.List;
 
-import com.devutility.test.json.User;
-
 import devutility.external.redis.BaseTest;
+import devutility.external.redis.model.User;
 import devutility.internal.test.TestExecutor;
 
 public class PagingSetListTest extends BaseTest {
