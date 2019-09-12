@@ -149,7 +149,7 @@ public class RedisStringUtils extends BaseRedisUtils {
 	 * @throws Exception
 	 */
 	public static <T> boolean setList(Jedis jedis, String key, List<T> list, int expire, List<String> excludeFields, Class<T> clazz) throws Exception {
-		List<EntityField> entityFields = ClassUtils.getNonExcludedEntityFields(excludeFields, clazz);
+		List<EntityField> entityFields = ClassUtils.getSortedAndNonExcludedEntityFields(excludeFields, clazz);
 		return setList(jedis, key, list, expire, entityFields);
 	}
 
@@ -162,7 +162,7 @@ public class RedisStringUtils extends BaseRedisUtils {
 	 * @throws Exception
 	 */
 	public static <T> List<T> getList(Jedis jedis, String key, Class<T> clazz) throws Exception {
-		return getList(jedis, key, ClassUtils.getEntityFields(clazz), clazz);
+		return getList(jedis, key, ClassUtils.getSortedEntityFields(clazz), clazz);
 	}
 
 	/**
@@ -228,7 +228,7 @@ public class RedisStringUtils extends BaseRedisUtils {
 	 * @throws Exception
 	 */
 	public static <T> boolean pagingSetList(Jedis jedis, String key, int pageSize, List<T> list, int expire, List<String> excludeFields, Class<T> clazz) throws Exception {
-		List<EntityField> entityFields = ClassUtils.getNonExcludedEntityFields(excludeFields, clazz);
+		List<EntityField> entityFields = ClassUtils.getSortedAndNonExcludedEntityFields(excludeFields, clazz);
 		return pagingSetList(jedis, key, pageSize, list, expire, entityFields);
 	}
 
@@ -254,7 +254,7 @@ public class RedisStringUtils extends BaseRedisUtils {
 		}
 
 		List<T> list = new LinkedList<>();
-		List<EntityField> entityFields = ClassUtils.getEntityFields(clazz);
+		List<EntityField> entityFields = ClassUtils.getSortedEntityFields(clazz);
 
 		for (int index = 0; index < pagesCount; index++) {
 			String pageKey = pagingDataKey(key, index);

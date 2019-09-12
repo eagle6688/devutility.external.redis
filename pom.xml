@@ -3,10 +3,10 @@
 	<parent>
 		<groupId>com.github.eagle6688</groupId>
 		<artifactId>devutility.external</artifactId>
-		<version>1.1.0</version>
+		<version>1.1.6</version>
 	</parent>
 	<artifactId>devutility.external.redis</artifactId>
-	<version>3.0.5</version>
+	<version>3.0.6</version>
 	<packaging>jar</packaging>
 	<description>Some utilities for Jedis version 3.*</description>
 	<url>https://github.com/eagle6688/devutility.external.redis</url>
@@ -62,7 +62,7 @@
 		<dependency>
 			<groupId>redis.clients</groupId>
 			<artifactId>jedis</artifactId>
-			<version>3.0.1</version>
+			<version>3.1.0</version>
 			<scope>provided</scope>
 		</dependency>
 		<!-- Redis end -->
