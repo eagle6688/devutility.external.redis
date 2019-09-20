@@ -3,10 +3,10 @@
 	<parent>
 		<groupId>com.github.eagle6688</groupId>
 		<artifactId>devutility.external</artifactId>
-		<version>1.1.6</version>
+		<version>1.1.7</version>
 	</parent>
 	<artifactId>devutility.external.redis</artifactId>
-	<version>3.0.6</version>
+	<version>3.0.7</version>
 	<packaging>jar</packaging>
 	<description>Some utilities for Jedis version 3.*</description>
 	<url>https://github.com/eagle6688/devutility.external.redis</url>

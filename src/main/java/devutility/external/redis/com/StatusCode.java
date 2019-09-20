@@ -1,5 +1,12 @@
 package devutility.external.redis.com;
 
+/**
+ * 
+ * StatusCode
+ * 
+ * @author: Aldwin Su
+ * @version: 2019-09-20 16:33:58
+ */
 public enum StatusCode {
 	/**
 	 * Successful operation.
@@ -23,7 +30,7 @@ public enum StatusCode {
 
 	/**
 	 * Is set Ok or not.
-	 * @param status: Jedis status.
+	 * @param status Jedis status.
 	 * @return boolean
 	 */
 	public static boolean isSetOk(String status) {
