@@ -12,6 +12,6 @@ import devutility.external.redis.queue.ConsumerEvent;
 public class ConsumerHandler implements ConsumerEvent {
 	@Override
 	public void onMessage(String topic, String message) {
-		System.out.println(String.format("Triggering onMessage event, topic:\"%s\", message: \"%s\"", topic, message));
+		System.out.println(String.format("%s Triggering onMessage event, topic:\"%s\", message: \"%s\"", Thread.currentThread().getName(), topic, message));
 	}
 }
