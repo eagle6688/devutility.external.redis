@@ -17,7 +17,7 @@ import redis.clients.jedis.Jedis;
  * @author: Aldwin Su
  * @version: 2019-09-20 17:12:56
  */
-public class JedisP2PQueueConsumer extends JedisQueueConsumer {
+class JedisP2PQueueConsumer extends JedisQueueConsumer {
 	/**
 	 * Jedis object to read data from Redis.
 	 */

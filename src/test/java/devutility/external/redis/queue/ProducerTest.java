@@ -12,7 +12,7 @@ import redis.clients.jedis.Jedis;
  * @version: 2019-09-22 12:38:30
  */
 public class ProducerTest extends BaseTest {
-	private int count = 1000;
+	private int count = 100;
 
 	private String getMessage(int index) {
 		return String.format("Hello Word! Index %d", index);
