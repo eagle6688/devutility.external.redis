@@ -2,7 +2,6 @@ package devutility.external.redis.queue;
 
 import devutility.external.redis.BaseTest;
 import devutility.internal.test.TestExecutor;
-import devutility.internal.util.RandomUtils;
 import redis.clients.jedis.Jedis;
 
 /**
@@ -15,15 +14,15 @@ import redis.clients.jedis.Jedis;
 public class ProducerTest extends BaseTest {
 	private int count = 1000;
 
-	private String getMessage() {
-		return String.format("Hello Word! Index %d", RandomUtils.getNumber(1000));
+	private String getMessage(int index) {
+		return String.format("Hello Word! Index %d", index);
 	}
 
 	@Override
 	public void run() {
 		try (Jedis jedis = jedis()) {
 			for (int i = 0; i < count; i++) {
-				jedis.lpush(Config.QUEUE_KEY, getMessage());
+				jedis.lpush(Config.QUEUE_KEY, getMessage(i));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

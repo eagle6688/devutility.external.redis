@@ -5,6 +5,7 @@ import devutility.external.redis.models.SentinelRedisInstance;
 import devutility.external.redis.models.SingleRedisInstance;
 import devutility.external.redis.utils.pool.JedisPoolUtil;
 import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
 
 /**
  * 
@@ -19,6 +20,11 @@ public abstract class BaseTest extends devutility.internal.test.BaseTest {
 	private final static String CONFIG_SENTINEL_PREFIX = "sentinel";
 
 	/**
+	 * SingleRedisInstance object.
+	 */
+	protected SingleRedisInstance singleRedisInstance = RedisInstanceUtils.get(CONFIG_FILE, CONFIG_PREFIX, SingleRedisInstance.class);
+
+	/**
 	 * SingleRedisStringHelper object.
 	 */
 	protected SingleRedisStringHelper singleRedisStringHelper = RedisHelperFactory.singleRedisStringHelper(CONFIG_FILE, CONFIG_PREFIX);
@@ -29,11 +35,19 @@ public abstract class BaseTest extends devutility.internal.test.BaseTest {
 	protected SentinelRedisInstance sentinel_RedisInstance = RedisInstanceUtils.get(CONFIG_FILE, CONFIG_SENTINEL_PREFIX, SentinelRedisInstance.class);
 
 	/**
+	 * 
+	 * Create an JedisPool object use singleRedisInstance;
+	 * @return JedisPool
+	 */
+	protected JedisPool jedisPool() {
+		return JedisPoolUtil.jedisPool(singleRedisInstance);
+	}
+
+	/**
 	 * Get Jedis object from JedisPool.
 	 * @return Jedis
 	 */
 	protected Jedis jedis() {
-		SingleRedisInstance redisInstance = RedisInstanceUtils.get(CONFIG_FILE, CONFIG_PREFIX, SingleRedisInstance.class);
-		return JedisPoolUtil.jedis(redisInstance);
+		return JedisPoolUtil.jedis(singleRedisInstance);
 	}
 }
