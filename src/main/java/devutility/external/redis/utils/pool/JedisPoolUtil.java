@@ -76,7 +76,7 @@ public class JedisPoolUtil {
 			try {
 				jedis = jedisPool.getResource();
 
-				if (jedisPool != null) {
+				if (jedis != null) {
 					jedis.select(redisInstance.getDatabase());
 					break;
 				}

@@ -1,5 +1,7 @@
 package devutility.external.redis.queue.p2p;
 
+import java.util.Date;
+
 import devutility.external.redis.BaseTest;
 import devutility.external.redis.queue.Config;
 import devutility.external.redis.queue.ConsumerEvent;
@@ -17,6 +19,8 @@ public class ConsumerTest extends BaseTest {
 
 	@Override
 	public void run() {
+		System.out.println(new Date());
+
 		try (JedisP2PQueueConsumer consumer = new JedisP2PQueueConsumer(jedis(), consumerEvent, Config.QUEUE_KEY)) {
 			consumer.listen();
 		} catch (Exception e) {

@@ -2,12 +2,12 @@ package devutility.external.redis.queue.com;
 
 /**
  * 
- * RedisConnectionFailedException
+ * JedisConnectionFailedException
  * 
  * @author: Aldwin Su
  * @version: 2019-09-22 00:11:32
  */
-public class RedisConnectionFailedException extends RuntimeException {
+public class JedisConnectionFailedException extends RuntimeException {
 	/**
 	 * @Fields serialVersionUID
 	 */
@@ -16,7 +16,7 @@ public class RedisConnectionFailedException extends RuntimeException {
 	/**
 	 * Constructor
 	 */
-	public RedisConnectionFailedException() {
+	public JedisConnectionFailedException() {
 		this("Redis can't connect!");
 	}
 
@@ -24,7 +24,7 @@ public class RedisConnectionFailedException extends RuntimeException {
 	 * Constructor
 	 * @param message Exception message.
 	 */
-	public RedisConnectionFailedException(String message) {
+	public JedisConnectionFailedException(String message) {
 		super(message);
 	}
 }

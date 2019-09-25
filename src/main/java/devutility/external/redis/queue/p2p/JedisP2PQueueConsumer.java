@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.util.List;
 
 import devutility.external.redis.queue.ConsumerEvent;
-import devutility.external.redis.queue.com.RedisConnectionFailedException;
+import devutility.external.redis.queue.com.JedisConnectionFailedException;
 import devutility.external.redis.queue.com.RedisQueueOption;
 import devutility.internal.util.CollectionUtils;
 import redis.clients.jedis.Jedis;
@@ -66,6 +66,32 @@ public class JedisP2PQueueConsumer implements Closeable {
 	}
 
 	/**
+	 * Listen message from Redis queue.
+	 * @throws Exception from process method.
+	 */
+	public void listen() throws Exception {
+		if (jedis == null) {
+			throw new IllegalArgumentException("jedis can't be null!");
+		}
+
+		while (active) {
+			try {
+				process();
+			} catch (Exception e) {
+				e.printStackTrace();
+
+				if (jedis.getClient().isBroken()) {
+					throw e;
+				}
+
+				if (e instanceof JedisConnectionFailedException) {
+					throw e;
+				}
+			}
+		}
+	}
+
+	/**
 	 * Main process.
 	 * @throws InterruptedException
 	 */
@@ -85,20 +111,17 @@ public class JedisP2PQueueConsumer implements Closeable {
 	 * @throws InterruptedException from Thread sleep method.
 	 */
 	private void connect() throws InterruptedException {
-		if (!jedis.isConnected()) {
-			jedis.connect();
-		}
-
 		if (jedis.isConnected()) {
 			return;
 		}
 
 		if (connectionRetryTimes >= redisQueueOption.getConnectionRetryTimes()) {
-			throw new RedisConnectionFailedException();
+			throw new JedisConnectionFailedException("Exceed max connection retry times.");
 		}
 
 		Thread.sleep(redisQueueOption.getWaitMilliseconds());
 		connectionRetryTimes++;
+		jedis.connect();
 		connect();
 	}
 
@@ -113,25 +136,6 @@ public class JedisP2PQueueConsumer implements Closeable {
 		}
 
 		consumerEvent.onMessage(key, value);
-	}
-
-	/**
-	 * Listen message from Redis queue.
-	 */
-	public void listen() {
-		while (active) {
-			try {
-				process();
-			} catch (Exception e) {
-				e.printStackTrace();
-
-				if (e instanceof RedisConnectionFailedException) {
-					break;
-				}
-
-				jedis.close();
-			}
-		}
 	}
 
 	@Override
