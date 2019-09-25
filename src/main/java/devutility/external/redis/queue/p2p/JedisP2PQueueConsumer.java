@@ -68,8 +68,6 @@ class JedisP2PQueueConsumer extends JedisQueueConsumer {
 			try {
 				process();
 			} catch (Exception e) {
-				e.printStackTrace();
-
 				if (jedis.getClient().isBroken()) {
 					throw new JedisBrokenException(e);
 				}
@@ -77,6 +75,8 @@ class JedisP2PQueueConsumer extends JedisQueueConsumer {
 				if (e instanceof JedisFatalException) {
 					throw e;
 				}
+
+				e.printStackTrace();
 			}
 		}
 	}
