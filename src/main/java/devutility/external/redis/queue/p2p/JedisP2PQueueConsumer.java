@@ -5,8 +5,8 @@ import java.io.IOException;
 import java.util.List;
 
 import devutility.external.redis.queue.ConsumerEvent;
-import devutility.external.redis.queue.com.RedisQueueOption;
 import devutility.external.redis.queue.com.RedisConnectionFailedException;
+import devutility.external.redis.queue.com.RedisQueueOption;
 import devutility.internal.util.CollectionUtils;
 import redis.clients.jedis.Jedis;
 
@@ -86,6 +86,7 @@ public class JedisP2PQueueConsumer implements Closeable {
 	 */
 	private void connect() throws InterruptedException {
 		if (!jedis.isConnected()) {
+			jedis.close();
 			jedis.connect();
 		}
 
