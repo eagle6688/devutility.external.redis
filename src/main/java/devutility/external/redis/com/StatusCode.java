@@ -29,11 +29,11 @@ public enum StatusCode {
 	}
 
 	/**
-	 * Is set Ok or not.
+	 * Is Ok or not.
 	 * @param status Jedis status.
 	 * @return boolean
 	 */
-	public static boolean isSetOk(String status) {
+	public static boolean isOk(String status) {
 		return StatusCode.OK.getValue().equals(status) || StatusCode.MULTIOK.getValue().equals(status);
 	}
 }

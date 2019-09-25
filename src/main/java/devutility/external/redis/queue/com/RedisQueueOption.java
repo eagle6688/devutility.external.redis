@@ -14,6 +14,11 @@ public class RedisQueueOption {
 	private String key;
 
 	/**
+	 * Database of Redis, default is 0.
+	 */
+	private int database;
+
+	/**
 	 * Waiting message time in milliseconds after connect Redis, default is 0 means no time limited.
 	 */
 	private int waitMilliseconds;
@@ -28,12 +33,29 @@ public class RedisQueueOption {
 	 */
 	private int connectionRetryInterval;
 
-	public RedisQueueOption(String key) {
+	/**
+	 * Constructor
+	 * @param key Redis key of queue.
+	 * @param database Database of Redis, default is 0.
+	 */
+	public RedisQueueOption(String key, int database) {
 		this.key = key;
+		this.database = database;
 		connectionRetryTimes = 3;
 		connectionRetryInterval = 3000;
 	}
 
+	/**
+	 * Constructor
+	 * @param key Redis key of queue.
+	 */
+	public RedisQueueOption(String key) {
+		this(key, 0);
+	}
+
+	/**
+	 * Constructor
+	 */
 	public RedisQueueOption() {
 		this(null);
 	}
@@ -44,6 +66,14 @@ public class RedisQueueOption {
 
 	public void setKey(String key) {
 		this.key = key;
+	}
+
+	public int getDatabase() {
+		return database;
+	}
+
+	public void setDatabase(int database) {
+		this.database = database;
 	}
 
 	public int getWaitMilliseconds() {

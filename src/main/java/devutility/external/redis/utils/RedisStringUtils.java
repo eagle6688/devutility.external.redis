@@ -33,7 +33,7 @@ public class RedisStringUtils extends BaseRedisUtils {
 
 		String status = jedis.set(key, value);
 
-		if (!StatusCode.isSetOk(status)) {
+		if (!StatusCode.isOk(status)) {
 			return false;
 		}
 
