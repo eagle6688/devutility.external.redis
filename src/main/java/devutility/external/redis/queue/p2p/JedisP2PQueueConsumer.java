@@ -86,7 +86,6 @@ public class JedisP2PQueueConsumer implements Closeable {
 	 */
 	private void connect() throws InterruptedException {
 		if (!jedis.isConnected()) {
-			jedis.close();
 			jedis.connect();
 		}
 
@@ -129,6 +128,8 @@ public class JedisP2PQueueConsumer implements Closeable {
 				if (e instanceof RedisConnectionFailedException) {
 					break;
 				}
+
+				jedis.close();
 			}
 		}
 	}
