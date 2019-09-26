@@ -2,12 +2,10 @@ package devutility.external.redis.queue.p2p;
 
 import java.io.IOException;
 
-import devutility.external.redis.com.StatusCode;
 import devutility.external.redis.queue.ConsumerEvent;
 import devutility.external.redis.queue.com.JedisBrokenException;
-import devutility.external.redis.queue.com.JedisFatalException;
 import devutility.external.redis.queue.com.RedisQueueOption;
-import redis.clients.jedis.Jedis;
+import devutility.external.redis.utils.pool.JedisPoolUtil;
 import redis.clients.jedis.JedisPool;
 
 /**
@@ -48,7 +46,7 @@ public final class JedisPoolP2PQueueConsumer extends JedisQueueConsumer {
 	@Override
 	public void listen() throws Exception {
 		while (active) {
-			try (JedisP2PQueueConsumer jedisP2PQueueConsumer = new JedisP2PQueueConsumer(jedis(), consumerEvent, redisQueueOption)) {
+			try (JedisP2PQueueConsumer jedisP2PQueueConsumer = new JedisP2PQueueConsumer(JedisPoolUtil.jedis(jedisPool, redisQueueOption.getDatabase()), consumerEvent, redisQueueOption)) {
 				jedisP2PQueueConsumer.listen();
 			} catch (Exception e) {
 				if (e instanceof JedisBrokenException) {
@@ -60,24 +58,6 @@ public final class JedisPoolP2PQueueConsumer extends JedisQueueConsumer {
 				throw e;
 			}
 		}
-	}
-
-	/**
-	 * Get Jedis object from provided JedisPool object.
-	 * @return Jedis
-	 */
-	private Jedis jedis() {
-		Jedis jedis = jedisPool.getResource();
-
-		if (jedis == null) {
-			throw new JedisFatalException("Can't get Jedis object from pool.");
-		}
-
-		if (!StatusCode.isOk(jedis.select(redisQueueOption.getDatabase()))) {
-			throw new JedisFatalException("Jedis object can't select database.");
-		}
-
-		return jedis;
 	}
 
 	@Override

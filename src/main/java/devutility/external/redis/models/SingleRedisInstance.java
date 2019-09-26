@@ -1,5 +1,14 @@
 package devutility.external.redis.models;
 
+import devutility.external.redis.com.Config;
+
+/**
+ * 
+ * SingleRedisInstance
+ * 
+ * @author: Aldwin Su
+ * @version: 2019-09-26 15:59:04
+ */
 public class SingleRedisInstance extends RedisInstance {
 	/**
 	 * Redis server host.
@@ -25,5 +34,9 @@ public class SingleRedisInstance extends RedisInstance {
 
 	public void setPort(int port) {
 		this.port = port;
+	}
+
+	public String cacheKey() {
+		return String.format(Config.JEDISPOOL_CACHE_KEY_FORMAT, RedisInstance.class.getName(), getHost(), getPort());
 	}
 }
