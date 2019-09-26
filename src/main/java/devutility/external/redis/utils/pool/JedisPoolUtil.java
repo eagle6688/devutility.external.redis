@@ -8,7 +8,6 @@ import devutility.internal.lang.StringUtils;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
-import redis.clients.jedis.exceptions.JedisConnectionException;
 
 /**
  * 
@@ -68,37 +67,6 @@ public class JedisPoolUtil {
 	}
 
 	/**
-	 * Create a Jedis instance.
-	 * @param redisInstance SingleRedisInstance object
-	 * @return Jedis
-	 */
-	public static Jedis jedis(SingleRedisInstance redisInstance) {
-		Jedis jedis = null;
-		JedisPool jedisPool = jedisPool(redisInstance);
-
-		if (jedisPool == null) {
-			return null;
-		}
-
-		for (int i = 0; i < redisInstance.getMaxRetryCount(); i++) {
-			try {
-				jedis = jedisPool.getResource();
-
-				if (jedis != null) {
-					jedis.select(redisInstance.getDatabase());
-					break;
-				}
-			} catch (Exception e) {
-				if (!(e instanceof JedisConnectionException)) {
-					throw e;
-				}
-			}
-		}
-
-		return jedis;
-	}
-
-	/**
 	 * Get Jedis object from provided JedisPool object.
 	 * @param jedisPool JedisPool object.
 	 * @param database Database number in Reids.
@@ -116,5 +84,15 @@ public class JedisPoolUtil {
 		}
 
 		return jedis;
+	}
+
+	/**
+	 * Create a Jedis instance.
+	 * @param redisInstance SingleRedisInstance object
+	 * @return Jedis
+	 */
+	public static Jedis jedis(SingleRedisInstance redisInstance) {
+		JedisPool jedisPool = jedisPool(redisInstance);
+		return jedis(jedisPool, redisInstance.getDatabase());
 	}
 }
