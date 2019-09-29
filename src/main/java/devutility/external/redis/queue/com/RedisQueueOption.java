@@ -34,6 +34,11 @@ public class RedisQueueOption {
 	private int connectionRetryInterval;
 
 	/**
+	 * In debug mode, system will print all of debug information. Default is false.
+	 */
+	private boolean debug;
+
+	/**
 	 * Constructor
 	 * @param key Redis key of queue.
 	 * @param database Database of Redis, default is 0.
@@ -98,5 +103,13 @@ public class RedisQueueOption {
 
 	public void setConnectionRetryInterval(int connectionRetryInterval) {
 		this.connectionRetryInterval = connectionRetryInterval;
+	}
+
+	public boolean isDebug() {
+		return debug;
+	}
+
+	public void setDebug(boolean debug) {
+		this.debug = debug;
 	}
 }

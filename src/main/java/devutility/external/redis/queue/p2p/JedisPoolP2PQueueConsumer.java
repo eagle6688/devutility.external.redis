@@ -50,8 +50,8 @@ public final class JedisPoolP2PQueueConsumer extends JedisQueueConsumer {
 				jedisP2PQueueConsumer.listen();
 			} catch (Exception e) {
 				if (e instanceof JedisBrokenException) {
-					System.out.println("System try to created a new connection and continue working because Jedis connection has broken due to the following reason:");
-					e.getCause().printStackTrace(System.out);
+					log("System try to created a new connection and continue working because Jedis connection has broken due to the following reason:");
+					log(e.getCause());
 					continue;
 				}
 

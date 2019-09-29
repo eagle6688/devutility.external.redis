@@ -42,4 +42,20 @@ public abstract class JedisQueueConsumer implements Closeable {
 	public JedisQueueConsumer() {
 		this(null, null);
 	}
+
+	public void log(String message) {
+		if (!redisQueueOption.isDebug()) {
+			return;
+		}
+
+		System.out.println(message);
+	}
+
+	public void log(Throwable cause) {
+		if (!redisQueueOption.isDebug()) {
+			return;
+		}
+
+		cause.printStackTrace(System.out);
+	}
 }

@@ -76,7 +76,7 @@ class JedisP2PQueueConsumer extends JedisQueueConsumer {
 					throw e;
 				}
 
-				e.printStackTrace();
+				log(e);
 			}
 		}
 	}
