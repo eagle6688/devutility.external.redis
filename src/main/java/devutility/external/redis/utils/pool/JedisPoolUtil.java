@@ -1,8 +1,8 @@
 package devutility.external.redis.utils.pool;
 
+import devutility.external.redis.com.JedisFatalException;
 import devutility.external.redis.com.StatusCode;
 import devutility.external.redis.models.SingleRedisInstance;
-import devutility.external.redis.queue.com.JedisFatalException;
 import devutility.internal.base.SingletonFactory;
 import devutility.internal.lang.StringUtils;
 import redis.clients.jedis.Jedis;

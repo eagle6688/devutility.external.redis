@@ -2,9 +2,9 @@ package devutility.external.redis.queue.p2p;
 
 import java.io.IOException;
 
+import devutility.external.redis.com.JedisBrokenException;
+import devutility.external.redis.com.RedisQueueOption;
 import devutility.external.redis.queue.ConsumerEvent;
-import devutility.external.redis.queue.com.JedisBrokenException;
-import devutility.external.redis.queue.com.RedisQueueOption;
 import devutility.external.redis.utils.pool.JedisPoolUtil;
 import redis.clients.jedis.JedisPool;
 

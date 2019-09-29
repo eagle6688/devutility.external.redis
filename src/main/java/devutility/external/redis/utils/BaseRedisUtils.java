@@ -2,12 +2,20 @@ package devutility.external.redis.utils;
 
 import java.util.Set;
 
+import devutility.external.redis.com.StatusCode;
 import devutility.external.redis.models.ClusterRedisInstance;
 import devutility.internal.lang.StringUtils;
 import devutility.internal.security.Sha256Utils;
 import devutility.internal.util.CollectionUtils;
 import redis.clients.jedis.Jedis;
 
+/**
+ * 
+ * BaseRedisUtils
+ * 
+ * @author: Aldwin Su
+ * @version: 2019-09-29 22:25:51
+ */
 public abstract class BaseRedisUtils {
 	/**
 	 * Set expired time for the item with the specified key.
@@ -56,6 +64,24 @@ public abstract class BaseRedisUtils {
 		}
 
 		return jedis.del(keys.toArray(new String[0])) == keys.size();
+	}
+
+	/**
+	 * Select a database in Redis.
+	 * @param jedis Jedis object.
+	 * @param database Redis database index.
+	 * @return boolean
+	 */
+	public static boolean select(Jedis jedis, int database) {
+		if (jedis == null || database < 0) {
+			throw new IllegalArgumentException("Illegal parameters!");
+		}
+
+		if (jedis.getDB() == database) {
+			return true;
+		}
+
+		return StatusCode.isOk(jedis.select(database));
 	}
 
 	/**

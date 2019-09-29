@@ -2,8 +2,8 @@ package devutility.external.redis.queue.p2p;
 
 import java.io.Closeable;
 
+import devutility.external.redis.com.RedisQueueOption;
 import devutility.external.redis.queue.ConsumerEvent;
-import devutility.external.redis.queue.com.RedisQueueOption;
 
 /**
  * 

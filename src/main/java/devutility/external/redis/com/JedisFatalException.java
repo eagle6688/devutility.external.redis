@@ -1,4 +1,4 @@
-package devutility.external.redis.queue.com;
+package devutility.external.redis.com;
 
 /**
  * 
