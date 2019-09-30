@@ -1,4 +1,4 @@
-package devutility.external.redis.com;
+package devutility.external.redis.exception;
 
 /**
  * 

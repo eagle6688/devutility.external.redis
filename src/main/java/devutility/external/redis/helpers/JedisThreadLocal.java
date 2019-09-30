@@ -1,6 +1,6 @@
 package devutility.external.redis.helpers;
 
-import devutility.external.redis.com.JedisFatalException;
+import devutility.external.redis.exception.JedisFatalException;
 import devutility.external.redis.utils.BaseRedisUtils;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
