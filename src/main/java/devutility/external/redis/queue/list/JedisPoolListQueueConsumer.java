@@ -11,12 +11,12 @@ import redis.clients.jedis.JedisPool;
 
 /**
  * 
- * JedisPoolP2PQueueConsumer
+ * JedisPoolListQueueConsumer
  * 
  * @author: Aldwin Su
  * @version: 2019-09-25 20:24:25
  */
-public final class JedisPoolP2PQueueConsumer extends JedisQueueConsumer {
+public final class JedisPoolListQueueConsumer extends JedisQueueConsumer {
 	/**
 	 * JedisPool object for connecting Redis server.
 	 */
@@ -28,7 +28,7 @@ public final class JedisPoolP2PQueueConsumer extends JedisQueueConsumer {
 	 * @param consumerEvent Custom consumer event implementation.
 	 * @param redisQueueOption RedisQueueOption object.
 	 */
-	public JedisPoolP2PQueueConsumer(JedisPool jedisPool, JedisQueueConsumerEvent consumerEvent, RedisQueueOption redisQueueOption) {
+	public JedisPoolListQueueConsumer(JedisPool jedisPool, JedisQueueConsumerEvent consumerEvent, RedisQueueOption redisQueueOption) {
 		super(consumerEvent, redisQueueOption);
 		this.jedisPool = jedisPool;
 	}
@@ -40,14 +40,14 @@ public final class JedisPoolP2PQueueConsumer extends JedisQueueConsumer {
 	 * @param key Redis key of queue.
 	 * @param database Redis database.
 	 */
-	public JedisPoolP2PQueueConsumer(JedisPool jedisPool, JedisQueueConsumerEvent consumerEvent, String key, int database) {
+	public JedisPoolListQueueConsumer(JedisPool jedisPool, JedisQueueConsumerEvent consumerEvent, String key, int database) {
 		this(jedisPool, consumerEvent, new RedisQueueOption(key, database));
 	}
 
 	@Override
 	public void listen() throws Exception {
 		while (active) {
-			try (JedisP2PQueueConsumer jedisP2PQueueConsumer = new JedisP2PQueueConsumer(JedisPoolUtil.jedis(jedisPool, redisQueueOption.getDatabase()), consumerEvent, redisQueueOption)) {
+			try (JedisListQueueConsumer jedisP2PQueueConsumer = new JedisListQueueConsumer(JedisPoolUtil.jedis(jedisPool, redisQueueOption.getDatabase()), consumerEvent, redisQueueOption)) {
 				jedisP2PQueueConsumer.listen();
 			} catch (Exception e) {
 				if (e instanceof JedisBrokenException) {

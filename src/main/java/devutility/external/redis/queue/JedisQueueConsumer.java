@@ -11,16 +11,11 @@ import devutility.external.redis.com.RedisQueueOption;
  * @author: Aldwin Su
  * @version: 2019-09-25 19:24:50
  */
-public abstract class JedisQueueConsumer implements Closeable {
+public abstract class JedisQueueConsumer extends JedisQueue implements Closeable {
 	/**
 	 * Custom consumer event implementation.
 	 */
 	protected JedisQueueConsumerEvent consumerEvent;
-
-	/**
-	 * RedisQueueOption object.
-	 */
-	protected RedisQueueOption redisQueueOption;
 
 	/**
 	 * Status, default is true.
@@ -29,19 +24,18 @@ public abstract class JedisQueueConsumer implements Closeable {
 
 	/**
 	 * Constructor
-	 * @param consumerEvent JedisQueueConsumerEvent object.
-	 * @param redisQueueOption RedisQueueOption object.
 	 */
-	public JedisQueueConsumer(JedisQueueConsumerEvent consumerEvent, RedisQueueOption redisQueueOption) {
-		this.consumerEvent = consumerEvent;
-		this.redisQueueOption = redisQueueOption;
+	public JedisQueueConsumer() {
 	}
 
 	/**
 	 * Constructor
+	 * @param consumerEvent JedisQueueConsumerEvent object.
+	 * @param redisQueueOption RedisQueueOption object.
 	 */
-	public JedisQueueConsumer() {
-		this(null, null);
+	public JedisQueueConsumer(JedisQueueConsumerEvent consumerEvent, RedisQueueOption redisQueueOption) {
+		super(redisQueueOption);
+		this.consumerEvent = consumerEvent;
 	}
 
 	/**

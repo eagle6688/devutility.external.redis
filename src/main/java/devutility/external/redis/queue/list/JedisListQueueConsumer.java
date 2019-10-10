@@ -18,7 +18,7 @@ import redis.clients.jedis.Jedis;
  * @author: Aldwin Su
  * @version: 2019-09-20 17:12:56
  */
-class JedisP2PQueueConsumer extends JedisQueueConsumer {
+public final class JedisListQueueConsumer extends JedisQueueConsumer {
 	/**
 	 * Jedis object to read data from Redis.
 	 */
@@ -43,7 +43,7 @@ class JedisP2PQueueConsumer extends JedisQueueConsumer {
 	 * @param consumerEvent Custom consumer event implementation.
 	 * @param redisQueueOption RedisQueueOption object.
 	 */
-	public JedisP2PQueueConsumer(Jedis jedis, JedisQueueConsumerEvent consumerEvent, RedisQueueOption redisQueueOption) {
+	public JedisListQueueConsumer(Jedis jedis, JedisQueueConsumerEvent consumerEvent, RedisQueueOption redisQueueOption) {
 		this.jedis = jedis;
 		this.consumerEvent = consumerEvent;
 		this.redisQueueOption = redisQueueOption;
@@ -55,7 +55,7 @@ class JedisP2PQueueConsumer extends JedisQueueConsumer {
 	 * @param consumerEvent Custom consumer event implementation.
 	 * @param key Redis key of queue.
 	 */
-	public JedisP2PQueueConsumer(Jedis jedis, JedisQueueConsumerEvent consumerEvent, String key) {
+	public JedisListQueueConsumer(Jedis jedis, JedisQueueConsumerEvent consumerEvent, String key) {
 		this(jedis, consumerEvent, new RedisQueueOption(key));
 	}
 
