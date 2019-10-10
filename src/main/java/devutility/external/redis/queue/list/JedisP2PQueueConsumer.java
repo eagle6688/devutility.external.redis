@@ -1,4 +1,4 @@
-package devutility.external.redis.queue.p2p;
+package devutility.external.redis.queue.list;
 
 import java.io.IOException;
 import java.util.List;
@@ -6,7 +6,8 @@ import java.util.List;
 import devutility.external.redis.com.RedisQueueOption;
 import devutility.external.redis.exception.JedisBrokenException;
 import devutility.external.redis.exception.JedisFatalException;
-import devutility.external.redis.queue.ConsumerEvent;
+import devutility.external.redis.queue.JedisQueueConsumerEvent;
+import devutility.external.redis.queue.JedisQueueConsumer;
 import devutility.internal.util.CollectionUtils;
 import redis.clients.jedis.Jedis;
 
@@ -42,7 +43,7 @@ class JedisP2PQueueConsumer extends JedisQueueConsumer {
 	 * @param consumerEvent Custom consumer event implementation.
 	 * @param redisQueueOption RedisQueueOption object.
 	 */
-	public JedisP2PQueueConsumer(Jedis jedis, ConsumerEvent consumerEvent, RedisQueueOption redisQueueOption) {
+	public JedisP2PQueueConsumer(Jedis jedis, JedisQueueConsumerEvent consumerEvent, RedisQueueOption redisQueueOption) {
 		this.jedis = jedis;
 		this.consumerEvent = consumerEvent;
 		this.redisQueueOption = redisQueueOption;
@@ -54,7 +55,7 @@ class JedisP2PQueueConsumer extends JedisQueueConsumer {
 	 * @param consumerEvent Custom consumer event implementation.
 	 * @param key Redis key of queue.
 	 */
-	public JedisP2PQueueConsumer(Jedis jedis, ConsumerEvent consumerEvent, String key) {
+	public JedisP2PQueueConsumer(Jedis jedis, JedisQueueConsumerEvent consumerEvent, String key) {
 		this(jedis, consumerEvent, new RedisQueueOption(key));
 	}
 

@@ -1,10 +1,10 @@
-package devutility.external.redis.queue.p2p;
+package devutility.external.redis.queue.list;
 
 import java.util.Date;
 
 import devutility.external.redis.BaseTest;
 import devutility.external.redis.queue.Config;
-import devutility.external.redis.queue.ConsumerEvent;
+import devutility.external.redis.queue.JedisQueueConsumerEvent;
 import devutility.internal.test.TestExecutor;
 
 /**
@@ -15,7 +15,7 @@ import devutility.internal.test.TestExecutor;
  * @version: 2019-09-22 12:24:38
  */
 public class ConsumerTest extends BaseTest {
-	private ConsumerEvent consumerEvent = new ConsumerHandler();
+	private JedisQueueConsumerEvent consumerEvent = new ConsumerHandler();
 
 	@Override
 	public void run() {

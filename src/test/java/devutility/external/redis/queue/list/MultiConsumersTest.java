@@ -1,8 +1,9 @@
-package devutility.external.redis.queue.p2p;
+package devutility.external.redis.queue.list;
 
 import devutility.external.redis.BaseTest;
 import devutility.external.redis.queue.Config;
-import devutility.external.redis.queue.ConsumerEvent;
+import devutility.external.redis.queue.JedisQueueConsumerEvent;
+import devutility.external.redis.queue.list.JedisP2PQueueConsumer;
 import devutility.internal.test.TestExecutor;
 
 /**
@@ -14,7 +15,7 @@ import devutility.internal.test.TestExecutor;
  */
 public class MultiConsumersTest extends BaseTest {
 	private int threadCount = 5;
-	private ConsumerEvent consumerEvent = new ConsumerHandler();
+	private JedisQueueConsumerEvent consumerEvent = new ConsumerHandler();
 
 	private void startThread(int index) {
 		Thread thread = new Thread(() -> {

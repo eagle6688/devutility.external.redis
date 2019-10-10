@@ -1,9 +1,8 @@
-package devutility.external.redis.queue.p2p;
+package devutility.external.redis.queue;
 
 import java.io.Closeable;
 
 import devutility.external.redis.com.RedisQueueOption;
-import devutility.external.redis.queue.ConsumerEvent;
 
 /**
  * 
@@ -16,7 +15,7 @@ public abstract class JedisQueueConsumer implements Closeable {
 	/**
 	 * Custom consumer event implementation.
 	 */
-	protected ConsumerEvent consumerEvent;
+	protected JedisQueueConsumerEvent consumerEvent;
 
 	/**
 	 * RedisQueueOption object.
@@ -28,9 +27,21 @@ public abstract class JedisQueueConsumer implements Closeable {
 	 */
 	protected boolean active = true;
 
-	public JedisQueueConsumer(ConsumerEvent consumerEvent, RedisQueueOption redisQueueOption) {
+	/**
+	 * Constructor
+	 * @param consumerEvent JedisQueueConsumerEvent object.
+	 * @param redisQueueOption RedisQueueOption object.
+	 */
+	public JedisQueueConsumer(JedisQueueConsumerEvent consumerEvent, RedisQueueOption redisQueueOption) {
 		this.consumerEvent = consumerEvent;
 		this.redisQueueOption = redisQueueOption;
+	}
+
+	/**
+	 * Constructor
+	 */
+	public JedisQueueConsumer() {
+		this(null, null);
 	}
 
 	/**
@@ -38,10 +49,6 @@ public abstract class JedisQueueConsumer implements Closeable {
 	 * @throws Exception maybe have.
 	 */
 	public abstract void listen() throws Exception;
-
-	public JedisQueueConsumer() {
-		this(null, null);
-	}
 
 	public void log(String message) {
 		if (!redisQueueOption.isDebug()) {

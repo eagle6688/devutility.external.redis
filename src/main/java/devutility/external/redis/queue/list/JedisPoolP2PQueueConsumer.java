@@ -1,10 +1,11 @@
-package devutility.external.redis.queue.p2p;
+package devutility.external.redis.queue.list;
 
 import java.io.IOException;
 
 import devutility.external.redis.com.RedisQueueOption;
 import devutility.external.redis.exception.JedisBrokenException;
-import devutility.external.redis.queue.ConsumerEvent;
+import devutility.external.redis.queue.JedisQueueConsumerEvent;
+import devutility.external.redis.queue.JedisQueueConsumer;
 import devutility.external.redis.utils.pool.JedisPoolUtil;
 import redis.clients.jedis.JedisPool;
 
@@ -27,7 +28,7 @@ public final class JedisPoolP2PQueueConsumer extends JedisQueueConsumer {
 	 * @param consumerEvent Custom consumer event implementation.
 	 * @param redisQueueOption RedisQueueOption object.
 	 */
-	public JedisPoolP2PQueueConsumer(JedisPool jedisPool, ConsumerEvent consumerEvent, RedisQueueOption redisQueueOption) {
+	public JedisPoolP2PQueueConsumer(JedisPool jedisPool, JedisQueueConsumerEvent consumerEvent, RedisQueueOption redisQueueOption) {
 		super(consumerEvent, redisQueueOption);
 		this.jedisPool = jedisPool;
 	}
@@ -39,7 +40,7 @@ public final class JedisPoolP2PQueueConsumer extends JedisQueueConsumer {
 	 * @param key Redis key of queue.
 	 * @param database Redis database.
 	 */
-	public JedisPoolP2PQueueConsumer(JedisPool jedisPool, ConsumerEvent consumerEvent, String key, int database) {
+	public JedisPoolP2PQueueConsumer(JedisPool jedisPool, JedisQueueConsumerEvent consumerEvent, String key, int database) {
 		this(jedisPool, consumerEvent, new RedisQueueOption(key, database));
 	}
 

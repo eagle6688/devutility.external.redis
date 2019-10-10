@@ -1,6 +1,7 @@
-package devutility.external.redis.queue;
+package devutility.external.redis.queue.list;
 
 import devutility.external.redis.BaseTest;
+import devutility.external.redis.queue.Config;
 import devutility.internal.test.TestExecutor;
 import redis.clients.jedis.Jedis;
 

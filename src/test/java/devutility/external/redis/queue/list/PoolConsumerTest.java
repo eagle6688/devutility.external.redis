@@ -1,16 +1,15 @@
-package devutility.external.redis.queue.p2p.pool;
+package devutility.external.redis.queue.list;
 
 import java.util.Date;
 
 import devutility.external.redis.BaseTest;
 import devutility.external.redis.queue.Config;
-import devutility.external.redis.queue.ConsumerEvent;
-import devutility.external.redis.queue.p2p.ConsumerHandler;
-import devutility.external.redis.queue.p2p.JedisPoolP2PQueueConsumer;
+import devutility.external.redis.queue.JedisQueueConsumerEvent;
+import devutility.external.redis.queue.list.JedisPoolP2PQueueConsumer;
 import devutility.internal.test.TestExecutor;
 
-public class JedisPoolConsumerTest extends BaseTest {
-	private ConsumerEvent consumerEvent = new ConsumerHandler();
+public class PoolConsumerTest extends BaseTest {
+	private JedisQueueConsumerEvent consumerEvent = new ConsumerHandler();
 
 	@Override
 	public void run() {
@@ -26,6 +25,6 @@ public class JedisPoolConsumerTest extends BaseTest {
 	}
 
 	public static void main(String[] args) {
-		TestExecutor.run(JedisPoolConsumerTest.class);
+		TestExecutor.run(PoolConsumerTest.class);
 	}
 }
