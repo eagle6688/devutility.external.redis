@@ -12,4 +12,9 @@ public class Config {
 	 * JedisPool cache key format. {@code First %s is class name, the second %s is host value, the third %d is port number}
 	 */
 	public final static String JEDISPOOL_CACHE_KEY_FORMAT = "%s.%s.%d";
+
+	/**
+	 * Item name in queue.
+	 */
+	public final static String QUEUE_ITEM_NAME = "item";
 }
