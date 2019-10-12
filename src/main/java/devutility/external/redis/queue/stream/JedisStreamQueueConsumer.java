@@ -12,7 +12,6 @@ import devutility.external.redis.queue.JedisQueueConsumer;
  * @version: 2019-10-10 20:03:42
  */
 public class JedisStreamQueueConsumer extends JedisQueueConsumer {
-
 	@Override
 	public void listen() throws Exception {
 
