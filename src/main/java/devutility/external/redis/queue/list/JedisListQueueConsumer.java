@@ -6,8 +6,8 @@ import java.util.List;
 import devutility.external.redis.com.RedisQueueOption;
 import devutility.external.redis.exception.JedisBrokenException;
 import devutility.external.redis.exception.JedisFatalException;
-import devutility.external.redis.queue.JedisQueueConsumerEvent;
 import devutility.external.redis.queue.JedisQueueConsumer;
+import devutility.external.redis.queue.JedisQueueConsumerEvent;
 import devutility.internal.util.CollectionUtils;
 import redis.clients.jedis.Jedis;
 
@@ -25,28 +25,14 @@ public final class JedisListQueueConsumer extends JedisQueueConsumer {
 	private Jedis jedis;
 
 	/**
-	 * Connection retry times.
-	 */
-	private int connectionRetryTimes;
-
-	/**
-	 * Chaneg the Jedis object.
-	 * @param jedis Jedis object to listen queue.
-	 */
-	public void setJedis(Jedis jedis) {
-		this.jedis = jedis;
-	}
-
-	/**
 	 * Constructor
 	 * @param jedis Jedis object to read data from Redis.
 	 * @param consumerEvent Custom consumer event implementation.
 	 * @param redisQueueOption RedisQueueOption object.
 	 */
 	public JedisListQueueConsumer(Jedis jedis, JedisQueueConsumerEvent consumerEvent, RedisQueueOption redisQueueOption) {
+		super(consumerEvent, redisQueueOption);
 		this.jedis = jedis;
-		this.consumerEvent = consumerEvent;
-		this.redisQueueOption = redisQueueOption;
 	}
 
 	/**
@@ -65,7 +51,7 @@ public final class JedisListQueueConsumer extends JedisQueueConsumer {
 			throw new IllegalArgumentException("jedis can't be null!");
 		}
 
-		while (active) {
+		while (isActive()) {
 			try {
 				process();
 			} catch (Exception e) {
@@ -87,8 +73,8 @@ public final class JedisListQueueConsumer extends JedisQueueConsumer {
 	 * @throws InterruptedException
 	 */
 	private void process() throws InterruptedException {
-		connect();
-		List<String> list = jedis.brpop(redisQueueOption.getWaitMilliseconds(), redisQueueOption.getKey());
+		connect(jedis);
+		List<String> list = jedis.brpop(getRedisQueueOption().getWaitMilliseconds(), getRedisQueueOption().getKey());
 
 		if (CollectionUtils.isNullOrEmpty(list)) {
 			return;
@@ -98,41 +84,30 @@ public final class JedisListQueueConsumer extends JedisQueueConsumer {
 	}
 
 	/**
-	 * Connect Redis server.
-	 * @throws InterruptedException from Thread sleep method.
-	 */
-	private void connect() throws InterruptedException {
-		if (jedis.isConnected()) {
-			return;
-		}
-
-		if (connectionRetryTimes >= redisQueueOption.getConnectionRetryTimes()) {
-			throw new JedisFatalException("Exceed max connection retry times.");
-		}
-
-		Thread.sleep(redisQueueOption.getWaitMilliseconds());
-		connectionRetryTimes++;
-		jedis.connect();
-		connect();
-	}
-
-	/**
 	 * Callback method when new message arrived.
 	 * @param key Redis key of queue.
 	 * @param value Message.
 	 */
 	private void callback(String key, String value) {
-		if (consumerEvent == null) {
+		if (getConsumerEvent() == null) {
 			return;
 		}
 
-		consumerEvent.onMessage(key, value);
+		getConsumerEvent().onMessage(key, value);
 	}
 
 	@Override
 	public void close() throws IOException {
-		active = false;
-		connectionRetryTimes = 0;
+		setActive(false);
+		setConnectionRetriedTimes(0);
 		jedis.close();
+	}
+
+	/**
+	 * Set Jedis object.
+	 * @param jedis Jedis object to listen queue.
+	 */
+	public void setJedis(Jedis jedis) {
+		this.jedis = jedis;
 	}
 }

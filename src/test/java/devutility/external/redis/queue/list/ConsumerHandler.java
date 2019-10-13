@@ -11,8 +11,8 @@ import devutility.external.redis.queue.JedisQueueConsumerEvent;
  */
 public class ConsumerHandler implements JedisQueueConsumerEvent {
 	@Override
-	public boolean onMessage(String topic, String message) {
-		System.out.println(String.format("%s Triggering onMessage event, topic:\"%s\", message: \"%s\"", Thread.currentThread().getName(), topic, message));
+	public boolean onMessage(String key, Object value) {
+		System.out.println(String.format("%s Triggering onMessage event, topic:\"%s\", message: \"%s\"", Thread.currentThread().getName(), key, value.toString()));
 		return true;
 	}
 }

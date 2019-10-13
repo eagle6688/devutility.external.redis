@@ -10,10 +10,10 @@ package devutility.external.redis.queue;
 public interface JedisQueueConsumerEvent {
 	/**
 	 * Triggered while message received in consumer side.
-	 * @param topic Redis key of queue.
-	 * @param message Message value.
+	 * @param key Redis key of queue.
+	 * @param value Message value.
 	 * @return boolean This result is very important for Stream queue, if true will send 'ACK' to redis server and the
 	 *         message will be removed otherwise will not.
 	 */
-	boolean onMessage(String topic, String message);
+	boolean onMessage(String key, Object value);
 }

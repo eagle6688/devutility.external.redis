@@ -3,6 +3,8 @@ package devutility.external.redis.queue;
 import java.io.Closeable;
 
 import devutility.external.redis.com.RedisQueueOption;
+import devutility.external.redis.exception.JedisFatalException;
+import redis.clients.jedis.Jedis;
 
 /**
  * 
@@ -15,12 +17,17 @@ public abstract class JedisQueueConsumer extends JedisQueue implements Closeable
 	/**
 	 * Custom consumer event implementation.
 	 */
-	protected JedisQueueConsumerEvent consumerEvent;
+	private JedisQueueConsumerEvent consumerEvent;
 
 	/**
 	 * Status, default is true.
 	 */
-	protected boolean active = true;
+	private boolean active = true;
+
+	/**
+	 * Connection retried times.
+	 */
+	private int connectionRetriedTimes;
 
 	/**
 	 * Constructor
@@ -35,7 +42,7 @@ public abstract class JedisQueueConsumer extends JedisQueue implements Closeable
 	 */
 	public JedisQueueConsumer(JedisQueueConsumerEvent consumerEvent, RedisQueueOption redisQueueOption) {
 		super(redisQueueOption);
-		this.consumerEvent = consumerEvent;
+		this.setConsumerEvent(consumerEvent);
 	}
 
 	/**
@@ -44,19 +51,74 @@ public abstract class JedisQueueConsumer extends JedisQueue implements Closeable
 	 */
 	public abstract void listen() throws Exception;
 
-	public void log(String message) {
-		if (!redisQueueOption.isDebug()) {
+	/**
+	 * Connect Redis server.
+	 * @throws InterruptedException from Thread sleep method.
+	 */
+	protected void connect(Jedis jedis) throws InterruptedException {
+		if (jedis.getClient() == null || jedis.getClient().isBroken()) {
+			throw new JedisFatalException("Jedis connection has broken.");
+		}
+
+		if (jedis.isConnected()) {
+			return;
+		}
+
+		if (connectionRetriedTimes >= getRedisQueueOption().getConnectionRetryTimes()) {
+			throw new JedisFatalException("Exceed max connection retry times.");
+		}
+
+		Thread.sleep(getRedisQueueOption().getWaitMilliseconds());
+		connectionRetriedTimes++;
+		jedis.connect();
+		connect(jedis);
+	}
+
+	/**
+	 * Print log messages.
+	 * @param message Log message.
+	 */
+	protected void log(String message) {
+		if (!getRedisQueueOption().isDebug()) {
 			return;
 		}
 
 		System.out.println(message);
 	}
 
-	public void log(Throwable cause) {
-		if (!redisQueueOption.isDebug()) {
+	/**
+	 * Print log messages.
+	 * @param cause Throwable object.
+	 */
+	protected void log(Throwable cause) {
+		if (!getRedisQueueOption().isDebug()) {
 			return;
 		}
 
 		cause.printStackTrace(System.out);
+	}
+
+	public JedisQueueConsumerEvent getConsumerEvent() {
+		return consumerEvent;
+	}
+
+	public void setConsumerEvent(JedisQueueConsumerEvent consumerEvent) {
+		this.consumerEvent = consumerEvent;
+	}
+
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
+	}
+
+	public int getConnectionRetriedTimes() {
+		return connectionRetriedTimes;
+	}
+
+	public void setConnectionRetriedTimes(int connectionRetriedTimes) {
+		this.connectionRetriedTimes = connectionRetriedTimes;
 	}
 }

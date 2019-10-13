@@ -46,8 +46,8 @@ public class RedisQueueOption {
 	public RedisQueueOption(String key, int database) {
 		this.key = key;
 		this.database = database;
-		connectionRetryTimes = 3;
-		connectionRetryInterval = 3000;
+		this.connectionRetryTimes = 3;
+		this.connectionRetryInterval = 3000;
 	}
 
 	/**

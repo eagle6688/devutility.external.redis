@@ -46,8 +46,8 @@ public final class JedisPoolListQueueConsumer extends JedisQueueConsumer {
 
 	@Override
 	public void listen() throws Exception {
-		while (active) {
-			try (JedisListQueueConsumer jedisP2PQueueConsumer = new JedisListQueueConsumer(JedisPoolUtil.jedis(jedisPool, redisQueueOption.getDatabase()), consumerEvent, redisQueueOption)) {
+		while (isActive()) {
+			try (JedisListQueueConsumer jedisP2PQueueConsumer = new JedisListQueueConsumer(JedisPoolUtil.jedis(jedisPool, getRedisQueueOption().getDatabase()), getConsumerEvent(), getRedisQueueOption())) {
 				jedisP2PQueueConsumer.listen();
 			} catch (Exception e) {
 				if (e instanceof JedisBrokenException) {
@@ -63,6 +63,6 @@ public final class JedisPoolListQueueConsumer extends JedisQueueConsumer {
 
 	@Override
 	public void close() throws IOException {
-		active = false;
+		setActive(false);
 	}
 }

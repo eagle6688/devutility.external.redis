@@ -13,7 +13,7 @@ public abstract class JedisQueue {
 	/**
 	 * RedisQueueOption object.
 	 */
-	protected RedisQueueOption redisQueueOption;
+	private RedisQueueOption redisQueueOption;
 
 	/**
 	 * Constructor
@@ -26,6 +26,14 @@ public abstract class JedisQueue {
 	 * @param redisQueueOption RedisQueueOption object.
 	 */
 	public JedisQueue(RedisQueueOption redisQueueOption) {
+		this.setRedisQueueOption(redisQueueOption);
+	}
+
+	public RedisQueueOption getRedisQueueOption() {
+		return redisQueueOption;
+	}
+
+	public void setRedisQueueOption(RedisQueueOption redisQueueOption) {
 		this.redisQueueOption = redisQueueOption;
 	}
 }
