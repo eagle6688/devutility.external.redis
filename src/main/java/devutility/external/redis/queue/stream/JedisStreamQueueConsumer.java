@@ -1,10 +1,13 @@
 package devutility.external.redis.queue.stream;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 
 import devutility.external.redis.com.RedisQueueOption;
+import devutility.external.redis.exception.JedisBrokenException;
+import devutility.external.redis.exception.JedisFatalException;
 import devutility.external.redis.queue.JedisQueueConsumer;
 import devutility.external.redis.queue.JedisQueueConsumerEvent;
 import devutility.internal.util.CollectionUtils;
@@ -68,11 +71,46 @@ public class JedisStreamQueueConsumer extends JedisQueueConsumer {
 		}
 	}
 
+	public void listen(int count, Entry<String, StreamEntryID>[] streams) throws Exception {
+		if (jedis == null) {
+			throw new IllegalArgumentException("jedis can't be null!");
+		}
+
+		while (isActive()) {
+			try {
+				process(count, streams);
+			} catch (Exception e) {
+				if (jedis.getClient().isBroken()) {
+					throw new JedisBrokenException(e);
+				}
+
+				if (e instanceof JedisFatalException) {
+					throw e;
+				}
+
+				log(e);
+			}
+		}
+	}
+
+	public void listen(Entry<String, StreamEntryID>[] streams) throws Exception {
+		this.listen(1, streams);
+	}
+
+	public void listen(String key, StreamEntryID streamEntryID) throws Exception {
+		List<Entry<String, StreamEntryID>> streams = new ArrayList<Entry<String, StreamEntryID>>(1);
+
+		this.listen();
+	}
+
 	/**
 	 * Main process.
+	 * @param count Items count that Jedis need to read.
+	 * @param streams Its a Entry array. For each Entry object, key is key of queue in Redis, value is StreamEntryID object
+	 *            which indicate the beginning ID of queue items.
 	 * @throws InterruptedException
 	 */
-	private void process(int count, Entry<String, StreamEntryID>... streams) throws InterruptedException {
+	private void process(int count, Entry<String, StreamEntryID>[] streams) throws InterruptedException {
 		connect(jedis);
 		List<Entry<String, List<StreamEntry>>> list = jedis.xreadGroup(groupName, consumerName, count, getRedisQueueOption().getWaitMilliseconds(), noNeedAck, streams);
 
