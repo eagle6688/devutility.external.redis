@@ -1,7 +1,6 @@
 package devutility.external.redis.queue.stream;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 
@@ -98,9 +97,7 @@ public class JedisStreamQueueConsumer extends JedisQueueConsumer {
 	}
 
 	public void listen(String key, StreamEntryID streamEntryID) throws Exception {
-		List<Entry<String, StreamEntryID>> streams = new ArrayList<Entry<String, StreamEntryID>>(1);
-
-		this.listen();
+		this.listen(null);
 	}
 
 	/**
