@@ -1,11 +1,16 @@
 package devutility.external.redis.queue.stream;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Map.Entry;
 
 import devutility.external.redis.com.RedisQueueOption;
 import devutility.external.redis.queue.JedisQueueConsumer;
 import devutility.external.redis.queue.JedisQueueConsumerEvent;
+import devutility.internal.util.CollectionUtils;
 import redis.clients.jedis.Jedis;
+import redis.clients.jedis.StreamEntry;
+import redis.clients.jedis.StreamEntryID;
 
 /**
  * 
@@ -19,6 +24,21 @@ public class JedisStreamQueueConsumer extends JedisQueueConsumer {
 	 * Jedis object to read data from Redis.
 	 */
 	private Jedis jedis;
+
+	/**
+	 * Group name of current instance.
+	 */
+	private String groupName;
+
+	/**
+	 * Consumer name of current instance.
+	 */
+	private String consumerName;
+
+	/**
+	 * No need Ack
+	 */
+	private boolean noNeedAck;
 
 	/**
 	 * Constructor
@@ -52,17 +72,15 @@ public class JedisStreamQueueConsumer extends JedisQueueConsumer {
 	 * Main process.
 	 * @throws InterruptedException
 	 */
-	private void process() throws InterruptedException {
+	private void process(int count, Entry<String, StreamEntryID>... streams) throws InterruptedException {
 		connect(jedis);
-//		List<Entry<String, List<StreamEntry>>> list = jedis.xreadGroup(groupname, consumer, count, getRedisQueueOption().getWaitMilliseconds(), noAck, streams);
-//
-//		if (CollectionUtils.isNullOrEmpty(list)) {
-//			return;
-//		}
-//
-//		List<StreamEntry> streamEntries = list.get(1).getValue();
-//		StreamEntry streamEntry = streamEntries.get(0);
-//		callback(list.get(0).getKey(), streamEntry.getFields().get(Config.QUEUE_ITEM_NAME));
+		List<Entry<String, List<StreamEntry>>> list = jedis.xreadGroup(groupName, consumerName, count, getRedisQueueOption().getWaitMilliseconds(), noNeedAck, streams);
+
+		if (CollectionUtils.isNullOrEmpty(list)) {
+			return;
+		}
+
+		callback(list.get(0).getKey(), list.get(1).getValue());
 	}
 
 	/**
@@ -89,5 +107,21 @@ public class JedisStreamQueueConsumer extends JedisQueueConsumer {
 	 */
 	public void setJedis(Jedis jedis) {
 		this.jedis = jedis;
+	}
+
+	public String getGroupName() {
+		return groupName;
+	}
+
+	public void setGroupName(String groupName) {
+		this.groupName = groupName;
+	}
+
+	public String getConsumerName() {
+		return consumerName;
+	}
+
+	public void setConsumerName(String consumerName) {
+		this.consumerName = consumerName;
 	}
 }
