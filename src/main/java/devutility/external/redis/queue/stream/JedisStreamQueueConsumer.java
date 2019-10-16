@@ -1,6 +1,8 @@
 package devutility.external.redis.queue.stream;
 
 import java.io.IOException;
+import java.util.AbstractMap;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map.Entry;
 
@@ -97,7 +99,9 @@ public class JedisStreamQueueConsumer extends JedisQueueConsumer {
 	}
 
 	public void listen(String key, StreamEntryID streamEntryID) throws Exception {
-		this.listen(null);
+		Entry<String, StreamEntryID> entry = new AbstractMap.SimpleEntry<String, StreamEntryID>(key, streamEntryID);
+		List<Entry<String, StreamEntryID>> list = Arrays.asList(entry);
+		this.listen();
 	}
 
 	/**
