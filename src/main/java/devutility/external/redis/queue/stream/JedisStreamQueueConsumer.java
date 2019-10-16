@@ -98,10 +98,15 @@ public class JedisStreamQueueConsumer extends JedisQueueConsumer {
 		this.listen(1, streams);
 	}
 
+	public void listen(Entry<String, StreamEntryID> stream) throws Exception {
+		@SuppressWarnings("unchecked")
+		Entry<String, StreamEntryID>[] entries = (Entry<String, StreamEntryID>[]) Arrays.asList(stream).toArray();
+		this.listen(entries);
+	}
+
 	public void listen(String key, StreamEntryID streamEntryID) throws Exception {
 		Entry<String, StreamEntryID> entry = new AbstractMap.SimpleEntry<String, StreamEntryID>(key, streamEntryID);
-		List<Entry<String, StreamEntryID>> list = Arrays.asList(entry);
-		this.listen();
+		this.listen(entry);
 	}
 
 	/**
