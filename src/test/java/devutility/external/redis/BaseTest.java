@@ -18,6 +18,7 @@ public abstract class BaseTest extends devutility.internal.test.BaseTest {
 	private final static String CONFIG_FILE = "config.properties";
 	private final static String CONFIG_PREFIX = "redis";
 	private final static String CONFIG_SENTINEL_PREFIX = "sentinel";
+	protected final static String CONFIG_KEY_STREAM = "test-stream-queue";
 
 	/**
 	 * SingleRedisInstance object.

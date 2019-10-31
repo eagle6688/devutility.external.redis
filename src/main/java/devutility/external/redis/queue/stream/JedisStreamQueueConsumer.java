@@ -49,10 +49,37 @@ public class JedisStreamQueueConsumer extends JedisQueueConsumer {
 	 * @param jedis Jedis object to read data from Redis.
 	 * @param consumerEvent Custom consumer event implementation.
 	 * @param redisQueueOption RedisQueueOption object.
+	 * @param groupName Group name of redis queue.
+	 * @param consumerName Consumer name of provided group.
 	 */
-	public JedisStreamQueueConsumer(Jedis jedis, JedisQueueConsumerEvent consumerEvent, RedisQueueOption redisQueueOption) {
+	public JedisStreamQueueConsumer(Jedis jedis, JedisQueueConsumerEvent consumerEvent, RedisQueueOption redisQueueOption, String groupName, String consumerName) {
 		super(consumerEvent, redisQueueOption);
 		this.jedis = jedis;
+		this.groupName = groupName;
+		this.consumerName = consumerName;
+	}
+
+	/**
+	 * Constructor
+	 * @param jedis Jedis object to read data from Redis.
+	 * @param consumerEvent Custom consumer event implementation.
+	 * @param key Redis key of queue.
+	 * @param groupName Group name of redis queue.
+	 * @param consumerName Consumer name of provided group.
+	 */
+	public JedisStreamQueueConsumer(Jedis jedis, JedisQueueConsumerEvent consumerEvent, String key, String groupName, String consumerName) {
+		this(jedis, consumerEvent, new RedisQueueOption(key), groupName, consumerName);
+	}
+
+	/**
+	 * Constructor
+	 * @param jedis Jedis object to read data from Redis.
+	 * @param consumerEvent Custom consumer event implementation.
+	 * @param key Redis key of queue.
+	 * @param groupName Group name of redis queue.
+	 */
+	public JedisStreamQueueConsumer(Jedis jedis, JedisQueueConsumerEvent consumerEvent, String key, String groupName) {
+		this(jedis, consumerEvent, key, groupName, null);
 	}
 
 	/**
@@ -62,7 +89,7 @@ public class JedisStreamQueueConsumer extends JedisQueueConsumer {
 	 * @param key Redis key of queue.
 	 */
 	public JedisStreamQueueConsumer(Jedis jedis, JedisQueueConsumerEvent consumerEvent, String key) {
-		this(jedis, consumerEvent, new RedisQueueOption(key));
+		this(jedis, consumerEvent, key, null);
 	}
 
 	@Override
