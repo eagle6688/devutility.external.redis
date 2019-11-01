@@ -8,6 +8,7 @@ import devutility.external.redis.com.RedisType;
 import devutility.external.redis.ext.com.BuilderFactory;
 import devutility.external.redis.ext.constant.Command;
 import devutility.external.redis.ext.constant.Keyword;
+import devutility.external.redis.ext.model.ConsumerInfo;
 import devutility.external.redis.ext.model.GroupInfo;
 import redis.clients.jedis.Client;
 import redis.clients.jedis.Jedis;
@@ -54,6 +55,19 @@ public class DevJedis implements Closeable {
 		client.sendCommand(Command.XINFO, Keyword.GROUPS.raw, SafeEncoder.encode(key));
 		List<Object> list = client.getObjectMultiBulkReply();
 		return BuilderFactory.STREAM_GROUPINFO_LIST.build(list);
+	}
+
+	/**
+	 * Use XINFO command to query information of consumers belong to the provided key and group.
+	 * @param key Redis key.
+	 * @param groupName Group name.
+	 * @return {@code List<ConsumerInfo>}
+	 */
+	public List<ConsumerInfo> xInfoConsumers(String key, String groupName) {
+		Client client = jedis.getClient();
+		client.sendCommand(Command.XINFO, Keyword.CONSUMERS.raw, SafeEncoder.encode(key), SafeEncoder.encode(groupName));
+		List<Object> list = client.getObjectMultiBulkReply();
+		return BuilderFactory.STREAM_CONSUMERINFO_LIST.build(list);
 	}
 
 	/**

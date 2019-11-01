@@ -17,4 +17,14 @@ public class Config {
 	 * Item name in queue.
 	 */
 	public final static String QUEUE_ITEM_NAME = "item";
+
+	/**
+	 * Default group name in queue.
+	 */
+	public final static String QUEUE_DEFAULT_GROUP_NAME = "group-default";
+
+	/**
+	 * Default consumer name in group.
+	 */
+	public final static String QUEUE_DEFAULT_CONSUMER_NAME = "consumer-default";
 }

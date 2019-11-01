@@ -12,7 +12,7 @@ import redis.clients.jedis.util.SafeEncoder;
  * @version: 2019-10-31 21:13:21
  */
 public enum Keyword {
-	GROUPS;
+	GROUPS, CONSUMERS;
 
 	public final byte[] raw;
 

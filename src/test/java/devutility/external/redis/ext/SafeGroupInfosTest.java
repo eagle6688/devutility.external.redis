@@ -17,7 +17,7 @@ public class SafeGroupInfosTest extends BaseTest {
 	@Override
 	public void run() {
 		try (DevJedis devJedis = new DevJedis(jedis())) {
-			List<GroupInfo> list = devJedis.safeGroupInfos("asd");
+			List<GroupInfo> list = devJedis.safeGroupInfos(CONFIG_KEY_STREAM);
 
 			list.forEach(i -> {
 				System.out.println(String.format("name: %s, consumers: %d, pending: %d, LastDeliveredId: %s", i.getName(), i.getConsumers(), i.getPending(), i.getLastDeliveredId()));

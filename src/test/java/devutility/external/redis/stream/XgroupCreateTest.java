@@ -1,6 +1,7 @@
 package devutility.external.redis.stream;
 
 import devutility.external.redis.BaseTest;
+import devutility.external.redis.model.StreamData;
 import devutility.internal.test.TestExecutor;
 import redis.clients.jedis.Jedis;
 
@@ -15,7 +16,7 @@ public class XgroupCreateTest extends BaseTest {
 	@Override
 	public void run() {
 		try (Jedis jedis = jedis()) {
-			String result = jedis.xgroupCreate(CONFIG_KEY_STREAM, "Test-Group-1", null, false);
+			String result = jedis.xgroupCreate(CONFIG_KEY_STREAM, StreamData.GROUPNAME, null, false);
 			System.out.println(result);
 		} catch (Exception e) {
 			e.printStackTrace();

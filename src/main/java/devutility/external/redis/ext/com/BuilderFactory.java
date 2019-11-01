@@ -5,10 +5,12 @@ import java.util.LinkedList;
 import java.util.List;
 
 import devutility.external.redis.exception.JedisFatalException;
+import devutility.external.redis.ext.model.ConsumerInfo;
 import devutility.external.redis.ext.model.GroupInfo;
+import devutility.external.redis.utils.JedisStreamUtils;
+import devutility.internal.data.converter.ConverterUtils;
 import redis.clients.jedis.Builder;
 import redis.clients.jedis.StreamEntryID;
-import redis.clients.jedis.util.SafeEncoder;
 
 /**
  * 
@@ -32,22 +34,43 @@ public final class BuilderFactory {
 
 			for (ArrayList<Object> object : objectList) {
 				if (object.size() != 8) {
-					throw new JedisFatalException("Illegal response!");
+					throw new JedisFatalException("Illegal response format!");
 				}
 
-				GroupInfo groupInfo = new GroupInfo();
-				groupInfo.setName(SafeEncoder.encode((byte[]) object.get(1)));
+				GroupInfo model = new GroupInfo();
+				model.setName(JedisStreamUtils.convertToString(object.get(1)));
+				model.setConsumers(ConverterUtils.objectTolong(object.get(3)));
+				model.setPending(ConverterUtils.objectTolong(object.get(5)));
+				model.setLastDeliveredId(new StreamEntryID(JedisStreamUtils.convertToString(object.get(7))));
+				list.add(model);
+			}
 
-				if (object.get(3) instanceof Long) {
-					groupInfo.setConsumers((Long) object.get(3));
+			return list;
+		}
+	};
+
+	public static final Builder<List<ConsumerInfo>> STREAM_CONSUMERINFO_LIST = new Builder<List<ConsumerInfo>>() {
+		@Override
+		public List<ConsumerInfo> build(Object data) {
+			List<ConsumerInfo> list = new LinkedList<ConsumerInfo>();
+
+			if (null == data || !(data instanceof ArrayList)) {
+				return list;
+			}
+
+			@SuppressWarnings("unchecked")
+			List<ArrayList<Object>> objectList = (List<ArrayList<Object>>) data;
+
+			for (ArrayList<Object> object : objectList) {
+				if (object.size() != 6) {
+					throw new JedisFatalException("Illegal response format!");
 				}
 
-				if (object.get(5) instanceof Long) {
-					groupInfo.setPending((Long) object.get(5));
-				}
-
-				groupInfo.setLastDeliveredId(new StreamEntryID(SafeEncoder.encode((byte[]) object.get(7))));
-				list.add(groupInfo);
+				ConsumerInfo model = new ConsumerInfo();
+				model.setName(JedisStreamUtils.convertToString(object.get(1)));
+				model.setPending(ConverterUtils.objectTolong(object.get(3)));
+				model.setIdle(ConverterUtils.objectToint(object.get(5)));
+				list.add(model);
 			}
 
 			return list;
