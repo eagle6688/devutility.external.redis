@@ -8,16 +8,16 @@ import devutility.internal.test.TestExecutor;
 
 /**
  * 
- * ExecXinfoGroupsTest
+ * SafeGroupInfosTest
  * 
  * @author: Aldwin Su
- * @version: 2019-10-31 21:28:56
+ * @version: 2019-11-01 14:53:58
  */
-public class XinfoGroupsTest extends BaseTest {
+public class SafeGroupInfosTest extends BaseTest {
 	@Override
 	public void run() {
 		try (DevJedis devJedis = new DevJedis(jedis())) {
-			List<GroupInfo> list = devJedis.xInfoGroups(CONFIG_KEY_STREAM);
+			List<GroupInfo> list = devJedis.safeGroupInfos("asd");
 
 			list.forEach(i -> {
 				System.out.println(String.format("name: %s, consumers: %d, pending: %d, LastDeliveredId: %s", i.getName(), i.getConsumers(), i.getPending(), i.getLastDeliveredId()));
@@ -28,6 +28,6 @@ public class XinfoGroupsTest extends BaseTest {
 	}
 
 	public static void main(String[] args) {
-		TestExecutor.run(XinfoGroupsTest.class);
+		TestExecutor.run(SafeGroupInfosTest.class);
 	}
 }
