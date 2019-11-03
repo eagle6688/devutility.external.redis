@@ -37,10 +37,10 @@ public abstract class JedisQueueConsumer extends JedisQueue implements Closeable
 
 	/**
 	 * Constructor
-	 * @param consumerEvent JedisQueueConsumerEvent object.
 	 * @param redisQueueOption RedisQueueOption object.
+	 * @param consumerEvent JedisQueueConsumerEvent object.
 	 */
-	public JedisQueueConsumer(JedisQueueConsumerEvent consumerEvent, RedisQueueOption redisQueueOption) {
+	public JedisQueueConsumer(RedisQueueOption redisQueueOption, JedisQueueConsumerEvent consumerEvent) {
 		super(redisQueueOption);
 		this.setConsumerEvent(consumerEvent);
 	}

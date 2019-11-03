@@ -27,22 +27,22 @@ public final class JedisListQueueConsumer extends JedisQueueConsumer {
 	/**
 	 * Constructor
 	 * @param jedis Jedis object to read data from Redis.
-	 * @param consumerEvent Custom consumer event implementation.
 	 * @param redisQueueOption RedisQueueOption object.
+	 * @param consumerEvent Custom consumer event implementation.
 	 */
-	public JedisListQueueConsumer(Jedis jedis, JedisQueueConsumerEvent consumerEvent, RedisQueueOption redisQueueOption) {
-		super(consumerEvent, redisQueueOption);
+	public JedisListQueueConsumer(Jedis jedis, RedisQueueOption redisQueueOption, JedisQueueConsumerEvent consumerEvent) {
+		super(redisQueueOption, consumerEvent);
 		this.jedis = jedis;
 	}
 
 	/**
 	 * Constructor
 	 * @param jedis Jedis object to read data from Redis.
-	 * @param consumerEvent Custom consumer event implementation.
 	 * @param key Redis key of queue.
+	 * @param consumerEvent Custom consumer event implementation.
 	 */
-	public JedisListQueueConsumer(Jedis jedis, JedisQueueConsumerEvent consumerEvent, String key) {
-		this(jedis, consumerEvent, new RedisQueueOption(key));
+	public JedisListQueueConsumer(Jedis jedis, String key, JedisQueueConsumerEvent consumerEvent) {
+		this(jedis, new RedisQueueOption(key), consumerEvent);
 	}
 
 	@Override

@@ -4,8 +4,8 @@ import java.io.IOException;
 
 import devutility.external.redis.com.RedisQueueOption;
 import devutility.external.redis.exception.JedisBrokenException;
-import devutility.external.redis.queue.JedisQueueConsumerEvent;
 import devutility.external.redis.queue.JedisQueueConsumer;
+import devutility.external.redis.queue.JedisQueueConsumerEvent;
 import devutility.external.redis.utils.pool.JedisPoolUtil;
 import redis.clients.jedis.JedisPool;
 
@@ -25,29 +25,29 @@ public final class JedisPoolListQueueConsumer extends JedisQueueConsumer {
 	/**
 	 * Constructor
 	 * @param jedisPool JedisPool object to get Jedis object.
-	 * @param consumerEvent Custom consumer event implementation.
 	 * @param redisQueueOption RedisQueueOption object.
+	 * @param consumerEvent Custom consumer event implementation.
 	 */
-	public JedisPoolListQueueConsumer(JedisPool jedisPool, JedisQueueConsumerEvent consumerEvent, RedisQueueOption redisQueueOption) {
-		super(consumerEvent, redisQueueOption);
+	public JedisPoolListQueueConsumer(JedisPool jedisPool, RedisQueueOption redisQueueOption, JedisQueueConsumerEvent consumerEvent) {
+		super(redisQueueOption, consumerEvent);
 		this.jedisPool = jedisPool;
 	}
 
 	/**
 	 * Constructor
 	 * @param jedisPool JedisPool object to get Jedis object.
-	 * @param consumerEvent Custom consumer event implementation.
 	 * @param key Redis key of queue.
 	 * @param database Redis database.
+	 * @param consumerEvent Custom consumer event implementation.
 	 */
-	public JedisPoolListQueueConsumer(JedisPool jedisPool, JedisQueueConsumerEvent consumerEvent, String key, int database) {
-		this(jedisPool, consumerEvent, new RedisQueueOption(key, database));
+	public JedisPoolListQueueConsumer(JedisPool jedisPool, String key, int database, JedisQueueConsumerEvent consumerEvent) {
+		this(jedisPool, new RedisQueueOption(key, database), consumerEvent);
 	}
 
 	@Override
 	public void listen() throws Exception {
 		while (isActive()) {
-			try (JedisListQueueConsumer jedisP2PQueueConsumer = new JedisListQueueConsumer(JedisPoolUtil.jedis(jedisPool, getRedisQueueOption().getDatabase()), getConsumerEvent(), getRedisQueueOption())) {
+			try (JedisListQueueConsumer jedisP2PQueueConsumer = new JedisListQueueConsumer(JedisPoolUtil.jedis(jedisPool, getRedisQueueOption().getDatabase()), getRedisQueueOption(), getConsumerEvent())) {
 				jedisP2PQueueConsumer.listen();
 			} catch (Exception e) {
 				if (e instanceof JedisBrokenException) {

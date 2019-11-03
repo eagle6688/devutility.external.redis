@@ -3,7 +3,6 @@ package devutility.external.redis.queue.list;
 import devutility.external.redis.BaseTest;
 import devutility.external.redis.queue.Config;
 import devutility.external.redis.queue.JedisQueueConsumerEvent;
-import devutility.external.redis.queue.list.JedisListQueueConsumer;
 import devutility.internal.test.TestExecutor;
 
 /**
@@ -19,7 +18,7 @@ public class MultiConsumersTest extends BaseTest {
 
 	private void startThread(int index) {
 		Thread thread = new Thread(() -> {
-			try (JedisListQueueConsumer consumer = new JedisListQueueConsumer(jedis(), consumerEvent, Config.QUEUE_KEY)) {
+			try (JedisListQueueConsumer consumer = new JedisListQueueConsumer(jedis(), Config.QUEUE_KEY, consumerEvent)) {
 				consumer.listen();
 			} catch (Exception e) {
 				e.printStackTrace();

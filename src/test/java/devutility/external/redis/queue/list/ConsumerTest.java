@@ -21,7 +21,7 @@ public class ConsumerTest extends BaseTest {
 	public void run() {
 		System.out.println(new Date());
 
-		try (JedisListQueueConsumer consumer = new JedisListQueueConsumer(jedis(), consumerEvent, Config.QUEUE_KEY)) {
+		try (JedisListQueueConsumer consumer = new JedisListQueueConsumer(jedis(), Config.QUEUE_KEY, consumerEvent)) {
 			consumer.listen();
 		} catch (Exception e) {
 			e.printStackTrace();

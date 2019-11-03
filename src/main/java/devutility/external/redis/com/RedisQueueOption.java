@@ -26,12 +26,22 @@ public class RedisQueueOption {
 	/**
 	 * Connection retry times, default is 3 times.
 	 */
-	private int connectionRetryTimes;
+	private int connectionRetryTimes = 3;
 
 	/**
 	 * Interval milliseconds between two connection retry, default is 3 seconds.
 	 */
-	private int connectionRetryInterval;
+	private int connectionRetryInterval = 3000;
+
+	/**
+	 * Group name, optional field. If this field with null value, system will use default value.
+	 */
+	private String groupName;
+
+	/**
+	 * Consumer name, optional field. If this field with null value, system will use default value.
+	 */
+	private String consumerName;
 
 	/**
 	 * In debug mode, system will print all of debug information. Default is false.
@@ -41,13 +51,23 @@ public class RedisQueueOption {
 	/**
 	 * Constructor
 	 * @param key Redis key of queue.
+	 * @param groupName Group name
+	 * @param consumerName Consumer name
+	 */
+	public RedisQueueOption(String key, String groupName, String consumerName) {
+		this.key = key;
+		this.groupName = groupName;
+		this.consumerName = consumerName;
+	}
+
+	/**
+	 * Constructor
+	 * @param key Redis key of queue.
 	 * @param database Database of Redis, default is 0.
 	 */
 	public RedisQueueOption(String key, int database) {
 		this.key = key;
 		this.database = database;
-		this.connectionRetryTimes = 3;
-		this.connectionRetryInterval = 3000;
 	}
 
 	/**
@@ -103,6 +123,22 @@ public class RedisQueueOption {
 
 	public void setConnectionRetryInterval(int connectionRetryInterval) {
 		this.connectionRetryInterval = connectionRetryInterval;
+	}
+
+	public String getGroupName() {
+		return groupName;
+	}
+
+	public void setGroupName(String groupName) {
+		this.groupName = groupName;
+	}
+
+	public String getConsumerName() {
+		return consumerName;
+	}
+
+	public void setConsumerName(String consumerName) {
+		this.consumerName = consumerName;
 	}
 
 	public boolean isDebug() {

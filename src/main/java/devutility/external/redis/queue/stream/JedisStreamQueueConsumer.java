@@ -47,49 +47,47 @@ public class JedisStreamQueueConsumer extends JedisQueueConsumer {
 	/**
 	 * Constructor
 	 * @param jedis Jedis object to read data from Redis.
-	 * @param consumerEvent Custom consumer event implementation.
 	 * @param redisQueueOption RedisQueueOption object.
+	 * @param consumerEvent Custom consumer event implementation.
 	 * @param groupName Group name of redis queue.
 	 * @param consumerName Consumer name of provided group.
 	 */
-	public JedisStreamQueueConsumer(Jedis jedis, JedisQueueConsumerEvent consumerEvent, RedisQueueOption redisQueueOption, String groupName, String consumerName) {
-		super(consumerEvent, redisQueueOption);
+	public JedisStreamQueueConsumer(Jedis jedis, RedisQueueOption redisQueueOption, JedisQueueConsumerEvent consumerEvent) {
+		super(redisQueueOption, consumerEvent);
 		this.jedis = jedis;
-		this.groupName = groupName;
-		this.consumerName = consumerName;
 	}
 
 	/**
 	 * Constructor
 	 * @param jedis Jedis object to read data from Redis.
-	 * @param consumerEvent Custom consumer event implementation.
 	 * @param key Redis key of queue.
 	 * @param groupName Group name of redis queue.
 	 * @param consumerName Consumer name of provided group.
+	 * @param consumerEvent Custom consumer event implementation.
 	 */
-	public JedisStreamQueueConsumer(Jedis jedis, JedisQueueConsumerEvent consumerEvent, String key, String groupName, String consumerName) {
-		this(jedis, consumerEvent, new RedisQueueOption(key), groupName, consumerName);
+	public JedisStreamQueueConsumer(Jedis jedis, String key, String groupName, String consumerName, JedisQueueConsumerEvent consumerEvent) {
+		this(jedis, new RedisQueueOption(key, groupName, consumerName), consumerEvent);
 	}
 
 	/**
 	 * Constructor
 	 * @param jedis Jedis object to read data from Redis.
-	 * @param consumerEvent Custom consumer event implementation.
 	 * @param key Redis key of queue.
 	 * @param groupName Group name of redis queue.
+	 * @param consumerEvent Custom consumer event implementation.
 	 */
-	public JedisStreamQueueConsumer(Jedis jedis, JedisQueueConsumerEvent consumerEvent, String key, String groupName) {
-		this(jedis, consumerEvent, key, groupName, null);
+	public JedisStreamQueueConsumer(Jedis jedis, String key, String groupName, JedisQueueConsumerEvent consumerEvent) {
+		this(jedis, key, groupName, null, consumerEvent);
 	}
 
 	/**
 	 * Constructor
 	 * @param jedis Jedis object to read data from Redis.
-	 * @param consumerEvent Custom consumer event implementation.
 	 * @param key Redis key of queue.
+	 * @param consumerEvent Custom consumer event implementation.
 	 */
-	public JedisStreamQueueConsumer(Jedis jedis, JedisQueueConsumerEvent consumerEvent, String key) {
-		this(jedis, consumerEvent, key, null);
+	public JedisStreamQueueConsumer(Jedis jedis, String key, JedisQueueConsumerEvent consumerEvent) {
+		this(jedis, key, null, consumerEvent);
 	}
 
 	@Override
