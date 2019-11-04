@@ -1,8 +1,12 @@
 package devutility.external.redis.ext;
 
 import java.io.Closeable;
+import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map.Entry;
 
 import devutility.external.redis.com.RedisType;
 import devutility.external.redis.ext.com.BuilderFactory;
@@ -12,6 +16,8 @@ import devutility.external.redis.ext.model.ConsumerInfo;
 import devutility.external.redis.ext.model.GroupInfo;
 import redis.clients.jedis.Client;
 import redis.clients.jedis.Jedis;
+import redis.clients.jedis.StreamEntry;
+import redis.clients.jedis.StreamEntryID;
 import redis.clients.jedis.util.SafeEncoder;
 
 /**
@@ -68,6 +74,36 @@ public class DevJedis implements Closeable {
 		client.sendCommand(Command.XINFO, Keyword.CONSUMERS.raw, SafeEncoder.encode(key), SafeEncoder.encode(groupName));
 		List<Object> list = client.getObjectMultiBulkReply();
 		return BuilderFactory.STREAM_CONSUMERINFO_LIST.build(list);
+	}
+
+	public List<Entry<String, List<StreamEntry>>> xreadGroup(final String groupname, final String consumer, final int count, final long block, final boolean noAck, List<Entry<String, StreamEntryID>> streams) {
+		@SuppressWarnings("unchecked")
+		Entry<String, StreamEntryID>[] entries = (Entry<String, StreamEntryID>[]) Arrays.asList(streams).toArray();
+		return xreadGroup(groupname, consumer, count, block, noAck, entries);
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<Entry<String, List<StreamEntry>>> xreadGroup(final String groupname, final String consumer, final int count, final long block, final boolean noAck, final Entry<String, StreamEntryID>... streams) {
+		Client client = jedis.getClient();
+		client.xreadGroup(groupname, consumer, count, block, noAck, streams);
+
+		client.setTimeoutInfinite();
+		List<Object> streamsEntries = client.getObjectMultiBulkReply();
+
+		if (streamsEntries == null) {
+			return null;
+		}
+
+		List<Entry<String, List<StreamEntry>>> result = new ArrayList<>(streamsEntries.size());
+
+		for (Object streamObj : streamsEntries) {
+			List<Object> stream = (List<Object>) streamObj;
+			String streamId = SafeEncoder.encode((byte[]) stream.get(0));
+			List<StreamEntry> streamEntries = BuilderFactory.STREAM_ENTRY_LIST.build(stream.get(1));
+			result.add(new AbstractMap.SimpleEntry<String, List<StreamEntry>>(streamId, streamEntries));
+		}
+
+		return result;
 	}
 
 	/**

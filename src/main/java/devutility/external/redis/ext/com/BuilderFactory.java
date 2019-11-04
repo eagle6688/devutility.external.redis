@@ -1,8 +1,11 @@
 package devutility.external.redis.ext.com;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import devutility.external.redis.exception.JedisFatalException;
 import devutility.external.redis.ext.model.ConsumerInfo;
@@ -10,7 +13,9 @@ import devutility.external.redis.ext.model.GroupInfo;
 import devutility.external.redis.utils.JedisStreamUtils;
 import devutility.internal.data.converter.ConverterUtils;
 import redis.clients.jedis.Builder;
+import redis.clients.jedis.StreamEntry;
 import redis.clients.jedis.StreamEntryID;
+import redis.clients.jedis.util.SafeEncoder;
 
 /**
  * 
@@ -74,6 +79,45 @@ public final class BuilderFactory {
 			}
 
 			return list;
+		}
+	};
+
+	public static final Builder<List<StreamEntry>> STREAM_ENTRY_LIST = new Builder<List<StreamEntry>>() {
+		@Override
+		@SuppressWarnings("unchecked")
+		public List<StreamEntry> build(Object data) {
+			if (null == data) {
+				return null;
+			}
+
+			List<ArrayList<Object>> objectList = (List<ArrayList<Object>>) data;
+			List<StreamEntry> responses = new ArrayList<>(objectList.size() / 2);
+
+			if (objectList.isEmpty()) {
+				return responses;
+			}
+
+			for (ArrayList<Object> res : objectList) {
+				String entryIdString = SafeEncoder.encode((byte[]) res.get(0));
+				StreamEntryID entryID = new StreamEntryID(entryIdString);
+				List<byte[]> hash = (List<byte[]>) res.get(1);
+
+				Iterator<byte[]> hashIterator = hash.iterator();
+				Map<String, String> map = new HashMap<>(hash.size() / 2);
+
+				while (hashIterator.hasNext()) {
+					map.put(SafeEncoder.encode((byte[]) hashIterator.next()), SafeEncoder.encode((byte[]) hashIterator.next()));
+				}
+
+				responses.add(new StreamEntry(entryID, map));
+			}
+
+			return responses;
+		}
+
+		@Override
+		public String toString() {
+			return "List<StreamEntry>";
 		}
 	};
 }
