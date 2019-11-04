@@ -76,12 +76,44 @@ public class DevJedis implements Closeable {
 		return BuilderFactory.STREAM_CONSUMERINFO_LIST.build(list);
 	}
 
+	/**
+	 * Overwrite xreadGroup method in Jedis, because it has a bug causes SocketTimeoutException once use block mode.
+	 * @param groupname Group name of Reids queue.
+	 * @param consumer Consumer name of provided group.
+	 * @param count Message count of one Redis queue.
+	 * @param block Block time in milliseconds.
+	 * @param noAck True will avoid adding the message to the PEL.
+	 * @param streams Two types format, The special > ID, which means that the consumer want to receive only messages that
+	 *            were never delivered to any other consumer. It just means, give me new messages. Any other ID, that is, 0
+	 *            or any other valid ID or incomplete ID (just the millisecond time part), will have the effect of returning
+	 *            entries that are pending for the consumer sending the command with IDs equal or greater to the one
+	 *            provided. So basically if the ID is not >, then the command will just let the client access its pending
+	 *            entries: messages delivered to it, but not yet acknowledged. Note that in this case, both BLOCK and NOACK
+	 *            are ignored.
+	 * @return {@code List<Entry<String,List<StreamEntry>>>}
+	 */
 	public List<Entry<String, List<StreamEntry>>> xreadGroup(final String groupname, final String consumer, final int count, final long block, final boolean noAck, List<Entry<String, StreamEntryID>> streams) {
 		@SuppressWarnings("unchecked")
 		Entry<String, StreamEntryID>[] entries = (Entry<String, StreamEntryID>[]) Arrays.asList(streams).toArray();
 		return xreadGroup(groupname, consumer, count, block, noAck, entries);
 	}
 
+	/**
+	 * Overwrite xreadGroup method in Jedis, because it has a bug causes SocketTimeoutException once use block mode.
+	 * @param groupname Group name of Reids queue.
+	 * @param consumer Consumer name of provided group.
+	 * @param count Message count of one Redis queue.
+	 * @param block Block time in milliseconds.
+	 * @param noAck True will avoid adding the message to the PEL.
+	 * @param streams Two types format, The special > ID, which means that the consumer want to receive only messages that
+	 *            were never delivered to any other consumer. It just means, give me new messages. Any other ID, that is, 0
+	 *            or any other valid ID or incomplete ID (just the millisecond time part), will have the effect of returning
+	 *            entries that are pending for the consumer sending the command with IDs equal or greater to the one
+	 *            provided. So basically if the ID is not >, then the command will just let the client access its pending
+	 *            entries: messages delivered to it, but not yet acknowledged. Note that in this case, both BLOCK and NOACK
+	 *            are ignored.
+	 * @return {@code List<Entry<String,List<StreamEntry>>>}
+	 */
 	@SuppressWarnings("unchecked")
 	public List<Entry<String, List<StreamEntry>>> xreadGroup(final String groupname, final String consumer, final int count, final long block, final boolean noAck, final Entry<String, StreamEntryID>... streams) {
 		Client client = jedis.getClient();

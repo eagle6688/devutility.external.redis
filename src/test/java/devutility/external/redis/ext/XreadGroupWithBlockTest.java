@@ -1,12 +1,12 @@
-package devutility.external.redis.queue.stream;
+package devutility.external.redis.ext;
 
 import java.util.AbstractMap;
 import java.util.List;
 import java.util.Map.Entry;
 
 import devutility.external.redis.model.StreamData;
+import devutility.external.redis.queue.stream.BaseTestForStream;
 import devutility.internal.test.TestExecutor;
-import redis.clients.jedis.Jedis;
 import redis.clients.jedis.StreamEntry;
 import redis.clients.jedis.StreamEntryID;
 
@@ -22,7 +22,7 @@ public class XreadGroupWithBlockTest extends BaseTestForStream {
 	public void run() {
 		Entry<String, StreamEntryID> stream = new AbstractMap.SimpleEntry<String, StreamEntryID>(CONFIG_KEY_STREAM, null);
 
-		try (Jedis jedis = jedis()) {
+		try (DevJedis jedis = new DevJedis(jedis())) {
 			@SuppressWarnings("unchecked")
 			List<Entry<String, List<StreamEntry>>> list = jedis.xreadGroup(StreamData.GROUPNAME, StreamData.CONSUMERNAME, 1, 20000, false, stream);
 			handleXreadGroup(list);
