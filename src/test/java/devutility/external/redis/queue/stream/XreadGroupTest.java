@@ -1,4 +1,4 @@
-package devutility.external.redis.stream;
+package devutility.external.redis.queue.stream;
 
 import java.util.AbstractMap;
 import java.util.List;

@@ -1,22 +1,25 @@
-package devutility.external.redis.stream;
+package devutility.external.redis.queue.stream;
 
 import devutility.external.redis.BaseTest;
 import devutility.external.redis.model.StreamData;
 import devutility.internal.test.TestExecutor;
 import redis.clients.jedis.Jedis;
+import redis.clients.jedis.StreamEntryID;
 
 /**
  * 
- * XgroupCreateTest
+ * XackTest
  * 
  * @author: Aldwin Su
- * @version: 2019-10-31 21:58:35
+ * @version: 2019-11-04 13:54:59
  */
-public class XgroupCreateTest extends BaseTest {
+public class XackTest extends BaseTest {
 	@Override
 	public void run() {
+		StreamEntryID streamEntryID = new StreamEntryID("1572529192472-0");
+
 		try (Jedis jedis = jedis()) {
-			String result = jedis.xgroupCreate(CONFIG_KEY_STREAM, StreamData.GROUPNAME, null, false);
+			long result = jedis.xack(CONFIG_KEY_STREAM, StreamData.GROUPNAME, streamEntryID);
 			System.out.println(result);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -24,6 +27,6 @@ public class XgroupCreateTest extends BaseTest {
 	}
 
 	public static void main(String[] args) {
-		TestExecutor.run(XgroupCreateTest.class);
+		TestExecutor.run(XackTest.class);
 	}
 }

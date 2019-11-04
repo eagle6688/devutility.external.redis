@@ -1,4 +1,4 @@
-package devutility.external.redis.stream;
+package devutility.external.redis.queue.stream;
 
 import devutility.external.redis.BaseTest;
 import devutility.internal.test.TestExecutor;
