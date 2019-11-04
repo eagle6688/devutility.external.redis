@@ -1,5 +1,7 @@
 package devutility.external.redis.queue;
 
+import java.io.Closeable;
+
 import devutility.external.redis.com.RedisQueueOption;
 
 /**
@@ -9,7 +11,7 @@ import devutility.external.redis.com.RedisQueueOption;
  * @author: Aldwin Su
  * @version: 2019-10-10 21:16:42
  */
-public abstract class JedisQueue {
+public abstract class JedisQueue implements Closeable {
 	/**
 	 * RedisQueueOption object.
 	 */

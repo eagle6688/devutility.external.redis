@@ -1,5 +1,6 @@
 package devutility.external.redis.queue.stream;
 
+import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -29,5 +30,10 @@ public class JedisStreamQueueProducer extends JedisQueueProducer {
 
 	public StreamEntryID xadd(Jedis jedis, final String key, final Map<String, String> hash, final long maxLen) {
 		return xadd(jedis, key, hash, maxLen, false);
+	}
+
+	@Override
+	public void close() throws IOException {
+
 	}
 }
