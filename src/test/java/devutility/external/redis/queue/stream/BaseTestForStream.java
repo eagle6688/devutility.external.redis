@@ -28,6 +28,7 @@ public abstract class BaseTestForStream extends BaseTest {
 			println(String.format("Size of StreamEntry is %d", i.getValue().size()));
 
 			i.getValue().forEach(j -> {
+				println("--------------------------------------------");
 				println(String.format("StreamEntryID: %s", j.getID().toString()));
 
 				j.getFields().entrySet().forEach(k -> {

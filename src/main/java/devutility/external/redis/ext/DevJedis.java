@@ -10,11 +10,8 @@ import java.util.Map.Entry;
 
 import devutility.external.redis.com.RedisType;
 import devutility.external.redis.ext.com.BuilderFactory;
-import devutility.external.redis.ext.constant.Command;
-import devutility.external.redis.ext.constant.Keyword;
 import devutility.external.redis.ext.model.ConsumerInfo;
 import devutility.external.redis.ext.model.GroupInfo;
-import redis.clients.jedis.Client;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.StreamEntry;
 import redis.clients.jedis.StreamEntryID;
@@ -34,11 +31,17 @@ public class DevJedis implements Closeable {
 	private Jedis jedis;
 
 	/**
+	 * DevJedisClient object.
+	 */
+	private DevJedisClient devJedisClient;
+
+	/**
 	 * Constructor
 	 * @param jedis Jedis object.
 	 */
 	public DevJedis(Jedis jedis) {
 		this.jedis = jedis;
+		this.devJedisClient = new DevJedisClient(jedis.getClient());
 	}
 
 	/**
@@ -51,15 +54,16 @@ public class DevJedis implements Closeable {
 		return RedisType.parse(type);
 	}
 
+	
+
 	/**
 	 * Use XINFO command to query information of groups belong to the provided key.
 	 * @param key Redis key.
 	 * @return {@code List<GroupInfo>}
 	 */
-	public List<GroupInfo> xInfoGroups(String key) {
-		Client client = jedis.getClient();
-		client.sendCommand(Command.XINFO, Keyword.GROUPS.raw, SafeEncoder.encode(key));
-		List<Object> list = client.getObjectMultiBulkReply();
+	public List<GroupInfo> xInfoGroups(final String key) {
+		devJedisClient.xInfoGroups(key);
+		List<Object> list = devJedisClient.getObjectMultiBulkReply();
 		return BuilderFactory.STREAM_GROUPINFO_LIST.build(list);
 	}
 
@@ -69,11 +73,37 @@ public class DevJedis implements Closeable {
 	 * @param groupName Group name.
 	 * @return {@code List<ConsumerInfo>}
 	 */
-	public List<ConsumerInfo> xInfoConsumers(String key, String groupName) {
-		Client client = jedis.getClient();
-		client.sendCommand(Command.XINFO, Keyword.CONSUMERS.raw, SafeEncoder.encode(key), SafeEncoder.encode(groupName));
-		List<Object> list = client.getObjectMultiBulkReply();
+	public List<ConsumerInfo> xInfoConsumers(final String key, final String groupName) {
+		devJedisClient.xInfoConsumers(key, groupName);
+		List<Object> list = devJedisClient.getObjectMultiBulkReply();
 		return BuilderFactory.STREAM_CONSUMERINFO_LIST.build(list);
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<Entry<String, List<StreamEntry>>> xread(final int count, final long block, final Entry<String, StreamEntryID>... streams) {
+		devJedisClient.xread(count, block, streams);
+		devJedisClient.setTimeoutInfinite();
+
+		try {
+			List<Object> streamsEntries = devJedisClient.getObjectMultiBulkReply();
+
+			if (streamsEntries == null) {
+				return new ArrayList<>();
+			}
+
+			List<Entry<String, List<StreamEntry>>> result = new ArrayList<>(streamsEntries.size());
+
+			for (Object streamObj : streamsEntries) {
+				List<Object> stream = (List<Object>) streamObj;
+				String streamId = SafeEncoder.encode((byte[]) stream.get(0));
+				List<StreamEntry> streamEntries = BuilderFactory.STREAM_ENTRY_LIST.build(stream.get(1));
+				result.add(new AbstractMap.SimpleEntry<String, List<StreamEntry>>(streamId, streamEntries));
+			}
+
+			return result;
+		} finally {
+			devJedisClient.rollbackTimeout();
+		}
 	}
 
 	/**
@@ -116,11 +146,10 @@ public class DevJedis implements Closeable {
 	 */
 	@SuppressWarnings("unchecked")
 	public List<Entry<String, List<StreamEntry>>> xreadGroup(final String groupname, final String consumer, final int count, final long block, final boolean noAck, final Entry<String, StreamEntryID>... streams) {
-		Client client = jedis.getClient();
-		client.xreadGroup(groupname, consumer, count, block, noAck, streams);
+		devJedisClient.xreadGroup(groupname, consumer, count, block, noAck, streams);
 
-		client.setTimeoutInfinite();
-		List<Object> streamsEntries = client.getObjectMultiBulkReply();
+		devJedisClient.setTimeoutInfinite();
+		List<Object> streamsEntries = devJedisClient.getObjectMultiBulkReply();
 
 		if (streamsEntries == null) {
 			return null;

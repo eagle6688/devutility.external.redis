@@ -11,12 +11,12 @@ import redis.clients.jedis.util.SafeEncoder;
  * @author: Aldwin Su
  * @version: 2019-10-31 21:13:21
  */
-public enum Keyword {
+public enum DevJedisKeyword {
 	GROUPS, CONSUMERS;
 
 	public final byte[] raw;
 
-	Keyword() {
+	DevJedisKeyword() {
 		raw = SafeEncoder.encode(this.name().toLowerCase(Locale.ENGLISH));
 	}
 }

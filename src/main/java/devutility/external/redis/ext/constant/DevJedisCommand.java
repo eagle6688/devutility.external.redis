@@ -10,12 +10,12 @@ import redis.clients.jedis.util.SafeEncoder;
  * @author: Aldwin Su
  * @version: 2019-10-31 21:11:55
  */
-public enum Command implements ProtocolCommand {
+public enum DevJedisCommand implements ProtocolCommand {
 	XINFO;
 
 	private final byte[] raw;
 
-	Command() {
+	DevJedisCommand() {
 		raw = SafeEncoder.encode(this.name());
 	}
 
