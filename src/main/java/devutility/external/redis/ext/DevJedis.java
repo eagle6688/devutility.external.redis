@@ -49,12 +49,10 @@ public class DevJedis implements Closeable {
 	 * @param key Redis key.
 	 * @return RedisType
 	 */
-	public RedisType type(String key) {
+	public RedisType type(final String key) {
 		String type = jedis.type(key);
 		return RedisType.parse(type);
 	}
-
-	
 
 	/**
 	 * Use XINFO command to query information of groups belong to the provided key.
@@ -172,7 +170,7 @@ public class DevJedis implements Closeable {
 	 * @param key Redis key.
 	 * @return {@code List<GroupInfo>}
 	 */
-	public List<GroupInfo> safeGroupInfos(String key) {
+	public List<GroupInfo> safeGroupInfos(final String key) {
 		RedisType type = type(key);
 
 		if (RedisType.STREAM != type) {

@@ -34,12 +34,19 @@ public class RedisQueueOption {
 	private int connectionRetryInterval = 3000;
 
 	/**
-	 * Group name, optional field. If this field with null value, system will use default value.
+	 * Max length of Redis queue. Only useful for Stream type.
+	 */
+	private int maxLength;
+
+	/**
+	 * Group name, optional field. If this field with null value, system will use default value. Only useful for Stream
+	 * type.
 	 */
 	private String groupName;
 
 	/**
-	 * Consumer name, optional field. If this field with null value, system will use default value.
+	 * Consumer name, optional field. If this field with null value, system will use default value. Only useful for Stream
+	 * type.
 	 */
 	private String consumerName;
 
@@ -123,6 +130,14 @@ public class RedisQueueOption {
 
 	public void setConnectionRetryInterval(int connectionRetryInterval) {
 		this.connectionRetryInterval = connectionRetryInterval;
+	}
+
+	public int getMaxLength() {
+		return maxLength;
+	}
+
+	public void setMaxLength(int maxLength) {
+		this.maxLength = maxLength;
 	}
 
 	public String getGroupName() {
