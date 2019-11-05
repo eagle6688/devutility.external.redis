@@ -67,9 +67,4 @@ public abstract class JedisQueueProducer extends JedisQueue {
 	public void setConverter(Converter<Object, String> converter) {
 		this.converter = converter;
 	}
-
-	@Override
-	public void close() {
-
-	}
 }
