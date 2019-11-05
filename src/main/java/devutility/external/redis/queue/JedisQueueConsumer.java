@@ -13,11 +13,6 @@ import redis.clients.jedis.Jedis;
  */
 public abstract class JedisQueueConsumer extends JedisQueue {
 	/**
-	 * Custom consumer event implementation.
-	 */
-	private JedisQueueConsumerEvent consumerEvent;
-
-	/**
 	 * Status, default is true.
 	 */
 	private boolean active = true;
@@ -28,14 +23,13 @@ public abstract class JedisQueueConsumer extends JedisQueue {
 	private int connectionRetriedTimes;
 
 	/**
-	 * Constructor
+	 * Custom consumer event implementation.
 	 */
-	public JedisQueueConsumer() {
-	}
+	private JedisQueueConsumerEvent consumerEvent;
 
 	/**
 	 * Constructor
-	 * @param redisQueueOption RedisQueueOption object.
+	 * @param redisQueueOption Configuration of Redis queue.
 	 * @param consumerEvent JedisQueueConsumerEvent object.
 	 */
 	public JedisQueueConsumer(RedisQueueOption redisQueueOption, JedisQueueConsumerEvent consumerEvent) {

@@ -34,9 +34,14 @@ public class RedisQueueOption {
 	private int connectionRetryInterval = 3000;
 
 	/**
-	 * Max length of Redis queue. Only useful for Stream type.
+	 * Max length of Redis queue, default is 100000. Only useful for Stream type.
 	 */
-	private int maxLength;
+	private int maxLength = 100000;
+
+	/**
+	 * Approximate length for Redis queue.
+	 */
+	private boolean approximateLength;
 
 	/**
 	 * Group name, optional field. If this field with null value, system will use default value. Only useful for Stream
@@ -138,6 +143,14 @@ public class RedisQueueOption {
 
 	public void setMaxLength(int maxLength) {
 		this.maxLength = maxLength;
+	}
+
+	public boolean isApproximateLength() {
+		return approximateLength;
+	}
+
+	public void setApproximateLength(boolean approximateLength) {
+		this.approximateLength = approximateLength;
 	}
 
 	public String getGroupName() {

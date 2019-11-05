@@ -15,13 +15,7 @@ public abstract class JedisQueue implements Closeable {
 	/**
 	 * RedisQueueOption object.
 	 */
-	private RedisQueueOption redisQueueOption;
-
-	/**
-	 * Constructor
-	 */
-	public JedisQueue() {
-	}
+	protected RedisQueueOption redisQueueOption;
 
 	/**
 	 * Constructor

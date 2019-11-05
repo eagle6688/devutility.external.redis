@@ -1,5 +1,6 @@
 package devutility.external.redis.queue;
 
+import devutility.external.redis.com.RedisQueueOption;
 import devutility.internal.data.converter.Converter;
 import redis.clients.jedis.Jedis;
 
@@ -17,13 +18,23 @@ public abstract class JedisQueueProducer extends JedisQueue {
 	private Converter<Object, String> converter;
 
 	/**
-	 * Enqueue
+	 * Constructor
+	 * @param redisQueueOption RedisQueueOption object.
+	 * @param converter Converter instance used for transfer object to string which saved in queue. You can compress object
+	 *            in instance. System will use toString for this transformation if converter parameter with null.
+	 */
+	public JedisQueueProducer(RedisQueueOption redisQueueOption, Converter<Object, String> converter) {
+		super(redisQueueOption);
+		this.converter = converter;
+	}
+
+	/**
+	 * Convert value to string type and save it into Redis queue.
 	 * @param jedis Jedis object.
-	 * @param key Key of Redis queue.
 	 * @param value Redis queue item.
 	 * @return Object
 	 */
-	public abstract Object enqueue(Jedis jedis, String key, Object value);
+	public abstract Object enqueue(Jedis jedis, Object value);
 
 	/**
 	 * Convert value with Object type to String value.
@@ -38,11 +49,16 @@ public abstract class JedisQueueProducer extends JedisQueue {
 		return converter.convert(value);
 	}
 
-	public Converter<?, String> getConverter() {
+	public Converter<Object, String> getConverter() {
 		return converter;
 	}
 
 	public void setConverter(Converter<Object, String> converter) {
 		this.converter = converter;
+	}
+
+	@Override
+	public void close() {
+
 	}
 }
