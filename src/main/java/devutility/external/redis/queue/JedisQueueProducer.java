@@ -1,5 +1,7 @@
 package devutility.external.redis.queue;
 
+import java.util.List;
+
 import devutility.external.redis.com.RedisQueueOption;
 import devutility.internal.data.converter.Converter;
 import redis.clients.jedis.Jedis;
@@ -19,7 +21,7 @@ public abstract class JedisQueueProducer extends JedisQueue {
 
 	/**
 	 * Constructor
-	 * @param redisQueueOption RedisQueueOption object.
+	 * @param redisQueueOption Configuration of Redis queue.
 	 * @param converter Converter instance used for transfer object to string which saved in queue. You can compress object
 	 *            in instance. System will use toString for this transformation if converter parameter with null.
 	 */
@@ -31,10 +33,19 @@ public abstract class JedisQueueProducer extends JedisQueue {
 	/**
 	 * Convert value to string type and save it into Redis queue.
 	 * @param jedis Jedis object.
-	 * @param value Redis queue item.
+	 * @param value Redis queue data.
 	 * @return Object
 	 */
-	public abstract Object enqueue(Jedis jedis, Object value);
+	public abstract Object enqueue(Jedis jedis, final Object value);
+
+	/**
+	 * Iterating each item in list object, convert item object to string type and save it into Reids queue. So this method
+	 * would save list.size() times into Redis queue.
+	 * @param jedis Jedis object.
+	 * @param list List value.
+	 * @return {@code List<Object>}
+	 */
+	public abstract List<Object> enqueue(Jedis jedis, final List<?> list);
 
 	/**
 	 * Convert value with Object type to String value.

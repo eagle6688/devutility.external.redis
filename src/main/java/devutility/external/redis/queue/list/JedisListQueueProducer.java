@@ -1,5 +1,7 @@
 package devutility.external.redis.queue.list;
 
+import java.util.List;
+
 import devutility.external.redis.com.RedisQueueOption;
 import devutility.external.redis.queue.JedisQueueProducer;
 import devutility.internal.data.converter.Converter;
@@ -29,6 +31,11 @@ public class JedisListQueueProducer extends JedisQueueProducer {
 	 */
 	public JedisListQueueProducer(RedisQueueOption redisQueueOption) {
 		this(redisQueueOption, null);
+	}
+
+	@Override
+	public List<Object> enqueue(Jedis jedis, List<?> list) {
+		return null;
 	}
 
 	@Override
