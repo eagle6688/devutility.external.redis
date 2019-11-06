@@ -12,6 +12,7 @@ import devutility.external.redis.com.RedisType;
 import devutility.external.redis.ext.com.BuilderFactory;
 import devutility.external.redis.ext.model.ConsumerInfo;
 import devutility.external.redis.ext.model.GroupInfo;
+import devutility.internal.util.CollectionUtils;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.StreamEntry;
 import redis.clients.jedis.StreamEntryID;
@@ -40,8 +41,11 @@ public class DevJedis implements Closeable {
 	 * @param jedis Jedis object.
 	 */
 	public DevJedis(Jedis jedis) {
-		this.jedis = jedis;
-		this.devJedisClient = new DevJedisClient(jedis.getClient());
+		this.setJedis(jedis);
+	}
+
+	public DevJedis() {
+		this(null);
 	}
 
 	/**
@@ -63,6 +67,28 @@ public class DevJedis implements Closeable {
 		devJedisClient.xInfoGroups(key);
 		List<Object> list = devJedisClient.getObjectMultiBulkReply();
 		return BuilderFactory.STREAM_GROUPINFO_LIST.build(list);
+	}
+
+	/**
+	 * Get GroupInfo object use provided key and groupName.
+	 * @param key Redis key.
+	 * @param groupName Group name of Redis stream.
+	 * @return GroupInfo
+	 */
+	public GroupInfo getGroupInfo(final String key, final String groupName) {
+		List<GroupInfo> groupInfos = xInfoGroups(key);
+		return CollectionUtils.find(groupInfos, i -> groupName.equals(i.getName()));
+	}
+
+	/**
+	 * Whether the group exist or not?
+	 * @param key Redis key.
+	 * @param groupName Group name of Redis stream.
+	 * @return boolean
+	 */
+	public boolean isGroupExist(final String key, final String groupName) {
+		List<GroupInfo> groupInfos = xInfoGroups(key);
+		return CollectionUtils.exist(groupInfos, i -> groupName.equals(i.getName()));
 	}
 
 	/**
@@ -183,5 +209,14 @@ public class DevJedis implements Closeable {
 	@Override
 	public void close() {
 		jedis.close();
+	}
+
+	public void setJedis(Jedis jedis) {
+		this.jedis = jedis;
+		this.devJedisClient = null;
+
+		if (jedis != null) {
+			this.devJedisClient = new DevJedisClient(jedis.getClient());
+		}
 	}
 }

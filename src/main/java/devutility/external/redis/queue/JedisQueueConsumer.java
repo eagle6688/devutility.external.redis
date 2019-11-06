@@ -4,6 +4,7 @@ import java.io.Closeable;
 
 import devutility.external.redis.com.RedisQueueOption;
 import devutility.external.redis.exception.JedisFatalException;
+import devutility.external.redis.ext.DevJedis;
 import redis.clients.jedis.Jedis;
 
 /**
@@ -14,6 +15,16 @@ import redis.clients.jedis.Jedis;
  * @version: 2019-09-25 19:24:50
  */
 public abstract class JedisQueueConsumer extends JedisQueue implements Closeable {
+	/**
+	 * Jedis object to read data from Redis.
+	 */
+	protected Jedis jedis;
+
+	/**
+	 * DevJedis object.
+	 */
+	protected DevJedis devJedis;
+
 	/**
 	 * Status, default is true.
 	 */
@@ -31,11 +42,13 @@ public abstract class JedisQueueConsumer extends JedisQueue implements Closeable
 
 	/**
 	 * Constructor
+	 * @param jedis Jedis object.
 	 * @param redisQueueOption Configuration of Redis queue.
 	 * @param consumerEvent JedisQueueConsumerEvent object.
 	 */
-	public JedisQueueConsumer(RedisQueueOption redisQueueOption, JedisQueueConsumerEvent consumerEvent) {
+	public JedisQueueConsumer(Jedis jedis, RedisQueueOption redisQueueOption, JedisQueueConsumerEvent consumerEvent) {
 		super(redisQueueOption);
+		this.setJedis(jedis);
 		this.setConsumerEvent(consumerEvent);
 	}
 
@@ -92,12 +105,13 @@ public abstract class JedisQueueConsumer extends JedisQueue implements Closeable
 		cause.printStackTrace(System.out);
 	}
 
-	public JedisQueueConsumerEvent getConsumerEvent() {
-		return consumerEvent;
-	}
-
-	public void setConsumerEvent(JedisQueueConsumerEvent consumerEvent) {
-		this.consumerEvent = consumerEvent;
+	/**
+	 * Set Jedis object.
+	 * @param jedis Jedis object to listen queue.
+	 */
+	public void setJedis(Jedis jedis) {
+		this.jedis = jedis;
+		this.devJedis.setJedis(jedis);
 	}
 
 	public boolean isActive() {
@@ -114,5 +128,13 @@ public abstract class JedisQueueConsumer extends JedisQueue implements Closeable
 
 	public void setConnectionRetriedTimes(int connectionRetriedTimes) {
 		this.connectionRetriedTimes = connectionRetriedTimes;
+	}
+
+	public JedisQueueConsumerEvent getConsumerEvent() {
+		return consumerEvent;
+	}
+
+	public void setConsumerEvent(JedisQueueConsumerEvent consumerEvent) {
+		this.consumerEvent = consumerEvent;
 	}
 }

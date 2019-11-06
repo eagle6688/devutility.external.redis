@@ -20,19 +20,13 @@ import redis.clients.jedis.Jedis;
  */
 public final class JedisListQueueConsumer extends JedisQueueConsumer {
 	/**
-	 * Jedis object to read data from Redis.
-	 */
-	private Jedis jedis;
-
-	/**
 	 * Constructor
 	 * @param jedis Jedis object to read data from Redis.
 	 * @param redisQueueOption RedisQueueOption object.
 	 * @param consumerEvent Custom consumer event implementation.
 	 */
 	public JedisListQueueConsumer(Jedis jedis, RedisQueueOption redisQueueOption, JedisQueueConsumerEvent consumerEvent) {
-		super(redisQueueOption, consumerEvent);
-		this.jedis = jedis;
+		super(jedis, redisQueueOption, consumerEvent);
 	}
 
 	/**
@@ -101,13 +95,5 @@ public final class JedisListQueueConsumer extends JedisQueueConsumer {
 		setActive(false);
 		setConnectionRetriedTimes(0);
 		jedis.close();
-	}
-
-	/**
-	 * Set Jedis object.
-	 * @param jedis Jedis object to listen queue.
-	 */
-	public void setJedis(Jedis jedis) {
-		this.jedis = jedis;
 	}
 }

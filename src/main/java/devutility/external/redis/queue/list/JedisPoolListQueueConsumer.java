@@ -29,7 +29,7 @@ public final class JedisPoolListQueueConsumer extends JedisQueueConsumer {
 	 * @param consumerEvent Custom consumer event implementation.
 	 */
 	public JedisPoolListQueueConsumer(JedisPool jedisPool, RedisQueueOption redisQueueOption, JedisQueueConsumerEvent consumerEvent) {
-		super(redisQueueOption, consumerEvent);
+		super(null, redisQueueOption, consumerEvent);
 		this.jedisPool = jedisPool;
 	}
 

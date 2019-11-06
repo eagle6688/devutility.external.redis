@@ -6,11 +6,15 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map.Entry;
 
+import devutility.external.redis.com.Config;
 import devutility.external.redis.com.RedisQueueOption;
 import devutility.external.redis.exception.JedisBrokenException;
 import devutility.external.redis.exception.JedisFatalException;
+import devutility.external.redis.ext.DevJedis;
+import devutility.external.redis.ext.model.GroupInfo;
 import devutility.external.redis.queue.JedisQueueConsumer;
 import devutility.external.redis.queue.JedisQueueConsumerEvent;
+import devutility.internal.lang.StringUtils;
 import devutility.internal.util.CollectionUtils;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.StreamEntry;
@@ -25,23 +29,19 @@ import redis.clients.jedis.StreamEntryID;
  */
 public class JedisStreamQueueConsumer extends JedisQueueConsumer {
 	/**
-	 * Jedis object to read data from Redis.
-	 */
-	private Jedis jedis;
-
-	/**
-	 * Group name of current instance.
+	 * Group name.
 	 */
 	private String groupName;
 
 	/**
-	 * Consumer name of current instance.
+	 * Consumer name.
 	 */
 	private String consumerName;
 
 	/**
 	 * No need Ack
 	 */
+	@Deprecated
 	private boolean noNeedAck;
 
 	/**
@@ -53,8 +53,10 @@ public class JedisStreamQueueConsumer extends JedisQueueConsumer {
 	 * @param consumerName Consumer name of provided group.
 	 */
 	public JedisStreamQueueConsumer(Jedis jedis, RedisQueueOption redisQueueOption, JedisQueueConsumerEvent consumerEvent) {
-		super(redisQueueOption, consumerEvent);
-		this.jedis = jedis;
+		super(jedis, redisQueueOption, consumerEvent);
+		this.devJedis = new DevJedis(jedis);
+		this.groupName = getGroupName();
+		this.consumerName = getConsumerName();
 	}
 
 	/**
@@ -92,15 +94,11 @@ public class JedisStreamQueueConsumer extends JedisQueueConsumer {
 
 	@Override
 	public void listen() throws Exception {
-		if (jedis == null) {
-			throw new IllegalArgumentException("jedis can't be null!");
-		}
+		validate();
 	}
 
 	public void listen(int count, Entry<String, StreamEntryID>[] streams) throws Exception {
-		if (jedis == null) {
-			throw new IllegalArgumentException("jedis can't be null!");
-		}
+		validate();
 
 		while (isActive()) {
 			try {
@@ -132,6 +130,37 @@ public class JedisStreamQueueConsumer extends JedisQueueConsumer {
 	public void listen(String key, StreamEntryID streamEntryID) throws Exception {
 		Entry<String, StreamEntryID> entry = new AbstractMap.SimpleEntry<String, StreamEntryID>(key, streamEntryID);
 		this.listen(entry);
+	}
+
+	private void validate() {
+		if (jedis == null) {
+			throw new IllegalArgumentException("jedis can't be null!");
+		}
+
+		if (!Config.QUEUE_DEFAULT_GROUP_NAME.equals(groupName)) {
+			GroupInfo groupInfo = devJedis.getGroupInfo(redisQueueOption.getKey(), groupName);
+
+			if (groupInfo == null) {
+				//Create group and then consumer.
+			}
+
+		}
+	}
+
+	private String getGroupName() {
+		if (StringUtils.isNotEmpty(redisQueueOption.getGroupName())) {
+			return redisQueueOption.getGroupName();
+		}
+
+		return Config.QUEUE_DEFAULT_GROUP_NAME;
+	}
+
+	private String getConsumerName() {
+		if (StringUtils.isNotEmpty(redisQueueOption.getConsumerName())) {
+			return redisQueueOption.getConsumerName();
+		}
+
+		return null;
 	}
 
 	/**
@@ -167,30 +196,6 @@ public class JedisStreamQueueConsumer extends JedisQueueConsumer {
 
 	@Override
 	public void close() throws IOException {
-
-	}
-
-	/**
-	 * Set Jedis object.
-	 * @param jedis Jedis object to listen queue.
-	 */
-	public void setJedis(Jedis jedis) {
-		this.jedis = jedis;
-	}
-
-	public String getGroupName() {
-		return groupName;
-	}
-
-	public void setGroupName(String groupName) {
-		this.groupName = groupName;
-	}
-
-	public String getConsumerName() {
-		return consumerName;
-	}
-
-	public void setConsumerName(String consumerName) {
-		this.consumerName = consumerName;
+		jedis.close();
 	}
 }

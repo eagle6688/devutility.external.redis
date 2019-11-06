@@ -15,7 +15,7 @@ import devutility.external.redis.queue.JedisQueueConsumerEvent;
  */
 public class JedisPoolStreamQueueConsumer extends JedisQueueConsumer {
 	public JedisPoolStreamQueueConsumer(RedisQueueOption redisQueueOption, JedisQueueConsumerEvent consumerEvent) {
-		super(redisQueueOption, consumerEvent);
+		super(null, redisQueueOption, consumerEvent);
 	}
 
 	@Override
