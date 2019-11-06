@@ -42,10 +42,10 @@ public abstract class JedisQueueProducer extends JedisQueue {
 	 * Iterating each item in list object, convert item object to string type and save it into Reids queue. So this method
 	 * would save list.size() times into Redis queue.
 	 * @param jedis Jedis object.
-	 * @param list List value.
+	 * @param values List value.
 	 * @return {@code List<Object>}
 	 */
-	public abstract List<Object> enqueue(Jedis jedis, final List<?> list);
+	public abstract List<Object> enqueue(Jedis jedis, final List<?> values);
 
 	/**
 	 * Convert value with Object type to String value.

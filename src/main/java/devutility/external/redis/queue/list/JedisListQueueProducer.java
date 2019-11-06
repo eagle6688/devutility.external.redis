@@ -1,5 +1,6 @@
 package devutility.external.redis.queue.list;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import devutility.external.redis.com.RedisQueueOption;
@@ -34,8 +35,14 @@ public class JedisListQueueProducer extends JedisQueueProducer {
 	}
 
 	@Override
-	public List<Object> enqueue(Jedis jedis, List<?> list) {
-		return null;
+	public List<Object> enqueue(Jedis jedis, List<?> values) {
+		List<Object> list = new ArrayList<Object>(values.size());
+
+		for (Object value : values) {
+			list.add(enqueue(jedis, value));
+		}
+
+		return list;
 	}
 
 	@Override

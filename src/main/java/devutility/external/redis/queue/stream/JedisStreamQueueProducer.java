@@ -1,5 +1,6 @@
 package devutility.external.redis.queue.stream;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,8 +46,14 @@ public class JedisStreamQueueProducer extends JedisQueueProducer {
 	}
 
 	@Override
-	public List<Object> enqueue(Jedis jedis, List<?> list) {
-		return null;
+	public List<Object> enqueue(Jedis jedis, final List<?> values) {
+		List<Object> list = new ArrayList<Object>(values.size());
+
+		for (Object value : values) {
+			list.add(enqueue(jedis, value));
+		}
+
+		return list;
 	}
 
 	/**
