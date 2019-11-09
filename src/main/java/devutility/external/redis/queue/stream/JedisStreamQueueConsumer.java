@@ -8,6 +8,8 @@ import java.util.Map.Entry;
 
 import devutility.external.redis.com.Config;
 import devutility.external.redis.com.RedisQueueOption;
+import devutility.external.redis.com.RedisType;
+import devutility.external.redis.com.StatusCode;
 import devutility.external.redis.exception.JedisBrokenException;
 import devutility.external.redis.exception.JedisFatalException;
 import devutility.external.redis.ext.DevJedis;
@@ -52,7 +54,7 @@ public class JedisStreamQueueConsumer extends JedisQueueConsumer {
 	 * @param groupName Group name of redis queue.
 	 * @param consumerName Consumer name of provided group.
 	 */
-	public JedisStreamQueueConsumer(Jedis jedis, RedisQueueOption redisQueueOption, JedisQueueConsumerEvent consumerEvent) {
+	public JedisStreamQueueConsumer(Jedis jedis, final RedisQueueOption redisQueueOption, final JedisQueueConsumerEvent consumerEvent) {
 		super(jedis, redisQueueOption, consumerEvent);
 		this.devJedis = new DevJedis(jedis);
 		this.groupName = getGroupName();
@@ -67,7 +69,7 @@ public class JedisStreamQueueConsumer extends JedisQueueConsumer {
 	 * @param consumerName Consumer name of provided group.
 	 * @param consumerEvent Custom consumer event implementation.
 	 */
-	public JedisStreamQueueConsumer(Jedis jedis, String key, String groupName, String consumerName, JedisQueueConsumerEvent consumerEvent) {
+	public JedisStreamQueueConsumer(Jedis jedis, final String key, final String groupName, final String consumerName, final JedisQueueConsumerEvent consumerEvent) {
 		this(jedis, new RedisQueueOption(key, groupName, consumerName), consumerEvent);
 	}
 
@@ -78,7 +80,7 @@ public class JedisStreamQueueConsumer extends JedisQueueConsumer {
 	 * @param groupName Group name of redis queue.
 	 * @param consumerEvent Custom consumer event implementation.
 	 */
-	public JedisStreamQueueConsumer(Jedis jedis, String key, String groupName, JedisQueueConsumerEvent consumerEvent) {
+	public JedisStreamQueueConsumer(Jedis jedis, final String key, final String groupName, final JedisQueueConsumerEvent consumerEvent) {
 		this(jedis, key, groupName, null, consumerEvent);
 	}
 
@@ -88,13 +90,14 @@ public class JedisStreamQueueConsumer extends JedisQueueConsumer {
 	 * @param key Redis key of queue.
 	 * @param consumerEvent Custom consumer event implementation.
 	 */
-	public JedisStreamQueueConsumer(Jedis jedis, String key, JedisQueueConsumerEvent consumerEvent) {
+	public JedisStreamQueueConsumer(Jedis jedis, final String key, final JedisQueueConsumerEvent consumerEvent) {
 		this(jedis, key, null, consumerEvent);
 	}
 
 	@Override
 	public void listen() throws Exception {
 		validate();
+		initialize();
 	}
 
 	public void listen(int count, Entry<String, StreamEntryID>[] streams) throws Exception {
@@ -137,13 +140,20 @@ public class JedisStreamQueueConsumer extends JedisQueueConsumer {
 			throw new IllegalArgumentException("jedis can't be null!");
 		}
 
+		RedisType type = devJedis.type(redisQueueOption.getKey());
+
+		if (RedisType.STREAM != type) {
+			throw new IllegalArgumentException(String.format("Invalid Redis type of key \"%\"!", redisQueueOption.getKey()));
+		}
+	}
+
+	private void initialize() {
 		if (!Config.QUEUE_DEFAULT_GROUP_NAME.equals(groupName)) {
 			GroupInfo groupInfo = devJedis.getGroupInfo(redisQueueOption.getKey(), groupName);
 
-			if (groupInfo == null) {
-				//Create group and then consumer.
+			if (groupInfo == null && devJedis.createGroup(redisQueueOption.getKey(), groupName) != StatusCode.OK) {
+				throw new JedisFatalException("Create group failed!");
 			}
-
 		}
 	}
 

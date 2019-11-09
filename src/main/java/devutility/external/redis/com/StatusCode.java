@@ -9,6 +9,11 @@ package devutility.external.redis.com;
  */
 public enum StatusCode {
 	/**
+	 * Failed
+	 */
+	FAILED(""),
+
+	/**
 	 * Successful operation.
 	 */
 	OK("OK"),
@@ -26,6 +31,18 @@ public enum StatusCode {
 
 	public String getValue() {
 		return value;
+	}
+
+	public static StatusCode parse(String value) {
+		StatusCode[] array = StatusCode.values();
+
+		for (int i = 0; i < array.length; i++) {
+			if (array[i].value.equals(value)) {
+				return array[i];
+			}
+		}
+
+		return StatusCode.FAILED;
 	}
 
 	/**

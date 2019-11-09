@@ -4,11 +4,11 @@ import java.io.Closeable;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
 
 import devutility.external.redis.com.RedisType;
+import devutility.external.redis.com.StatusCode;
 import devutility.external.redis.ext.com.BuilderFactory;
 import devutility.external.redis.ext.model.ConsumerInfo;
 import devutility.external.redis.ext.model.GroupInfo;
@@ -103,6 +103,18 @@ public class DevJedis implements Closeable {
 		return BuilderFactory.STREAM_CONSUMERINFO_LIST.build(list);
 	}
 
+	/**
+	 * Create a new group in provided key. As the parameter of makeStream has been true, this indicate system will
+	 * automaticly create a empty stream with provided key once it does exist.
+	 * @param key Redis Stream key.
+	 * @param groupName Group name in Stream.
+	 * @return StatusCode
+	 */
+	public StatusCode createGroup(final String key, final String groupName) {
+		String result = jedis.xgroupCreate(key, groupName, null, true);
+		return StatusCode.parse(result);
+	}
+
 	@SuppressWarnings("unchecked")
 	public List<Entry<String, List<StreamEntry>>> xread(final int count, final long block, final Entry<String, StreamEntryID>... streams) {
 		devJedisClient.xread(count, block, streams);
@@ -189,21 +201,6 @@ public class DevJedis implements Closeable {
 		}
 
 		return result;
-	}
-
-	/**
-	 * Get GroupInfo objects from provided key.
-	 * @param key Redis key.
-	 * @return {@code List<GroupInfo>}
-	 */
-	public List<GroupInfo> safeGroupInfos(final String key) {
-		RedisType type = type(key);
-
-		if (RedisType.STREAM != type) {
-			return new LinkedList<GroupInfo>();
-		}
-
-		return xInfoGroups(key);
 	}
 
 	@Override
