@@ -36,17 +36,6 @@ public class JedisStreamQueueConsumer extends JedisQueueConsumer {
 	private String groupName;
 
 	/**
-	 * Consumer name.
-	 */
-	private String consumerName;
-
-	/**
-	 * No need Ack
-	 */
-	@Deprecated
-	private boolean noNeedAck;
-
-	/**
 	 * Constructor
 	 * @param jedis Jedis object to read data from Redis.
 	 * @param redisQueueOption RedisQueueOption object.
@@ -58,7 +47,6 @@ public class JedisStreamQueueConsumer extends JedisQueueConsumer {
 		super(jedis, redisQueueOption, consumerEvent);
 		this.devJedis = new DevJedis(jedis);
 		this.groupName = getGroupName();
-		this.consumerName = getConsumerName();
 	}
 
 	/**
@@ -157,20 +145,16 @@ public class JedisStreamQueueConsumer extends JedisQueueConsumer {
 		}
 	}
 
+	/**
+	 * Get group name.
+	 * @return String
+	 */
 	private String getGroupName() {
 		if (StringUtils.isNotEmpty(redisQueueOption.getGroupName())) {
 			return redisQueueOption.getGroupName();
 		}
 
 		return Config.QUEUE_DEFAULT_GROUP_NAME;
-	}
-
-	private String getConsumerName() {
-		if (StringUtils.isNotEmpty(redisQueueOption.getConsumerName())) {
-			return redisQueueOption.getConsumerName();
-		}
-
-		return null;
 	}
 
 	/**
@@ -182,7 +166,7 @@ public class JedisStreamQueueConsumer extends JedisQueueConsumer {
 	 */
 	private void process(int count, Entry<String, StreamEntryID>[] streams) throws InterruptedException {
 		connect(jedis);
-		List<Entry<String, List<StreamEntry>>> list = jedis.xreadGroup(groupName, consumerName, count, getRedisQueueOption().getWaitMilliseconds(), noNeedAck, streams);
+		List<Entry<String, List<StreamEntry>>> list = jedis.xreadGroup(groupName, redisQueueOption.getConsumerName(), count, redisQueueOption.getWaitMilliseconds(), redisQueueOption.isNoNeedAck(), streams);
 
 		if (CollectionUtils.isNullOrEmpty(list)) {
 			return;

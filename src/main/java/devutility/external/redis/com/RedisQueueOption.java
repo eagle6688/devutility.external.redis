@@ -39,7 +39,7 @@ public class RedisQueueOption {
 	private int maxLength = 100000;
 
 	/**
-	 * Approximate length for Redis queue.
+	 * Approximate length for Redis queue. Only useful for Stream
 	 */
 	private boolean approximateLength;
 
@@ -54,6 +54,11 @@ public class RedisQueueOption {
 	 * type.
 	 */
 	private String consumerName;
+
+	/**
+	 * No need ack after consumer. Only useful for Stream
+	 */
+	private boolean noNeedAck;
 
 	/**
 	 * In debug mode, system will print all of debug information. Default is false.
@@ -167,6 +172,14 @@ public class RedisQueueOption {
 
 	public void setConsumerName(String consumerName) {
 		this.consumerName = consumerName;
+	}
+
+	public boolean isNoNeedAck() {
+		return noNeedAck;
+	}
+
+	public void setNoNeedAck(boolean noNeedAck) {
+		this.noNeedAck = noNeedAck;
 	}
 
 	public boolean isDebug() {

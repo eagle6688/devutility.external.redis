@@ -12,7 +12,7 @@ import redis.clients.jedis.StreamEntryID;
 
 /**
  * 
- * XreadGroupTest Note: assign a StreamEntryID when call xreadGroup will not block any request, this action will queue
+ * XreadGroupTest Note: assign a StreamEntryID when call xreadGroup will not block any request, this action will query
  * PEL.
  * 
  * @author: Aldwin Su

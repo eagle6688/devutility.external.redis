@@ -22,9 +22,4 @@ public class Config {
 	 * Default group name in queue.
 	 */
 	public final static String QUEUE_DEFAULT_GROUP_NAME = "group-default";
-
-	/**
-	 * Default consumer name in group.
-	 */
-	public final static String QUEUE_DEFAULT_CONSUMER_NAME = "consumer-default";
 }
