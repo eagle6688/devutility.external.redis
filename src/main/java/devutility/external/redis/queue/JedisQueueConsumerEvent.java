@@ -11,9 +11,9 @@ public interface JedisQueueConsumerEvent {
 	/**
 	 * Triggered while message received in consumer side.
 	 * @param key Redis key of queue.
-	 * @param value Message value.
+	 * @param values Message values.
 	 * @return boolean This result is very important for Stream queue, if true will send 'ACK' to redis server and the
 	 *         message will be removed otherwise will not.
 	 */
-	boolean onMessage(String key, Object value);
+	boolean onMessage(String key, Object... values);
 }

@@ -2,8 +2,8 @@ package devutility.external.redis.queue.stream;
 
 import java.io.IOException;
 import java.util.AbstractMap;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import devutility.external.redis.com.Config;
@@ -33,7 +33,7 @@ public class JedisStreamQueueConsumer extends JedisQueueConsumer {
 	/**
 	 * Group name.
 	 */
-	private String groupName;
+	private String groupName = Config.QUEUE_DEFAULT_GROUP_NAME;
 
 	/**
 	 * Constructor
@@ -46,7 +46,10 @@ public class JedisStreamQueueConsumer extends JedisQueueConsumer {
 	public JedisStreamQueueConsumer(Jedis jedis, final RedisQueueOption redisQueueOption, final JedisQueueConsumerEvent consumerEvent) {
 		super(jedis, redisQueueOption, consumerEvent);
 		this.devJedis = new DevJedis(jedis);
-		this.groupName = getGroupName();
+
+		if (StringUtils.isNotEmpty(redisQueueOption.getGroupName())) {
+			this.groupName = redisQueueOption.getGroupName();
+		}
 	}
 
 	/**
@@ -86,14 +89,10 @@ public class JedisStreamQueueConsumer extends JedisQueueConsumer {
 	public void listen() throws Exception {
 		validate();
 		initialize();
-	}
-
-	public void listen(int count, Entry<String, StreamEntryID>[] streams) throws Exception {
-		validate();
 
 		while (isActive()) {
 			try {
-				process(count, streams);
+				process();
 			} catch (Exception e) {
 				if (jedis.getClient().isBroken()) {
 					throw new JedisBrokenException(e);
@@ -104,23 +103,9 @@ public class JedisStreamQueueConsumer extends JedisQueueConsumer {
 				}
 
 				log(e);
+				connect(jedis);
 			}
 		}
-	}
-
-	public void listen(Entry<String, StreamEntryID>[] streams) throws Exception {
-		this.listen(1, streams);
-	}
-
-	public void listen(Entry<String, StreamEntryID> stream) throws Exception {
-		@SuppressWarnings("unchecked")
-		Entry<String, StreamEntryID>[] entries = (Entry<String, StreamEntryID>[]) Arrays.asList(stream).toArray();
-		this.listen(entries);
-	}
-
-	public void listen(String key, StreamEntryID streamEntryID) throws Exception {
-		Entry<String, StreamEntryID> entry = new AbstractMap.SimpleEntry<String, StreamEntryID>(key, streamEntryID);
-		this.listen(entry);
 	}
 
 	private void validate() {
@@ -146,46 +131,48 @@ public class JedisStreamQueueConsumer extends JedisQueueConsumer {
 	}
 
 	/**
-	 * Get group name.
-	 * @return String
-	 */
-	private String getGroupName() {
-		if (StringUtils.isNotEmpty(redisQueueOption.getGroupName())) {
-			return redisQueueOption.getGroupName();
-		}
-
-		return Config.QUEUE_DEFAULT_GROUP_NAME;
-	}
-
-	/**
 	 * Main process.
-	 * @param count Items count that Jedis need to read.
-	 * @param streams Its a Entry array. For each Entry object, key is key of queue in Redis, value is StreamEntryID object
-	 *            which indicate the beginning ID of queue items.
 	 * @throws InterruptedException
 	 */
-	private void process(int count, Entry<String, StreamEntryID>[] streams) throws InterruptedException {
-		connect(jedis);
-		List<Entry<String, List<StreamEntry>>> list = jedis.xreadGroup(groupName, redisQueueOption.getConsumerName(), count, redisQueueOption.getWaitMilliseconds(), redisQueueOption.isNoNeedAck(), streams);
+	private void process() throws InterruptedException {
+		/**
+		 * Key is key of queue in Redis, value is StreamEntryID object which indicate the beginning ID of queue items.
+		 */
+		Entry<String, StreamEntryID> stream = new AbstractMap.SimpleEntry<String, StreamEntryID>(redisQueueOption.getKey(), StreamEntryID.UNRECEIVED_ENTRY);
 
-		if (CollectionUtils.isNullOrEmpty(list)) {
-			return;
+		@SuppressWarnings("unchecked")
+		List<Entry<String, List<StreamEntry>>> list = devJedis.xreadGroup(groupName, redisQueueOption.getConsumerName(), 1, redisQueueOption.getWaitMilliseconds(), redisQueueOption.isNoNeedAck(), stream);
+
+		if (CollectionUtils.isNullOrEmpty(list) || list.size() != 1) {
+			throw new JedisFatalException("Illegal Entry data!");
 		}
 
-		callback(list.get(0).getKey(), list.get(1).getValue());
+		List<StreamEntry> streamEntries = list.get(0).getValue();
+
+		if (CollectionUtils.isNullOrEmpty(streamEntries) || streamEntries.size() != 1) {
+			throw new JedisFatalException("Illegal StreamEntry list data!");
+		}
+
+		StreamEntry streamEntry = streamEntries.get(0);
+		Map<String, String> streamEntryMap = streamEntry.getFields();
+
+		if (streamEntryMap == null || !streamEntryMap.containsKey(Config.QUEUE_DEFAULT_ITEM_KEY)) {
+			throw new JedisFatalException("Illegal StreamEntry list data!");
+		}
+
+		callback(streamEntry.getID().toString(), streamEntryMap.get(Config.QUEUE_DEFAULT_ITEM_KEY));
 	}
 
 	/**
 	 * Callback method when new message arrived.
-	 * @param key Redis key of queue.
 	 * @param value Message.
 	 */
-	private void callback(String key, Object value) {
+	private void callback(Object... values) {
 		if (getConsumerEvent() == null) {
 			return;
 		}
 
-		getConsumerEvent().onMessage(key, value);
+		getConsumerEvent().onMessage(redisQueueOption.getKey(), values);
 	}
 
 	@Override

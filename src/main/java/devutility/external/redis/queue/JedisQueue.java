@@ -20,14 +20,10 @@ public abstract class JedisQueue {
 	 * @param redisQueueOption RedisQueueOption object.
 	 */
 	public JedisQueue(RedisQueueOption redisQueueOption) {
-		this.setRedisQueueOption(redisQueueOption);
+		this.redisQueueOption = redisQueueOption;
 	}
 
 	public RedisQueueOption getRedisQueueOption() {
 		return redisQueueOption;
-	}
-
-	public void setRedisQueueOption(RedisQueueOption redisQueueOption) {
-		this.redisQueueOption = redisQueueOption;
 	}
 }

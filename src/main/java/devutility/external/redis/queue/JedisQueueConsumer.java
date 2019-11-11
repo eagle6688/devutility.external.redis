@@ -118,7 +118,7 @@ public abstract class JedisQueueConsumer extends JedisQueue implements Closeable
 		return active;
 	}
 
-	public void setActive(boolean active) {
+	protected void setActive(boolean active) {
 		this.active = active;
 	}
 
@@ -126,7 +126,7 @@ public abstract class JedisQueueConsumer extends JedisQueue implements Closeable
 		return connectionRetriedTimes;
 	}
 
-	public void setConnectionRetriedTimes(int connectionRetriedTimes) {
+	protected void setConnectionRetriedTimes(int connectionRetriedTimes) {
 		this.connectionRetriedTimes = connectionRetriedTimes;
 	}
 
