@@ -19,14 +19,23 @@ public class XpendingTest extends BaseTestForStream {
 	public void run() {
 		try (Jedis jedis = jedis()) {
 			List<StreamPendingEntry> list = jedis.xpending(CONFIG_KEY_STREAM, StreamData.GROUPNAME, null, null, 10, StreamData.CONSUMERNAME);
-			System.out.println(String.format("list size: %d", list.size()));
+			System.out.println("With consumer name...");
+			log(list);
 
-			list.forEach(i -> {
-				System.out.println(String.format("Consumer: %s, ID: %s, DeliveredTimes: %d, IdleTime: %d", i.getConsumerName(), i.getID().toString(), i.getDeliveredTimes(), i.getIdleTime()));
-			});
+			list = jedis.xpending(CONFIG_KEY_STREAM, StreamData.GROUPNAME, null, null, 10, null);
+			System.out.println("Without consumer name...");
+			log(list);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	private void log(List<StreamPendingEntry> list) {
+		System.out.println(String.format("list size: %d", list.size()));
+
+		list.forEach(i -> {
+			System.out.println(String.format("Consumer: %s, ID: %s, DeliveredTimes: %d, IdleTime: %d", i.getConsumerName(), i.getID().toString(), i.getDeliveredTimes(), i.getIdleTime()));
+		});
 	}
 
 	public static void main(String[] args) {

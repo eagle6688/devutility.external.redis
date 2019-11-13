@@ -13,6 +13,7 @@ import devutility.external.redis.com.StatusCode;
 import devutility.external.redis.exception.JedisBrokenException;
 import devutility.external.redis.exception.JedisFatalException;
 import devutility.external.redis.ext.DevJedis;
+import devutility.external.redis.ext.model.ConsumerInfo;
 import devutility.external.redis.ext.model.GroupInfo;
 import devutility.external.redis.queue.JedisQueueConsumer;
 import devutility.external.redis.queue.JedisQueueConsumerEvent;
@@ -21,6 +22,7 @@ import devutility.internal.util.CollectionUtils;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.StreamEntry;
 import redis.clients.jedis.StreamEntryID;
+import redis.clients.jedis.StreamPendingEntry;
 
 /**
  * 
@@ -33,15 +35,13 @@ public class JedisStreamQueueConsumer extends JedisQueueConsumer {
 	/**
 	 * Group name.
 	 */
-	private String groupName = Config.QUEUE_DEFAULT_GROUP_NAME;
+	protected String groupName;
 
 	/**
 	 * Constructor
 	 * @param jedis Jedis object to read data from Redis.
 	 * @param redisQueueOption RedisQueueOption object.
 	 * @param consumerEvent Custom consumer event implementation.
-	 * @param groupName Group name of redis queue.
-	 * @param consumerName Consumer name of provided group.
 	 */
 	public JedisStreamQueueConsumer(Jedis jedis, final RedisQueueOption redisQueueOption, final JedisQueueConsumerEvent consumerEvent) {
 		super(jedis, redisQueueOption, consumerEvent);
@@ -92,6 +92,7 @@ public class JedisStreamQueueConsumer extends JedisQueueConsumer {
 
 		while (isActive()) {
 			try {
+				processPending();
 				process();
 			} catch (Exception e) {
 				if (jedis.getClient().isBroken()) {
@@ -108,9 +109,24 @@ public class JedisStreamQueueConsumer extends JedisQueueConsumer {
 		}
 	}
 
-	private void validate() {
+	/**
+	 * Validate parameters that caller provided.
+	 */
+	protected void validate() {
 		if (jedis == null) {
 			throw new IllegalArgumentException("jedis can't be null!");
+		}
+
+		if (StringUtils.isNullOrEmpty(redisQueueOption.getKey())) {
+			throw new IllegalArgumentException("Redis key can't be empty!");
+		}
+
+		if (StringUtils.isNullOrEmpty(groupName)) {
+			throw new IllegalArgumentException("Group name can't be empty!");
+		}
+
+		if (StringUtils.isNullOrEmpty(redisQueueOption.getConsumerName())) {
+			throw new IllegalArgumentException("Consumer name can't be empty!");
 		}
 
 		RedisType type = devJedis.type(redisQueueOption.getKey());
@@ -120,13 +136,14 @@ public class JedisStreamQueueConsumer extends JedisQueueConsumer {
 		}
 	}
 
-	private void initialize() {
-		if (!Config.QUEUE_DEFAULT_GROUP_NAME.equals(groupName)) {
-			GroupInfo groupInfo = devJedis.getGroupInfo(redisQueueOption.getKey(), groupName);
+	/**
+	 * Initialize for data consumption.
+	 */
+	protected void initialize() {
+		GroupInfo groupInfo = devJedis.getGroupInfo(redisQueueOption.getKey(), groupName);
 
-			if (groupInfo == null && devJedis.createGroup(redisQueueOption.getKey(), groupName) != StatusCode.OK) {
-				throw new JedisFatalException("Create group failed!");
-			}
+		if (groupInfo == null && devJedis.createGroup(redisQueueOption.getKey(), groupName) != StatusCode.OK) {
+			throw new JedisFatalException("Create group failed!");
 		}
 	}
 
@@ -160,11 +177,32 @@ public class JedisStreamQueueConsumer extends JedisQueueConsumer {
 			throw new JedisFatalException("Illegal StreamEntry list data!");
 		}
 
-		callback(streamEntry.getID().toString(), streamEntryMap.get(Config.QUEUE_DEFAULT_ITEM_KEY));
+		callback(streamEntry.getID(), streamEntryMap.get(Config.QUEUE_DEFAULT_ITEM_KEY));
+	}
+
+	private void processPending() {
+		ConsumerInfo consumerInfo = devJedis.getConsumerInfo(redisQueueOption.getKey(), groupName, redisQueueOption.getConsumerName());
+
+		/**
+		 * New consumer.
+		 */
+		if (consumerInfo == null) {
+			return;
+		}
+
+		List<StreamPendingEntry> list = jedis.xpending(redisQueueOption.getKey(), groupName, null, null, (int) consumerInfo.getPending(), redisQueueOption.getConsumerName());
+
+		for (StreamPendingEntry item : list) {
+			Map<String, String> streamEntryMap = devJedis.xrangeOne(redisQueueOption.getKey(), item.getID());
+
+			if (streamEntryMap != null) {
+				callback(item.getID(), streamEntryMap.get(Config.QUEUE_DEFAULT_ITEM_KEY));
+			}
+		}
 	}
 
 	/**
-	 * Callback method when new message arrived.
+	 * Callback method when new message arrived. The first parameter is StreamEntryID string, the second one is its value.
 	 * @param value Message.
 	 */
 	private void callback(Object... values) {
@@ -172,7 +210,13 @@ public class JedisStreamQueueConsumer extends JedisQueueConsumer {
 			return;
 		}
 
-		getConsumerEvent().onMessage(redisQueueOption.getKey(), values);
+		if (!getConsumerEvent().onMessage(redisQueueOption.getKey(), values)) {
+			return;
+		}
+
+		if (!redisQueueOption.isNoNeedAck() && redisQueueOption.isAutoAck()) {
+			jedis.xack(redisQueueOption.getKey(), groupName, (StreamEntryID) values[0]);
+		}
 	}
 
 	@Override

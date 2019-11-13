@@ -61,6 +61,11 @@ public class RedisQueueOption {
 	private boolean noNeedAck;
 
 	/**
+	 * Automatic ack message.
+	 */
+	private boolean autoAck;
+
+	/**
 	 * In debug mode, system will print all of debug information. Default is false.
 	 */
 	private boolean debug;
@@ -180,6 +185,14 @@ public class RedisQueueOption {
 
 	public void setNoNeedAck(boolean noNeedAck) {
 		this.noNeedAck = noNeedAck;
+	}
+
+	public boolean isAutoAck() {
+		return autoAck;
+	}
+
+	public void setAutoAck(boolean autoAck) {
+		this.autoAck = autoAck;
 	}
 
 	public boolean isDebug() {

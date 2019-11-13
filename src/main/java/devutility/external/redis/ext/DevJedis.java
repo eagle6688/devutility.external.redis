@@ -5,6 +5,7 @@ import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import devutility.external.redis.com.RedisType;
@@ -44,6 +45,9 @@ public class DevJedis implements Closeable {
 		this.setJedis(jedis);
 	}
 
+	/**
+	 * Constructor
+	 */
 	public DevJedis() {
 		this(null);
 	}
@@ -101,6 +105,18 @@ public class DevJedis implements Closeable {
 		devJedisClient.xInfoConsumers(key, groupName);
 		List<Object> list = devJedisClient.getObjectMultiBulkReply();
 		return BuilderFactory.STREAM_CONSUMERINFO_LIST.build(list);
+	}
+
+	/**
+	 * Get ConsumerInfo object use provided key and groupName.
+	 * @param key Redis key.
+	 * @param groupName Group name.
+	 * @param consumerName Consumer group.
+	 * @return ConsumerInfo
+	 */
+	public ConsumerInfo getConsumerInfo(final String key, final String groupName, String consumerName) {
+		List<ConsumerInfo> list = xInfoConsumers(key, groupName);
+		return CollectionUtils.find(list, i -> i.getName().equals(consumerName));
 	}
 
 	/**
@@ -201,6 +217,35 @@ public class DevJedis implements Closeable {
 		}
 
 		return result;
+	}
+
+	/**
+	 * Acknowledge provided StreamEntryID list.
+	 * @param key Redis stream key.
+	 * @param groupName Group name.
+	 * @param ids StreamEntryID objects.
+	 * @return long
+	 */
+	public long xack(final String key, final String groupName, final StreamEntryID... ids) {
+		jedis.xack(key, groupName, ids);
+		return jedis.xdel(key, ids);
+	}
+
+	/**
+	 * Use Jedis xrange to get Map for one StreamEntryID.
+	 * @param key Redis stream key.
+	 * @param id StreamEntryID object.
+	 * @return Map<String,String>
+	 */
+	public Map<String, String> xrangeOne(final String key, final StreamEntryID id) {
+		List<StreamEntry> list = jedis.xrange(key, id, id, 1);
+
+		if (CollectionUtils.isNullOrEmpty(list)) {
+			return null;
+		}
+
+		StreamEntry streamEntry = list.get(0);
+		return streamEntry.getFields();
 	}
 
 	@Override
