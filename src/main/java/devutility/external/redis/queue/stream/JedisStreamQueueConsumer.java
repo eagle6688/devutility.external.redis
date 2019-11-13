@@ -148,6 +148,30 @@ public class JedisStreamQueueConsumer extends JedisQueueConsumer {
 	}
 
 	/**
+	 * Process entries in Pending list.
+	 */
+	private void processPending() {
+		ConsumerInfo consumerInfo = devJedis.getConsumerInfo(redisQueueOption.getKey(), groupName, redisQueueOption.getConsumerName());
+
+		/**
+		 * New consumer.
+		 */
+		if (consumerInfo == null) {
+			return;
+		}
+
+		List<StreamPendingEntry> list = jedis.xpending(redisQueueOption.getKey(), groupName, null, null, (int) consumerInfo.getPending(), redisQueueOption.getConsumerName());
+
+		for (StreamPendingEntry item : list) {
+			Map<String, String> streamEntryMap = devJedis.xrangeOne(redisQueueOption.getKey(), item.getID());
+
+			if (streamEntryMap != null) {
+				callback(item.getID(), streamEntryMap.get(Config.QUEUE_DEFAULT_ITEM_KEY));
+			}
+		}
+	}
+
+	/**
 	 * Main process.
 	 * @throws InterruptedException
 	 */
@@ -178,27 +202,6 @@ public class JedisStreamQueueConsumer extends JedisQueueConsumer {
 		}
 
 		callback(streamEntry.getID(), streamEntryMap.get(Config.QUEUE_DEFAULT_ITEM_KEY));
-	}
-
-	private void processPending() {
-		ConsumerInfo consumerInfo = devJedis.getConsumerInfo(redisQueueOption.getKey(), groupName, redisQueueOption.getConsumerName());
-
-		/**
-		 * New consumer.
-		 */
-		if (consumerInfo == null) {
-			return;
-		}
-
-		List<StreamPendingEntry> list = jedis.xpending(redisQueueOption.getKey(), groupName, null, null, (int) consumerInfo.getPending(), redisQueueOption.getConsumerName());
-
-		for (StreamPendingEntry item : list) {
-			Map<String, String> streamEntryMap = devJedis.xrangeOne(redisQueueOption.getKey(), item.getID());
-
-			if (streamEntryMap != null) {
-				callback(item.getID(), streamEntryMap.get(Config.QUEUE_DEFAULT_ITEM_KEY));
-			}
-		}
 	}
 
 	/**
