@@ -192,7 +192,6 @@ public class DevJedis implements Closeable {
 	@SuppressWarnings("unchecked")
 	public List<Entry<String, List<StreamEntry>>> xreadGroup(final String groupname, final String consumer, final int count, final long block, final boolean noAck, final Entry<String, StreamEntryID>... streams) {
 		devJedisClient.xreadGroup(groupname, consumer, count, block, noAck, streams);
-
 		devJedisClient.setTimeoutInfinite();
 		List<Object> streamsEntries = devJedisClient.getObjectMultiBulkReply();
 

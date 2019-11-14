@@ -12,9 +12,7 @@ import devutility.external.redis.com.RedisType;
 import devutility.external.redis.com.StatusCode;
 import devutility.external.redis.exception.JedisBrokenException;
 import devutility.external.redis.exception.JedisFatalException;
-import devutility.external.redis.ext.DevJedis;
 import devutility.external.redis.ext.model.ConsumerInfo;
-import devutility.external.redis.ext.model.GroupInfo;
 import devutility.external.redis.queue.JedisQueueConsumer;
 import devutility.external.redis.queue.JedisQueueConsumerEvent;
 import devutility.internal.lang.StringUtils;
@@ -45,50 +43,14 @@ public class JedisStreamQueueConsumer extends JedisQueueConsumer {
 	 */
 	public JedisStreamQueueConsumer(Jedis jedis, final RedisQueueOption redisQueueOption, final JedisQueueConsumerEvent consumerEvent) {
 		super(jedis, redisQueueOption, consumerEvent);
-		this.devJedis = new DevJedis(jedis);
-
-		if (StringUtils.isNotEmpty(redisQueueOption.getGroupName())) {
-			this.groupName = redisQueueOption.getGroupName();
-		}
-	}
-
-	/**
-	 * Constructor
-	 * @param jedis Jedis object to read data from Redis.
-	 * @param key Redis key of queue.
-	 * @param groupName Group name of redis queue.
-	 * @param consumerName Consumer name of provided group.
-	 * @param consumerEvent Custom consumer event implementation.
-	 */
-	public JedisStreamQueueConsumer(Jedis jedis, final String key, final String groupName, final String consumerName, final JedisQueueConsumerEvent consumerEvent) {
-		this(jedis, new RedisQueueOption(key, groupName, consumerName), consumerEvent);
-	}
-
-	/**
-	 * Constructor
-	 * @param jedis Jedis object to read data from Redis.
-	 * @param key Redis key of queue.
-	 * @param groupName Group name of redis queue.
-	 * @param consumerEvent Custom consumer event implementation.
-	 */
-	public JedisStreamQueueConsumer(Jedis jedis, final String key, final String groupName, final JedisQueueConsumerEvent consumerEvent) {
-		this(jedis, key, groupName, null, consumerEvent);
-	}
-
-	/**
-	 * Constructor
-	 * @param jedis Jedis object to read data from Redis.
-	 * @param key Redis key of queue.
-	 * @param consumerEvent Custom consumer event implementation.
-	 */
-	public JedisStreamQueueConsumer(Jedis jedis, final String key, final JedisQueueConsumerEvent consumerEvent) {
-		this(jedis, key, null, consumerEvent);
+		this.groupName = redisQueueOption.getGroupName();
 	}
 
 	@Override
 	public void listen() throws Exception {
-		validate();
-		initialize();
+		RedisType type = devJedis.type(redisQueueOption.getKey());
+		validate(type);
+		initialize(type);
 
 		while (isActive()) {
 			try {
@@ -112,8 +74,7 @@ public class JedisStreamQueueConsumer extends JedisQueueConsumer {
 	/**
 	 * Validate parameters that caller provided.
 	 */
-	@Override
-	protected void validate() {
+	protected void validate(RedisType type) {
 		super.validate();
 
 		if (StringUtils.isNullOrEmpty(groupName)) {
@@ -124,20 +85,30 @@ public class JedisStreamQueueConsumer extends JedisQueueConsumer {
 			throw new IllegalArgumentException("Consumer name can't be empty!");
 		}
 
-		RedisType type = devJedis.type(redisQueueOption.getKey());
-
-		if (RedisType.STREAM != type) {
-			throw new IllegalArgumentException(String.format("Invalid Redis type for key \"%\"!", redisQueueOption.getKey()));
+		if (RedisType.NONE != type && RedisType.STREAM != type) {
+			throw new IllegalArgumentException(String.format("Invalid Redis type for key \"%s\"!", redisQueueOption.getKey()));
 		}
 	}
 
 	/**
 	 * Initialize for data consumption.
 	 */
-	protected void initialize() {
-		GroupInfo groupInfo = devJedis.getGroupInfo(redisQueueOption.getKey(), groupName);
+	protected void initialize(RedisType type) {
+		if (RedisType.NONE == type) {
+			initializeGroup();
+			return;
+		}
 
-		if (groupInfo == null && devJedis.createGroup(redisQueueOption.getKey(), groupName) != StatusCode.OK) {
+		if (!devJedis.isGroupExist(redisQueueOption.getKey(), groupName)) {
+			initializeGroup();
+		}
+	}
+
+	/**
+	 * Initialize consumer group.
+	 */
+	private void initializeGroup() {
+		if (devJedis.createGroup(redisQueueOption.getKey(), groupName) != StatusCode.OK) {
 			throw new JedisFatalException("Create group failed!");
 		}
 	}

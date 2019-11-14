@@ -77,7 +77,7 @@ public class DevJedisCommandClient extends DevJedisConnection {
 			optional += 2;
 		}
 
-		if (block > 0) {
+		if (block > -1) {
 			optional += 2;
 		}
 

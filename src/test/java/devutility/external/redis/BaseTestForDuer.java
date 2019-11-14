@@ -62,7 +62,7 @@ public abstract class BaseTestForDuer extends BaseTest {
 
 	public BaseTestForDuer() {
 		try {
-			redisQueueOption = PropertiesUtils.toModel(CONFIG_FILE, "", RedisQueueOption.class);
+			redisQueueOption = PropertiesUtils.toModel(CONFIG_FILE, "queue.option", RedisQueueOption.class);
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 			e.printStackTrace();
 		}
