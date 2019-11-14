@@ -6,7 +6,6 @@ import devutility.external.json.JsonUtils;
 import devutility.external.redis.BaseTestForDuer;
 import devutility.external.redis.queue.JedisQueueConsumer;
 import devutility.external.redis.queue.JedisQueueConsumerEvent;
-import devutility.external.redis.queue.list.ListConsumerHandler;
 import devutility.internal.test.TestExecutor;
 
 /**
@@ -17,7 +16,7 @@ import devutility.internal.test.TestExecutor;
  * @version: 2019-11-14 16:01:55
  */
 public class JedisStreamQueueConsumerTest extends BaseTestForDuer {
-	private JedisQueueConsumerEvent consumerEvent = new ListConsumerHandler();
+	private JedisQueueConsumerEvent consumerEvent = new StreamConsumerHandler();
 
 	@Override
 	public void run() {
