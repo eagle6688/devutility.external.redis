@@ -2,9 +2,11 @@ package devutility.external.redis.queue.stream;
 
 import java.io.IOException;
 import java.util.AbstractMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import devutility.external.redis.com.Config;
 import devutility.external.redis.com.RedisQueueOption;
@@ -34,6 +36,11 @@ public class JedisStreamQueueConsumer extends JedisQueueConsumer {
 	 * Group name.
 	 */
 	protected String groupName;
+
+	/**
+	 * Consumed StreamEntryID strings.
+	 */
+	private Set<String> consumedIds = new LinkedHashSet<String>();
 
 	/**
 	 * Constructor
@@ -94,6 +101,8 @@ public class JedisStreamQueueConsumer extends JedisQueueConsumer {
 	 * Initialize for data consumption.
 	 */
 	protected void initialize(RedisType type) {
+		consumedIds.clear();
+
 		if (RedisType.NONE == type) {
 			initializeGroup();
 			return;
@@ -193,15 +202,21 @@ public class JedisStreamQueueConsumer extends JedisQueueConsumer {
 			return;
 		}
 
-		if (!consumerEvent.onMessage(redisQueueOption.getKey(), values)) {
+		StreamEntryID streamEntryID = (StreamEntryID) values[0];
+
+		if (!consumedIds.contains(streamEntryID.toString())) {
 			/**
 			 * Failed consume.
 			 */
-			return;
+			if (!consumerEvent.onMessage(redisQueueOption.getKey(), values)) {
+				return;
+			}
+
+			consumedIds.add(streamEntryID.toString());
 		}
 
 		if (!redisQueueOption.isNoNeedAck() && redisQueueOption.isAutoAck()) {
-			devJedis.xack(redisQueueOption.getKey(), groupName, (StreamEntryID) values[0]);
+			devJedis.xack(redisQueueOption.getKey(), groupName, streamEntryID);
 		}
 	}
 
