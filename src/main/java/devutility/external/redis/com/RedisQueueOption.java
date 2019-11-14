@@ -66,6 +66,11 @@ public class RedisQueueOption {
 	private boolean autoAck;
 
 	/**
+	 * Page size for read pending data, default is 1.
+	 */
+	private int pageSizeForReadPending = 1;
+
+	/**
 	 * In debug mode, system will print all of debug information. Default is false.
 	 */
 	private boolean debug;
@@ -193,6 +198,14 @@ public class RedisQueueOption {
 
 	public void setAutoAck(boolean autoAck) {
 		this.autoAck = autoAck;
+	}
+
+	public int getPageSizeForReadPending() {
+		return pageSizeForReadPending;
+	}
+
+	public void setPageSizeForReadPending(int pageSizeForReadPending) {
+		this.pageSizeForReadPending = pageSizeForReadPending;
 	}
 
 	public boolean isDebug() {

@@ -1,6 +1,7 @@
 package devutility.external.redis.queue;
 
 import devutility.external.redis.com.RedisQueueOption;
+import devutility.internal.lang.StringUtils;
 
 /**
  * 
@@ -14,6 +15,15 @@ public abstract class JedisQueue {
 	 * RedisQueueOption object.
 	 */
 	protected RedisQueueOption redisQueueOption;
+	
+	/**
+	 * Validate parameters that caller provided.
+	 */
+	protected void validate() {
+		if (StringUtils.isNullOrEmpty(redisQueueOption.getKey())) {
+			throw new IllegalArgumentException("Redis key can't be empty!");
+		}
+	}
 
 	/**
 	 * Constructor

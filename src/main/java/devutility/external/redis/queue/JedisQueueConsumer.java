@@ -38,7 +38,7 @@ public abstract class JedisQueueConsumer extends JedisQueue implements Closeable
 	/**
 	 * Custom consumer event implementation.
 	 */
-	private JedisQueueConsumerEvent consumerEvent;
+	protected JedisQueueConsumerEvent consumerEvent;
 
 	/**
 	 * Constructor
@@ -50,6 +50,18 @@ public abstract class JedisQueueConsumer extends JedisQueue implements Closeable
 		super(redisQueueOption);
 		this.setJedis(jedis);
 		this.setConsumerEvent(consumerEvent);
+	}
+
+	/**
+	 * Validate parameters that caller provided.
+	 */
+	@Override
+	protected void validate() {
+		super.validate();
+
+		if (jedis == null) {
+			throw new IllegalArgumentException("Jedis object not found!");
+		}
 	}
 
 	/**

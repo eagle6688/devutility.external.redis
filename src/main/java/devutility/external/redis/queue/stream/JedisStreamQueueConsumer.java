@@ -112,14 +112,9 @@ public class JedisStreamQueueConsumer extends JedisQueueConsumer {
 	/**
 	 * Validate parameters that caller provided.
 	 */
+	@Override
 	protected void validate() {
-		if (jedis == null) {
-			throw new IllegalArgumentException("jedis can't be null!");
-		}
-
-		if (StringUtils.isNullOrEmpty(redisQueueOption.getKey())) {
-			throw new IllegalArgumentException("Redis key can't be empty!");
-		}
+		super.validate();
 
 		if (StringUtils.isNullOrEmpty(groupName)) {
 			throw new IllegalArgumentException("Group name can't be empty!");
@@ -132,7 +127,7 @@ public class JedisStreamQueueConsumer extends JedisQueueConsumer {
 		RedisType type = devJedis.type(redisQueueOption.getKey());
 
 		if (RedisType.STREAM != type) {
-			throw new IllegalArgumentException(String.format("Invalid Redis type of key \"%\"!", redisQueueOption.getKey()));
+			throw new IllegalArgumentException(String.format("Invalid Redis type for key \"%\"!", redisQueueOption.getKey()));
 		}
 	}
 
@@ -160,13 +155,24 @@ public class JedisStreamQueueConsumer extends JedisQueueConsumer {
 			return;
 		}
 
-		List<StreamPendingEntry> list = jedis.xpending(redisQueueOption.getKey(), groupName, null, null, (int) consumerInfo.getPending(), redisQueueOption.getConsumerName());
+		int count = (int) consumerInfo.getPending();
+		int pageSize = count / redisQueueOption.getPageSizeForReadPending();
+		StreamEntryID startId = null;
 
-		for (StreamPendingEntry item : list) {
-			Map<String, String> streamEntryMap = devJedis.xrangeOne(redisQueueOption.getKey(), item.getID());
+		if (count % redisQueueOption.getPageSizeForReadPending() > 0) {
+			pageSize += 1;
+		}
 
-			if (streamEntryMap != null) {
-				callback(item.getID(), streamEntryMap.get(Config.QUEUE_DEFAULT_ITEM_KEY));
+		for (int i = 0; i < pageSize; i++) {
+			List<StreamPendingEntry> list = jedis.xpending(redisQueueOption.getKey(), groupName, startId, null, count, redisQueueOption.getConsumerName());
+
+			for (StreamPendingEntry item : list) {
+				Map<String, String> streamEntryMap = devJedis.xrangeOne(redisQueueOption.getKey(), item.getID());
+
+				if (streamEntryMap != null) {
+					callback(item.getID(), streamEntryMap.get(Config.QUEUE_DEFAULT_ITEM_KEY));
+					startId = item.getID();
+				}
 			}
 		}
 	}
@@ -177,7 +183,7 @@ public class JedisStreamQueueConsumer extends JedisQueueConsumer {
 	 */
 	private void process() throws InterruptedException {
 		/**
-		 * Key is key of queue in Redis, value is StreamEntryID object which indicate the beginning ID of queue items.
+		 * Key of queue in Redis, value is StreamEntryID object which indicate the beginning ID of queue items.
 		 */
 		Entry<String, StreamEntryID> stream = new AbstractMap.SimpleEntry<String, StreamEntryID>(redisQueueOption.getKey(), StreamEntryID.UNRECEIVED_ENTRY);
 
@@ -191,14 +197,14 @@ public class JedisStreamQueueConsumer extends JedisQueueConsumer {
 		List<StreamEntry> streamEntries = list.get(0).getValue();
 
 		if (CollectionUtils.isNullOrEmpty(streamEntries) || streamEntries.size() != 1) {
-			throw new JedisFatalException("Illegal StreamEntry list data!");
+			throw new JedisFatalException("Illegal StreamEntry list!");
 		}
 
 		StreamEntry streamEntry = streamEntries.get(0);
 		Map<String, String> streamEntryMap = streamEntry.getFields();
 
 		if (streamEntryMap == null || !streamEntryMap.containsKey(Config.QUEUE_DEFAULT_ITEM_KEY)) {
-			throw new JedisFatalException("Illegal StreamEntry list data!");
+			throw new JedisFatalException("Illegal StreamEntry map!");
 		}
 
 		callback(streamEntry.getID(), streamEntryMap.get(Config.QUEUE_DEFAULT_ITEM_KEY));
@@ -209,11 +215,17 @@ public class JedisStreamQueueConsumer extends JedisQueueConsumer {
 	 * @param value Message.
 	 */
 	private void callback(Object... values) {
-		if (getConsumerEvent() == null) {
+		if (consumerEvent == null) {
+			/**
+			 * No consume.
+			 */
 			return;
 		}
 
-		if (!getConsumerEvent().onMessage(redisQueueOption.getKey(), values)) {
+		if (!consumerEvent.onMessage(redisQueueOption.getKey(), values)) {
+			/**
+			 * Failed consume.
+			 */
 			return;
 		}
 
