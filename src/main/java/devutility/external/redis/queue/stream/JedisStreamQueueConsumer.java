@@ -201,7 +201,7 @@ public class JedisStreamQueueConsumer extends JedisQueueConsumer {
 		}
 
 		if (!redisQueueOption.isNoNeedAck() && redisQueueOption.isAutoAck()) {
-			jedis.xack(redisQueueOption.getKey(), groupName, (StreamEntryID) values[0]);
+			devJedis.xack(redisQueueOption.getKey(), groupName, (StreamEntryID) values[0]);
 		}
 	}
 
