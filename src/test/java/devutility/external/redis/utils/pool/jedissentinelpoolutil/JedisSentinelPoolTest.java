@@ -1,12 +1,12 @@
 package devutility.external.redis.utils.pool.jedissentinelpoolutil;
 
-import devutility.external.redis.BaseTest;
+import devutility.external.redis.BaseTestForDuer;
 import devutility.external.redis.utils.pool.JedisSentinelPoolUtil;
 import devutility.internal.test.TestExecutor;
 import redis.clients.jedis.HostAndPort;
 import redis.clients.jedis.JedisSentinelPool;
 
-public class JedisSentinelPoolTest extends BaseTest {
+public class JedisSentinelPoolTest extends BaseTestForDuer {
 	@Override
 	public void run() {
 		JedisSentinelPool jedisSentinelPool = JedisSentinelPoolUtil.jedisSentinelPool(sentinel_RedisInstance);

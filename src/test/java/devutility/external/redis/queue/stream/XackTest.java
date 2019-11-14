@@ -1,6 +1,6 @@
 package devutility.external.redis.queue.stream;
 
-import devutility.external.redis.BaseTest;
+import devutility.external.redis.BaseTestForDuer;
 import devutility.external.redis.model.StreamData;
 import devutility.internal.test.TestExecutor;
 import redis.clients.jedis.Jedis;
@@ -13,7 +13,7 @@ import redis.clients.jedis.StreamEntryID;
  * @author: Aldwin Su
  * @version: 2019-11-04 13:54:59
  */
-public class XackTest extends BaseTest {
+public class XackTest extends BaseTestForDuer {
 	@Override
 	public void run() {
 		StreamEntryID streamEntryID = new StreamEntryID("1572529192472-0");

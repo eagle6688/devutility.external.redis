@@ -1,6 +1,6 @@
 package devutility.external.redis.queue.list;
 
-import devutility.external.redis.BaseTest;
+import devutility.external.redis.BaseTestForDuer;
 import devutility.external.redis.queue.Config;
 import devutility.internal.test.TestExecutor;
 import redis.clients.jedis.Jedis;
@@ -12,7 +12,7 @@ import redis.clients.jedis.Jedis;
  * @author: Aldwin Su
  * @version: 2019-09-22 12:38:30
  */
-public class ProducerTest extends BaseTest {
+public class ProducerTest extends BaseTestForDuer {
 	private int count = 100;
 
 	private String getMessage(int index) {

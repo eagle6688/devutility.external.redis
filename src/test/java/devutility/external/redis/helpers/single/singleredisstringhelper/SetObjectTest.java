@@ -1,8 +1,8 @@
 package devutility.external.redis.helpers.single.singleredisstringhelper;
 
-import devutility.external.redis.BaseTest;
+import devutility.external.redis.BaseTestForDuer;
 
-public class SetObjectTest extends BaseTest {
+public class SetObjectTest extends BaseTestForDuer {
 	@Override
 	public void run() {
 

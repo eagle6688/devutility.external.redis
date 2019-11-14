@@ -2,11 +2,11 @@ package devutility.external.redis.helpers.single.singleredisstringhelper;
 
 import java.util.List;
 
-import devutility.external.redis.BaseTest;
+import devutility.external.redis.BaseTestForDuer;
 import devutility.external.redis.model.User;
 import devutility.internal.test.TestExecutor;
 
-public class PagingSetListTest extends BaseTest {
+public class PagingSetListTest extends BaseTestForDuer {
 	@Override
 	public void run() {
 		List<User> list = User.list(109);

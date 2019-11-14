@@ -2,7 +2,7 @@ package devutility.external.redis.ext;
 
 import java.util.List;
 
-import devutility.external.redis.BaseTest;
+import devutility.external.redis.BaseTestForDuer;
 import devutility.external.redis.ext.model.ConsumerInfo;
 import devutility.external.redis.model.StreamData;
 import devutility.internal.test.TestExecutor;
@@ -14,7 +14,7 @@ import devutility.internal.test.TestExecutor;
  * @author: Aldwin Su
  * @version: 2019-11-01 19:46:59
  */
-public class XinfoConsumersTest extends BaseTest {
+public class XinfoConsumersTest extends BaseTestForDuer {
 	String groupName = "";
 
 	@Override

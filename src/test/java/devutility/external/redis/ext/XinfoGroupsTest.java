@@ -2,7 +2,7 @@ package devutility.external.redis.ext;
 
 import java.util.List;
 
-import devutility.external.redis.BaseTest;
+import devutility.external.redis.BaseTestForDuer;
 import devutility.external.redis.ext.model.GroupInfo;
 import devutility.internal.test.TestExecutor;
 
@@ -13,7 +13,7 @@ import devutility.internal.test.TestExecutor;
  * @author: Aldwin Su
  * @version: 2019-10-31 21:28:56
  */
-public class XinfoGroupsTest extends BaseTest {
+public class XinfoGroupsTest extends BaseTestForDuer {
 	@Override
 	public void run() {
 		try (DevJedis devJedis = new DevJedis(jedis())) {

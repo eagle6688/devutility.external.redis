@@ -3,10 +3,10 @@ package devutility.external.redis.helpers.single.singleredisstringhelper;
 import java.io.IOException;
 import java.util.Arrays;
 
-import devutility.external.redis.BaseTest;
+import devutility.external.redis.BaseTestForDuer;
 import devutility.internal.test.TestExecutor;
 
-public class PagingGetArraysTest extends BaseTest {
+public class PagingGetArraysTest extends BaseTestForDuer {
 	@Override
 	public void run() {
 		try {

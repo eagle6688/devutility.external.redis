@@ -1,6 +1,6 @@
 package devutility.external.redis.queue.stream;
 
-import devutility.external.redis.BaseTest;
+import devutility.external.redis.BaseTestForDuer;
 import devutility.internal.test.TestExecutor;
 import redis.clients.jedis.Jedis;
 
@@ -11,7 +11,7 @@ import redis.clients.jedis.Jedis;
  * @author: Aldwin Su
  * @version: 2019-11-09 13:23:16
  */
-public class XgroupDestroyTest extends BaseTest {
+public class XgroupDestroyTest extends BaseTestForDuer {
 	@Override
 	public void run() {
 		try (Jedis jedis = jedis()) {

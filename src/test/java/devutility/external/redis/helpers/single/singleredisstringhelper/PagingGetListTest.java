@@ -3,11 +3,11 @@ package devutility.external.redis.helpers.single.singleredisstringhelper;
 import java.util.List;
 
 import devutility.external.json.JsonUtils;
-import devutility.external.redis.BaseTest;
+import devutility.external.redis.BaseTestForDuer;
 import devutility.external.redis.model.User;
 import devutility.internal.test.TestExecutor;
 
-public class PagingGetListTest extends BaseTest {
+public class PagingGetListTest extends BaseTestForDuer {
 	@Override
 	public void run() {
 		try {

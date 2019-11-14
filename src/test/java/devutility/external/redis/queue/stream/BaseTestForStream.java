@@ -3,7 +3,7 @@ package devutility.external.redis.queue.stream;
 import java.util.List;
 import java.util.Map.Entry;
 
-import devutility.external.redis.BaseTest;
+import devutility.external.redis.BaseTestForDuer;
 import redis.clients.jedis.StreamEntry;
 
 /**
@@ -13,7 +13,7 @@ import redis.clients.jedis.StreamEntry;
  * @author: Aldwin Su
  * @version: 2019-11-04 15:07:19
  */
-public abstract class BaseTestForStream extends BaseTest {
+public abstract class BaseTestForStream extends BaseTestForDuer {
 	protected void handleXreadGroup(List<Entry<String, List<StreamEntry>>> list) {
 		if (list == null) {
 			println("No data in queue.");

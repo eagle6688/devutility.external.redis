@@ -2,11 +2,11 @@ package devutility.external.redis.helpers.single.singleredisstringhelper;
 
 import java.io.IOException;
 
-import devutility.external.redis.BaseTest;
+import devutility.external.redis.BaseTestForDuer;
 import devutility.external.redis.model.User;
 import devutility.internal.test.TestExecutor;
 
-public class PagingSetArraysTest extends BaseTest {
+public class PagingSetArraysTest extends BaseTestForDuer {
 	@Override
 	public void run() {
 		String[][] arrays = User.getArrays(109);

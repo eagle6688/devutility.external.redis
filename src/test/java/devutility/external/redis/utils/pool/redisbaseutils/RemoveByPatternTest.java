@@ -1,10 +1,10 @@
 package devutility.external.redis.utils.pool.redisbaseutils;
 
-import devutility.external.redis.BaseTest;
+import devutility.external.redis.BaseTestForDuer;
 import devutility.external.redis.utils.RedisStringUtils;
 import devutility.internal.test.TestExecutor;
 
-public class RemoveByPatternTest extends BaseTest {
+public class RemoveByPatternTest extends BaseTestForDuer {
 	@Override
 	public void run() {
 		String pattern = "asd*";
