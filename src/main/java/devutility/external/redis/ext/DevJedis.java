@@ -46,13 +46,6 @@ public class DevJedis implements Closeable {
 	}
 
 	/**
-	 * Constructor
-	 */
-	public DevJedis() {
-		this(null);
-	}
-
-	/**
 	 * Get RedisType of provided key.
 	 * @param key Redis key.
 	 * @return RedisType

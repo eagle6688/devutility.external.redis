@@ -1,4 +1,4 @@
-package devutility.external.redis.queue.list;
+package devutility.external.redis.queue;
 
 import devutility.external.redis.queue.JedisQueueConsumerEvent;
 

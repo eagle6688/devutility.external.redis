@@ -2,6 +2,7 @@ package devutility.external.redis.queue.list;
 
 import devutility.external.redis.BaseTest;
 import devutility.external.redis.queue.Config;
+import devutility.external.redis.queue.ConsumerHandler;
 import devutility.external.redis.queue.JedisQueueConsumerEvent;
 import devutility.internal.test.TestExecutor;
 
