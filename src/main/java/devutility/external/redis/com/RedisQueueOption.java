@@ -71,6 +71,11 @@ public class RedisQueueOption {
 	private int pageSizeForReadPending = 1;
 
 	/**
+	 * Queue mode.
+	 */
+	private QueueMode mode;
+
+	/**
 	 * In debug mode, system will print all of debug information. Default is false.
 	 */
 	private boolean debug;
@@ -206,6 +211,14 @@ public class RedisQueueOption {
 
 	public void setPageSizeForReadPending(int pageSizeForReadPending) {
 		this.pageSizeForReadPending = pageSizeForReadPending;
+	}
+
+	public QueueMode getMode() {
+		return mode;
+	}
+
+	public void setMode(QueueMode mode) {
+		this.mode = mode;
 	}
 
 	public boolean isDebug() {
