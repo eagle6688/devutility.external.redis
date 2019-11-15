@@ -7,6 +7,7 @@ import devutility.external.redis.exception.JedisBrokenException;
 import devutility.external.redis.queue.JedisQueueConsumer;
 import devutility.external.redis.queue.JedisQueueConsumerEvent;
 import devutility.external.redis.utils.pool.JedisPoolUtil;
+import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
 /**
@@ -47,7 +48,9 @@ public final class JedisPoolListQueueConsumer extends JedisQueueConsumer {
 	@Override
 	public void listen() throws Exception {
 		while (isActive()) {
-			try (JedisListQueueConsumer jedisP2PQueueConsumer = new JedisListQueueConsumer(JedisPoolUtil.jedis(jedisPool, getRedisQueueOption().getDatabase()), getRedisQueueOption(), getConsumerEvent())) {
+			Jedis jedis = JedisPoolUtil.jedis(jedisPool, getRedisQueueOption().getDatabase());
+
+			try (JedisListQueueConsumer jedisP2PQueueConsumer = new JedisListQueueConsumer(jedis, getRedisQueueOption(), getConsumerEvent())) {
 				jedisP2PQueueConsumer.listen();
 			} catch (Exception e) {
 				if (e instanceof JedisBrokenException) {

@@ -9,6 +9,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import devutility.external.redis.com.Config;
+import devutility.external.redis.com.QueueMode;
 import devutility.external.redis.com.RedisQueueOption;
 import devutility.external.redis.com.RedisType;
 import devutility.external.redis.com.StatusCode;
@@ -215,9 +216,24 @@ public class JedisStreamQueueConsumer extends JedisQueueConsumer {
 			consumedIds.add(streamEntryID.toString());
 		}
 
-		if (!redisQueueOption.isNoNeedAck() && redisQueueOption.isAutoAck()) {
-			devJedis.xack(redisQueueOption.getKey(), groupName, streamEntryID);
+		ack(streamEntryID);
+	}
+
+	/**
+	 * Acknowledge one message.
+	 * @param streamEntryID: StreamEntryID object.
+	 */
+	private void ack(StreamEntryID streamEntryID) {
+		if (redisQueueOption.isNoNeedAck() || !redisQueueOption.isAutoAck()) {
+			return;
 		}
+
+		if (QueueMode.P2P == redisQueueOption.getMode()) {
+			devJedis.xack(redisQueueOption.getKey(), groupName, streamEntryID);
+			return;
+		}
+
+		jedis.xack(redisQueueOption.getKey(), groupName, streamEntryID);
 	}
 
 	@Override

@@ -71,9 +71,9 @@ public class RedisQueueOption {
 	private int pageSizeForReadPending = 1;
 
 	/**
-	 * Queue mode.
+	 * Queue mode, the default value is P2P.
 	 */
-	private QueueMode mode;
+	private QueueMode mode = QueueMode.P2P;
 
 	/**
 	 * In debug mode, system will print all of debug information. Default is false.
