@@ -227,7 +227,19 @@ public class JedisStreamQueueConsumer extends JedisQueueConsumer implements Ackn
 		}
 
 		consumedIds.add(streamEntryID.toString());
-		ack(streamEntryID);
+		autoAck(streamEntryID);
+	}
+
+	/**
+	 * Automatic acknowledge one message.
+	 * @param streamEntryId: StreamEntryID object.
+	 */
+	private void autoAck(StreamEntryID streamEntryId) {
+		if (redisQueueOption.isNoNeedAck() || !redisQueueOption.isAutoAck()) {
+			return;
+		}
+
+		ack(streamEntryId);
 	}
 
 	/**
@@ -236,10 +248,6 @@ public class JedisStreamQueueConsumer extends JedisQueueConsumer implements Ackn
 	 */
 	@Override
 	public void ack(StreamEntryID streamEntryId) {
-		if (redisQueueOption.isNoNeedAck() || !redisQueueOption.isAutoAck()) {
-			return;
-		}
-
 		if (QueueMode.P2P == redisQueueOption.getMode()) {
 			devJedis.xack(redisQueueOption.getKey(), groupName, streamEntryId);
 			return;

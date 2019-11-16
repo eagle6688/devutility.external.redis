@@ -26,8 +26,8 @@ public class StreamConsumerHandler extends JedisStreamQueueConsumerEvent {
 
 	private boolean process(StreamEntryID streamEntryId) {
 		//return normal(streamEntryId);
-		return failed(streamEntryId);
-		//return internalAck(streamEntryId);
+		//return failed(streamEntryId);
+		return internalAck(streamEntryId);
 		//return exceptionBeforeAck(streamEntryId);
 	}
 
