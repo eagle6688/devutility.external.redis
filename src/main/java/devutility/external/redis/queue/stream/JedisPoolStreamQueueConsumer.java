@@ -36,7 +36,7 @@ public class JedisPoolStreamQueueConsumer extends JedisQueueConsumer {
 	@Override
 	public void listen() throws Exception {
 		while (isActive()) {
-			Jedis jedis = JedisPoolUtil.jedis(jedisPool, getRedisQueueOption().getDatabase());
+			Jedis jedis = JedisPoolUtil.jedis(jedisPool, redisQueueOption.getDatabase());
 
 			try (JedisStreamQueueConsumer consumer = new JedisStreamQueueConsumer(jedis, redisQueueOption, (JedisStreamQueueConsumerEvent) consumerEvent)) {
 				consumer.listen();

@@ -68,7 +68,7 @@ public final class JedisListQueueConsumer extends JedisQueueConsumer {
 	 */
 	private void process() throws InterruptedException {
 		connect(jedis);
-		List<String> list = jedis.brpop(getRedisQueueOption().getWaitMilliseconds(), getRedisQueueOption().getKey());
+		List<String> list = jedis.brpop(redisQueueOption.getWaitMilliseconds(), redisQueueOption.getKey());
 
 		if (CollectionUtils.isNullOrEmpty(list)) {
 			return;
@@ -83,11 +83,11 @@ public final class JedisListQueueConsumer extends JedisQueueConsumer {
 	 * @param value Message.
 	 */
 	private void callback(String key, String value) {
-		if (getConsumerEvent() == null) {
+		if (consumerEvent == null) {
 			return;
 		}
 
-		getConsumerEvent().onMessage(key, value);
+		consumerEvent.onMessage(key, value);
 	}
 
 	@Override

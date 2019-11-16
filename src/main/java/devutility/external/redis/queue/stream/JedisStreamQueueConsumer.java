@@ -50,7 +50,7 @@ public class JedisStreamQueueConsumer extends JedisQueueConsumer implements Ackn
 	 * @param redisQueueOption RedisQueueOption object.
 	 * @param consumerEvent Custom consumer event implementation.
 	 */
-	public JedisStreamQueueConsumer(Jedis jedis, final RedisQueueOption redisQueueOption, final JedisStreamQueueConsumerEvent consumerEvent) {
+	public JedisStreamQueueConsumer(final Jedis jedis, final RedisQueueOption redisQueueOption, final JedisStreamQueueConsumerEvent consumerEvent) {
 		super(jedis, redisQueueOption, consumerEvent);
 		this.groupName = redisQueueOption.getGroupName();
 		consumerEvent.setAcknowledger(this);
@@ -67,6 +67,12 @@ public class JedisStreamQueueConsumer extends JedisQueueConsumer implements Ackn
 				processPending();
 				process();
 			} catch (Exception e) {
+				log(e);
+
+				if (!isReasonableException()) {
+					throw new JedisBrokenException("Exceptions count excced the setting exceptionLimit in RedisQueueOption object.", e);
+				}
+
 				if (jedis.getClient().isBroken()) {
 					throw new JedisBrokenException(e);
 				}
@@ -75,7 +81,6 @@ public class JedisStreamQueueConsumer extends JedisQueueConsumer implements Ackn
 					throw e;
 				}
 
-				log(e);
 				connect(jedis);
 			}
 		}
@@ -199,7 +204,6 @@ public class JedisStreamQueueConsumer extends JedisQueueConsumer implements Ackn
 	 * @param value Message.
 	 */
 	private void onMessage(StreamMessageType streamMessageType, Object... values) {
-		JedisStreamQueueConsumerEvent streamConsumerEvent = (JedisStreamQueueConsumerEvent) consumerEvent;
 		StreamEntryID streamEntryID = (StreamEntryID) values[0];
 
 		/**
@@ -211,13 +215,13 @@ public class JedisStreamQueueConsumer extends JedisQueueConsumer implements Ackn
 
 		switch (streamMessageType) {
 		case NORMAL:
-			if (!streamConsumerEvent.onMessage(redisQueueOption.getKey(), values)) {
+			if (!consumerEvent.onMessage(redisQueueOption.getKey(), values)) {
 				return;
 			}
 			break;
 
 		case PENDING:
-			if (!streamConsumerEvent.onPendingMessage(redisQueueOption.getKey(), values)) {
+			if (!consumerEvent.onPendingMessage(redisQueueOption.getKey(), values)) {
 				return;
 			}
 			break;

@@ -43,4 +43,9 @@ class StreamConsumerHandlerForAll extends JedisStreamQueueConsumerEvent {
 		System.out.println(String.format("%s Triggering onPendingMessage event, key:\"%s\", id: \"%s\", value: %s", Thread.currentThread().getName(), key, streamEntryId, values[1].toString()));
 		return true;
 	}
+
+	@Override
+	public void onError(Throwable cause) {
+
+	}
 }

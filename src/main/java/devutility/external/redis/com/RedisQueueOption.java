@@ -76,6 +76,16 @@ public class RedisQueueOption {
 	private QueueMode mode = QueueMode.P2P;
 
 	/**
+	 * Exception interval in milliseconds.
+	 */
+	private int exceptionIntervalMillis = 10000;
+
+	/**
+	 * Exception limit in interval time, system will stop monitor once the exceptionCount exeed this value.
+	 */
+	private int exceptionLimit = 10;
+
+	/**
 	 * In debug mode, system will print all of debug information. Default is false.
 	 */
 	private boolean debug;
@@ -219,6 +229,22 @@ public class RedisQueueOption {
 
 	public void setMode(QueueMode mode) {
 		this.mode = mode;
+	}
+
+	public int getExceptionIntervalMillis() {
+		return exceptionIntervalMillis;
+	}
+
+	public void setExceptionIntervalMillis(int exceptionIntervalMillis) {
+		this.exceptionIntervalMillis = exceptionIntervalMillis;
+	}
+
+	public int getExceptionLimit() {
+		return exceptionLimit;
+	}
+
+	public void setExceptionLimit(int exceptionLimit) {
+		this.exceptionLimit = exceptionLimit;
 	}
 
 	public boolean isDebug() {

@@ -24,6 +24,11 @@ public class StreamConsumerHandler extends JedisStreamQueueConsumerEvent {
 		return process(streamEntryId);
 	}
 
+	@Override
+	public void onError(Throwable cause) {
+
+	}
+
 	private boolean process(StreamEntryID streamEntryId) {
 		//return normal(streamEntryId);
 		//return failed(streamEntryId);
@@ -51,4 +56,5 @@ public class StreamConsumerHandler extends JedisStreamQueueConsumerEvent {
 		System.out.println(String.format("Id: %s exceptionBeforeAck process！", streamEntryId.toString()));
 		throw new RuntimeException("Process exception!");
 	}
+
 }

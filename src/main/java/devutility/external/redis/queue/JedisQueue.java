@@ -15,7 +15,7 @@ public abstract class JedisQueue {
 	 * RedisQueueOption object.
 	 */
 	protected RedisQueueOption redisQueueOption;
-	
+
 	/**
 	 * Validate parameters that caller provided.
 	 */
@@ -31,9 +31,5 @@ public abstract class JedisQueue {
 	 */
 	public JedisQueue(RedisQueueOption redisQueueOption) {
 		this.redisQueueOption = redisQueueOption;
-	}
-
-	public RedisQueueOption getRedisQueueOption() {
-		return redisQueueOption;
 	}
 }

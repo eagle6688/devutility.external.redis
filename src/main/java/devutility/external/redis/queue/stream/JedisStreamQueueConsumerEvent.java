@@ -22,15 +22,6 @@ public abstract class JedisStreamQueueConsumerEvent implements JedisQueueConsume
 	}
 
 	/**
-	 * Triggered while pending message received in consumer side.
-	 * @param key Redis key of queue.
-	 * @param values Message values.
-	 * @return boolean This result is very important for Stream queue, if true will send 'ACK' to redis server and the
-	 *         message will be removed otherwise will not.
-	 */
-	public abstract boolean onPendingMessage(String key, Object... values);
-
-	/**
 	 * Acknowledge one message.
 	 * @param streamEntryId: StreamEntryID object.
 	 */

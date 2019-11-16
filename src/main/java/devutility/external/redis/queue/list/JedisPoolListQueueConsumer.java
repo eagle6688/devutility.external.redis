@@ -48,10 +48,10 @@ public final class JedisPoolListQueueConsumer extends JedisQueueConsumer {
 	@Override
 	public void listen() throws Exception {
 		while (isActive()) {
-			Jedis jedis = JedisPoolUtil.jedis(jedisPool, getRedisQueueOption().getDatabase());
+			Jedis jedis = JedisPoolUtil.jedis(jedisPool, redisQueueOption.getDatabase());
 
-			try (JedisListQueueConsumer jedisP2PQueueConsumer = new JedisListQueueConsumer(jedis, getRedisQueueOption(), getConsumerEvent())) {
-				jedisP2PQueueConsumer.listen();
+			try (JedisListQueueConsumer jedisListQueueConsumer = new JedisListQueueConsumer(jedis, redisQueueOption, consumerEvent)) {
+				jedisListQueueConsumer.listen();
 			} catch (Exception e) {
 				if (e instanceof JedisBrokenException) {
 					log("System try to created a new connection and continue working because Jedis connection has broken due to the following reason:");

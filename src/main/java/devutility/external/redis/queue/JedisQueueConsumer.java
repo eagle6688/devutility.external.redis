@@ -26,6 +26,21 @@ public abstract class JedisQueueConsumer extends JedisQueue implements Closeable
 	protected DevJedis devJedis;
 
 	/**
+	 * Custom consumer event implementation.
+	 */
+	protected JedisQueueConsumerEvent consumerEvent;
+
+	/**
+	 * Exception start time in milliseconds.
+	 */
+	protected long exceptionStartMillis = System.currentTimeMillis();
+
+	/**
+	 * Count of exceptions from consuming function.
+	 */
+	protected int exceptionCount;
+
+	/**
 	 * Status, default is true.
 	 */
 	private boolean active = true;
@@ -34,11 +49,6 @@ public abstract class JedisQueueConsumer extends JedisQueue implements Closeable
 	 * Connection retried times.
 	 */
 	private int connectionRetriedTimes;
-
-	/**
-	 * Custom consumer event implementation.
-	 */
-	protected JedisQueueConsumerEvent consumerEvent;
 
 	/**
 	 * Constructor
@@ -50,7 +60,7 @@ public abstract class JedisQueueConsumer extends JedisQueue implements Closeable
 		super(redisQueueOption);
 		this.jedis = jedis;
 		this.devJedis = new DevJedis(jedis);
-		this.setConsumerEvent(consumerEvent);
+		this.consumerEvent = consumerEvent;
 	}
 
 	/**
@@ -84,11 +94,11 @@ public abstract class JedisQueueConsumer extends JedisQueue implements Closeable
 			return;
 		}
 
-		if (connectionRetriedTimes >= getRedisQueueOption().getConnectionRetryTimes()) {
+		if (connectionRetriedTimes >= redisQueueOption.getConnectionRetryTimes()) {
 			throw new JedisFatalException("Exceed max connection retry times.");
 		}
 
-		Thread.sleep(getRedisQueueOption().getWaitMilliseconds());
+		Thread.sleep(redisQueueOption.getWaitMilliseconds());
 		connectionRetriedTimes++;
 		jedis.connect();
 		connect(jedis);
@@ -99,7 +109,7 @@ public abstract class JedisQueueConsumer extends JedisQueue implements Closeable
 	 * @param message Log message.
 	 */
 	protected void log(String message) {
-		if (!getRedisQueueOption().isDebug()) {
+		if (!redisQueueOption.isDebug()) {
 			return;
 		}
 
@@ -111,7 +121,7 @@ public abstract class JedisQueueConsumer extends JedisQueue implements Closeable
 	 * @param cause Throwable object.
 	 */
 	protected void log(Throwable cause) {
-		if (!getRedisQueueOption().isDebug()) {
+		if (!redisQueueOption.isDebug()) {
 			return;
 		}
 
@@ -125,6 +135,30 @@ public abstract class JedisQueueConsumer extends JedisQueue implements Closeable
 	public void setJedis(Jedis jedis) {
 		this.jedis = jedis;
 		this.devJedis.setJedis(jedis);
+	}
+
+	/**
+	 * Reasonable exception means exceptions count from consuming function not exceed the exceptionLimit value(in
+	 * redisQueueOption object) in exceptionIntervalMillis time.
+	 * @return boolean
+	 */
+	protected boolean isReasonableException() {
+		long currentTime = System.currentTimeMillis();
+		long intervalTime = currentTime - exceptionStartMillis;
+
+		if (intervalTime > redisQueueOption.getExceptionIntervalMillis()) {
+			this.exceptionStartMillis = currentTime;
+			this.exceptionCount = 0;
+			return true;
+		}
+
+		this.exceptionCount += 1;
+
+		if (this.exceptionCount <= redisQueueOption.getExceptionLimit()) {
+			return true;
+		}
+
+		return false;
 	}
 
 	public boolean isActive() {
@@ -141,13 +175,5 @@ public abstract class JedisQueueConsumer extends JedisQueue implements Closeable
 
 	protected void setConnectionRetriedTimes(int connectionRetriedTimes) {
 		this.connectionRetriedTimes = connectionRetriedTimes;
-	}
-
-	public JedisQueueConsumerEvent getConsumerEvent() {
-		return consumerEvent;
-	}
-
-	public void setConsumerEvent(JedisQueueConsumerEvent consumerEvent) {
-		this.consumerEvent = consumerEvent;
 	}
 }
