@@ -13,11 +13,12 @@ import devutility.external.redis.com.QueueMode;
 import devutility.external.redis.com.RedisQueueOption;
 import devutility.external.redis.com.RedisType;
 import devutility.external.redis.com.StatusCode;
+import devutility.external.redis.com.StreamMessageType;
 import devutility.external.redis.exception.JedisBrokenException;
 import devutility.external.redis.exception.JedisFatalException;
 import devutility.external.redis.ext.model.ConsumerInfo;
+import devutility.external.redis.queue.Acknowledger;
 import devutility.external.redis.queue.JedisQueueConsumer;
-import devutility.external.redis.queue.JedisQueueConsumerEvent;
 import devutility.internal.lang.StringUtils;
 import devutility.internal.util.CollectionUtils;
 import redis.clients.jedis.Jedis;
@@ -32,7 +33,7 @@ import redis.clients.jedis.StreamPendingEntry;
  * @author: Aldwin Su
  * @version: 2019-10-10 20:03:42
  */
-public class JedisStreamQueueConsumer extends JedisQueueConsumer {
+public class JedisStreamQueueConsumer extends JedisQueueConsumer implements Acknowledger {
 	/**
 	 * Group name.
 	 */
@@ -49,9 +50,10 @@ public class JedisStreamQueueConsumer extends JedisQueueConsumer {
 	 * @param redisQueueOption RedisQueueOption object.
 	 * @param consumerEvent Custom consumer event implementation.
 	 */
-	public JedisStreamQueueConsumer(Jedis jedis, final RedisQueueOption redisQueueOption, final JedisQueueConsumerEvent consumerEvent) {
+	public JedisStreamQueueConsumer(Jedis jedis, final RedisQueueOption redisQueueOption, final JedisStreamQueueConsumerEvent consumerEvent) {
 		super(jedis, redisQueueOption, consumerEvent);
 		this.groupName = redisQueueOption.getGroupName();
+		consumerEvent.setAcknowledger(this);
 	}
 
 	@Override
@@ -136,8 +138,9 @@ public class JedisStreamQueueConsumer extends JedisQueueConsumer {
 			return;
 		}
 
-		int count = (int) consumerInfo.getPending();
-		int pageSize = count / redisQueueOption.getPageSizeForReadPending();
+		int pending = (int) consumerInfo.getPending();
+		int count = redisQueueOption.getPageSizeForReadPending();
+		int pageSize = pending / redisQueueOption.getPageSizeForReadPending();
 		StreamEntryID startId = null;
 
 		if (count % redisQueueOption.getPageSizeForReadPending() > 0) {
@@ -151,8 +154,8 @@ public class JedisStreamQueueConsumer extends JedisQueueConsumer {
 				Map<String, String> streamEntryMap = devJedis.xrangeOne(redisQueueOption.getKey(), item.getID());
 
 				if (streamEntryMap != null) {
-					callback(item.getID(), streamEntryMap.get(Config.QUEUE_DEFAULT_ITEM_KEY));
-					startId = item.getID();
+					onMessage(StreamMessageType.PENDING, item.getID(), streamEntryMap.get(Config.QUEUE_DEFAULT_ITEM_KEY));
+					startId = new StreamEntryID(item.getID().getTime(), item.getID().getSequence() + 1);
 				}
 			}
 		}
@@ -188,52 +191,61 @@ public class JedisStreamQueueConsumer extends JedisQueueConsumer {
 			throw new JedisFatalException("Illegal StreamEntry map!");
 		}
 
-		callback(streamEntry.getID(), streamEntryMap.get(Config.QUEUE_DEFAULT_ITEM_KEY));
+		onMessage(StreamMessageType.NORMAL, streamEntry.getID(), streamEntryMap.get(Config.QUEUE_DEFAULT_ITEM_KEY));
 	}
 
 	/**
 	 * Callback method when new message arrived. The first parameter is StreamEntryID string, the second one is its value.
 	 * @param value Message.
 	 */
-	private void callback(Object... values) {
-		if (consumerEvent == null) {
-			/**
-			 * No consume.
-			 */
+	private void onMessage(StreamMessageType streamMessageType, Object... values) {
+		JedisStreamQueueConsumerEvent streamConsumerEvent = (JedisStreamQueueConsumerEvent) consumerEvent;
+		StreamEntryID streamEntryID = (StreamEntryID) values[0];
+
+		/**
+		 * Avoid duplicated consume.
+		 */
+		if (consumedIds.contains(streamEntryID.toString())) {
 			return;
 		}
 
-		StreamEntryID streamEntryID = (StreamEntryID) values[0];
-
-		if (!consumedIds.contains(streamEntryID.toString())) {
-			/**
-			 * Failed consume.
-			 */
-			if (!consumerEvent.onMessage(redisQueueOption.getKey(), values)) {
+		switch (streamMessageType) {
+		case NORMAL:
+			if (!streamConsumerEvent.onMessage(redisQueueOption.getKey(), values)) {
 				return;
 			}
+			break;
 
-			consumedIds.add(streamEntryID.toString());
+		case PENDING:
+			if (!streamConsumerEvent.onPendingMessage(redisQueueOption.getKey(), values)) {
+				return;
+			}
+			break;
+
+		default:
+			return;
 		}
 
+		consumedIds.add(streamEntryID.toString());
 		ack(streamEntryID);
 	}
 
 	/**
 	 * Acknowledge one message.
-	 * @param streamEntryID: StreamEntryID object.
+	 * @param streamEntryId: StreamEntryID object.
 	 */
-	private void ack(StreamEntryID streamEntryID) {
+	@Override
+	public void ack(StreamEntryID streamEntryId) {
 		if (redisQueueOption.isNoNeedAck() || !redisQueueOption.isAutoAck()) {
 			return;
 		}
 
 		if (QueueMode.P2P == redisQueueOption.getMode()) {
-			devJedis.xack(redisQueueOption.getKey(), groupName, streamEntryID);
+			devJedis.xack(redisQueueOption.getKey(), groupName, streamEntryId);
 			return;
 		}
 
-		jedis.xack(redisQueueOption.getKey(), groupName, streamEntryID);
+		jedis.xack(redisQueueOption.getKey(), groupName, streamEntryId);
 	}
 
 	@Override

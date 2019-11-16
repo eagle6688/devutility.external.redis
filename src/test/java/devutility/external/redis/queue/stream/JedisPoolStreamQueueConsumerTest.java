@@ -2,7 +2,6 @@ package devutility.external.redis.queue.stream;
 
 import devutility.external.redis.BaseTestForDuer;
 import devutility.external.redis.queue.JedisQueueConsumer;
-import devutility.external.redis.queue.JedisQueueConsumerEvent;
 import devutility.internal.test.TestExecutor;
 
 /**
@@ -13,7 +12,7 @@ import devutility.internal.test.TestExecutor;
  * @version: 2019-11-15 19:50:05
  */
 public class JedisPoolStreamQueueConsumerTest extends BaseTestForDuer {
-	private JedisQueueConsumerEvent consumerEvent = new StreamConsumerHandler();
+	private JedisStreamQueueConsumerEvent consumerEvent = new StreamConsumerHandler();
 
 	@Override
 	public void run() {

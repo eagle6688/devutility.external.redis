@@ -5,7 +5,6 @@ import java.io.IOException;
 import devutility.external.redis.com.RedisQueueOption;
 import devutility.external.redis.exception.JedisBrokenException;
 import devutility.external.redis.queue.JedisQueueConsumer;
-import devutility.external.redis.queue.JedisQueueConsumerEvent;
 import devutility.external.redis.utils.pool.JedisPoolUtil;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
@@ -29,7 +28,7 @@ public class JedisPoolStreamQueueConsumer extends JedisQueueConsumer {
 	 * @param redisQueueOption RedisQueueOption object.
 	 * @param consumerEvent JedisQueueConsumerEvent object.
 	 */
-	public JedisPoolStreamQueueConsumer(JedisPool jedisPool, RedisQueueOption redisQueueOption, JedisQueueConsumerEvent consumerEvent) {
+	public JedisPoolStreamQueueConsumer(JedisPool jedisPool, RedisQueueOption redisQueueOption, JedisStreamQueueConsumerEvent consumerEvent) {
 		super(null, redisQueueOption, consumerEvent);
 		this.jedisPool = jedisPool;
 	}
@@ -39,7 +38,7 @@ public class JedisPoolStreamQueueConsumer extends JedisQueueConsumer {
 		while (isActive()) {
 			Jedis jedis = JedisPoolUtil.jedis(jedisPool, getRedisQueueOption().getDatabase());
 
-			try (JedisStreamQueueConsumer consumer = new JedisStreamQueueConsumer(jedis, redisQueueOption, consumerEvent)) {
+			try (JedisStreamQueueConsumer consumer = new JedisStreamQueueConsumer(jedis, redisQueueOption, (JedisStreamQueueConsumerEvent) consumerEvent)) {
 				consumer.listen();
 			} catch (Exception e) {
 				if (e instanceof JedisBrokenException) {
