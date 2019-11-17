@@ -19,7 +19,7 @@ public class JedisStreamQueueProducerTest extends BaseTestForDuer {
 	@Override
 	public void run() {
 		try (Jedis jedis = jedis()) {
-			producer.enqueue(jedis, "Hello World!");
+			System.out.println(producer.enqueue(jedis, "Hello World!"));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

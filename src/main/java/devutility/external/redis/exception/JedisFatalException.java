@@ -16,6 +16,15 @@ public class JedisFatalException extends RuntimeException {
 	/**
 	 * Constructor
 	 * @param message Exception message.
+	 * @param cause Throwable object.
+	 */
+	public JedisFatalException(String message, Throwable cause) {
+		super(message, cause);
+	}
+
+	/**
+	 * Constructor
+	 * @param message Exception message.
 	 */
 	public JedisFatalException(String message) {
 		super(message);

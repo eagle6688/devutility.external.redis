@@ -68,7 +68,7 @@ public class JedisStreamQueueConsumer extends JedisQueueConsumer implements Ackn
 				process();
 			} catch (Exception e) {
 				if (!isReasonableException()) {
-					throw new JedisBrokenException("Exceptions count excced the setting exceptionLimit in RedisQueueOption object.", e);
+					throw new JedisFatalException("Exceptions count excced the setting exceptionLimit in RedisQueueOption object.", e);
 				}
 
 				if (jedis.getClient().isBroken()) {
