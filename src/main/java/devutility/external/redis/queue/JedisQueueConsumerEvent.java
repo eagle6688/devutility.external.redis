@@ -25,10 +25,4 @@ public interface JedisQueueConsumerEvent {
 	 *         message will be removed otherwise will not.
 	 */
 	boolean onMessage(String key, Object... values);
-
-	/**
-	 * Triggered while system has fatal error.
-	 * @param cause Exception object.
-	 */
-	void onError(Throwable cause);
 }

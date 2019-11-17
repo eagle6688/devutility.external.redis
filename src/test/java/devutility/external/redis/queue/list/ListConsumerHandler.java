@@ -20,9 +20,4 @@ public class ListConsumerHandler implements JedisQueueConsumerEvent {
 	public boolean onPendingMessage(String key, Object... values) {
 		return false;
 	}
-
-	@Override
-	public void onError(Throwable cause) {
-
-	}
 }
