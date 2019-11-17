@@ -1,7 +1,8 @@
-package devutility.external.redis.queue.stream;
+package devutility.external.redis.queue.stream.producer;
 
 import devutility.external.redis.BaseTestForDuer;
 import devutility.external.redis.queue.JedisQueueProducer;
+import devutility.external.redis.queue.stream.JedisStreamQueueProducer;
 import devutility.internal.test.TestExecutor;
 import redis.clients.jedis.Jedis;
 
