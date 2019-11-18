@@ -158,13 +158,13 @@ public class DevJedis implements Closeable {
 	 * @param count Message count of one Redis queue.
 	 * @param block Block time in milliseconds.
 	 * @param noAck True will avoid adding the message to the PEL.
-	 * @param streams Two types format, The special > ID, which means that the consumer want to receive only messages that
-	 *            were never delivered to any other consumer. It just means, give me new messages. Any other ID, that is, 0
-	 *            or any other valid ID or incomplete ID (just the millisecond time part), will have the effect of returning
-	 *            entries that are pending for the consumer sending the command with IDs equal or greater to the one
-	 *            provided. So basically if the ID is not >, then the command will just let the client access its pending
-	 *            entries: messages delivered to it, but not yet acknowledged. Note that in this case, both BLOCK and NOACK
-	 *            are ignored.
+	 * @param streams Two types format, The special {@code >} ID, which means that the consumer want to receive only
+	 *            messages that were never delivered to any other consumer. It just means, give me new messages. Any other
+	 *            ID, that is, 0 or any other valid ID or incomplete ID (just the millisecond time part), will have the
+	 *            effect of returning entries that are pending for the consumer sending the command with IDs equal or
+	 *            greater to the one provided. So basically if the ID is not {@code >}, then the command will just let the
+	 *            client access its pending entries: messages delivered to it, but not yet acknowledged. Note that in this
+	 *            case, both BLOCK and NOACK are ignored.
 	 * @return {@code List<Entry<String,List<StreamEntry>>>}
 	 */
 	public List<Entry<String, List<StreamEntry>>> xreadGroup(final String groupname, final String consumer, final int count, final long block, final boolean noAck, List<Entry<String, StreamEntryID>> streams) {
@@ -180,13 +180,13 @@ public class DevJedis implements Closeable {
 	 * @param count Message count of one Redis queue.
 	 * @param block Block time in milliseconds.
 	 * @param noAck True will avoid adding the message to the PEL.
-	 * @param streams Two types format, The special > ID, which means that the consumer want to receive only messages that
-	 *            were never delivered to any other consumer. It just means, give me new messages. Any other ID, that is, 0
-	 *            or any other valid ID or incomplete ID (just the millisecond time part), will have the effect of returning
-	 *            entries that are pending for the consumer sending the command with IDs equal or greater to the one
-	 *            provided. So basically if the ID is not >, then the command will just let the client access its pending
-	 *            entries: messages delivered to it, but not yet acknowledged. Note that in this case, both BLOCK and NOACK
-	 *            are ignored.
+	 * @param streams Two types format, The special {@code >} ID, which means that the consumer want to receive only
+	 *            messages that were never delivered to any other consumer. It just means, give me new messages. Any other
+	 *            ID, that is, 0 or any other valid ID or incomplete ID (just the millisecond time part), will have the
+	 *            effect of returning entries that are pending for the consumer sending the command with IDs equal or
+	 *            greater to the one provided. So basically if the ID is not {@code >}, then the command will just let the
+	 *            client access its pending entries: messages delivered to it, but not yet acknowledged. Note that in this
+	 *            case, both BLOCK and NOACK are ignored.
 	 * @return {@code List<Entry<String,List<StreamEntry>>>}
 	 */
 	@SuppressWarnings("unchecked")
@@ -227,7 +227,7 @@ public class DevJedis implements Closeable {
 	 * Use Jedis xrange to get Map for one StreamEntryID.
 	 * @param key Redis stream key.
 	 * @param id StreamEntryID object.
-	 * @return Map<String,String>
+	 * @return {@code Map<String, String>}
 	 */
 	public Map<String, String> xrangeOne(final String key, final StreamEntryID id) {
 		List<StreamEntry> list = jedis.xrange(key, id, id, 1);

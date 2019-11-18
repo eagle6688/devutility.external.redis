@@ -26,7 +26,6 @@ public class JedisThreadLocal {
 	/**
 	 * Constructor
 	 * @param jedisPool JedisPool object
-	 * @param database Redis database number
 	 */
 	public JedisThreadLocal(JedisPool jedisPool) {
 		this.jedisPool = jedisPool;

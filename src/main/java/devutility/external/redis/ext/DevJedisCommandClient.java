@@ -41,7 +41,6 @@ public class DevJedisCommandClient extends DevJedisConnection {
 	 * Use XINFO command to query information of consumers belong to the provided key and group.
 	 * @param key Redis key.
 	 * @param groupName Group name.
-	 * @return {@code List<ConsumerInfo>}
 	 */
 	public void xInfoConsumers(final String key, final String groupName) {
 		client.sendCommand(DevJedisCommand.XINFO, DevJedisKeyword.CONSUMERS.raw, SafeEncoder.encode(key), SafeEncoder.encode(groupName));
