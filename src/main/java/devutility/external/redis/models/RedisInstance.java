@@ -1,15 +1,17 @@
 package devutility.external.redis.models;
 
+/**
+ * 
+ * RedisInstance
+ * 
+ * @author: Aldwin Su
+ * @version: 2020-01-19 17:01:18
+ */
 public class RedisInstance {
 	/**
 	 * Redis server password.
 	 */
 	private String password;
-
-	/**
-	 * Database index.
-	 */
-	private int database = 0;
 
 	/**
 	 * Max count of connections for redis, -1 is not limitation, default value is 8.
@@ -52,14 +54,6 @@ public class RedisInstance {
 
 	public void setPassword(String password) {
 		this.password = password;
-	}
-
-	public int getDatabase() {
-		return database;
-	}
-
-	public void setDatabase(int database) {
-		this.database = database;
 	}
 
 	public int getMaxConnections() {

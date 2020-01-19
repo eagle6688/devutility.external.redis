@@ -11,7 +11,7 @@ import devutility.internal.util.PropertiesUtils;
 public class SetSentinelRedisInstanceTest extends BaseTest {
 	@Override
 	public void run() {
-		Properties properties = PropertiesUtils.getProperties("dbconfig.properties");
+		Properties properties = PropertiesUtils.getPropertiesFromResource("dbconfig.properties");
 		SentinelRedisInstance instance = new SentinelRedisInstance();
 		RedisInstanceUtils.set(instance, properties, "sentinel");
 		println(instance.getMaxRetryCount());

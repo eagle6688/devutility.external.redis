@@ -45,7 +45,7 @@ public class RedisInstanceUtils {
 	 * @return RedisInstance
 	 */
 	public static RedisInstance get(String propertiesFile, String prefix) {
-		Properties properties = PropertiesUtils.getProperties(propertiesFile);
+		Properties properties = PropertiesUtils.getPropertiesFromResource(propertiesFile);
 		return get(properties, prefix);
 	}
 
@@ -58,7 +58,7 @@ public class RedisInstanceUtils {
 	 */
 	public static <T extends RedisInstance> T get(String propertiesFile, String prefix, Class<T> clazz) {
 		T instance = ClassUtils.instance(clazz);
-		Properties properties = PropertiesUtils.getProperties(propertiesFile);
+		Properties properties = PropertiesUtils.getPropertiesFromResource(propertiesFile);
 
 		if (clazz.equals(RedisInstance.class)) {
 			set((RedisInstance) instance, properties, prefix);
@@ -87,7 +87,6 @@ public class RedisInstanceUtils {
 	 */
 	public static void set(RedisInstance instance, Properties properties, String prefix) {
 		instance.setPassword(PropertiesUtils.getProperty(properties, getPropertyKey(prefix, "password")));
-		instance.setDatabase(PropertiesUtils.getIntProperty(properties, getPropertyKey(prefix, "database")));
 		instance.setMaxConnections(PropertiesUtils.getIntProperty(properties, getPropertyKey(prefix, "max-active")));
 		instance.setMinIdle(PropertiesUtils.getIntProperty(properties, getPropertyKey(prefix, "min-idle")));
 		instance.setMaxIdle(PropertiesUtils.getIntProperty(properties, getPropertyKey(prefix, "max-idle")));
@@ -111,6 +110,7 @@ public class RedisInstanceUtils {
 		set((RedisInstance) instance, properties, prefix);
 		instance.setHost(PropertiesUtils.getProperty(properties, getPropertyKey(prefix, "host")));
 		instance.setPort(PropertiesUtils.getIntProperty(properties, getPropertyKey(prefix, "port")));
+		instance.setDatabase(PropertiesUtils.getIntProperty(properties, getPropertyKey(prefix, "database")));
 	}
 
 	/**

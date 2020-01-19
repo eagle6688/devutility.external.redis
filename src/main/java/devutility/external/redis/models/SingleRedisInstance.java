@@ -20,6 +20,11 @@ public class SingleRedisInstance extends RedisInstance {
 	 */
 	private int port;
 
+	/**
+	 * Database index.
+	 */
+	private int database = 0;
+
 	public String getHost() {
 		return host;
 	}
@@ -34,6 +39,14 @@ public class SingleRedisInstance extends RedisInstance {
 
 	public void setPort(int port) {
 		this.port = port;
+	}
+
+	public int getDatabase() {
+		return database;
+	}
+
+	public void setDatabase(int database) {
+		this.database = database;
 	}
 
 	public String cacheKey() {

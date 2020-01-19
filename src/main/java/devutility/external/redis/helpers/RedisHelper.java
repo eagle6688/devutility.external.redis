@@ -15,20 +15,4 @@ public abstract class RedisHelper {
 	public RedisHelper(RedisInstance redisInstance) {
 		this.redisInstance = redisInstance;
 	}
-
-	/**
-	 * Set database index.
-	 * @param database: Redis database index.
-	 */
-	public void setDatabase(int database) {
-		redisInstance.setDatabase(database);
-	}
-
-	/**
-	 * Get database index.
-	 * @return int
-	 */
-	public int getDatabase() {
-		return redisInstance.getDatabase();
-	}
 }

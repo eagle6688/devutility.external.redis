@@ -22,6 +22,22 @@ public abstract class SingleRedisHelper extends RedisHelper {
 	}
 
 	/**
+	 * Set database index.
+	 * @param database: Redis database index.
+	 */
+	public void setDatabase(int database) {
+		redisInstance.setDatabase(database);
+	}
+
+	/**
+	 * Get database index.
+	 * @return int
+	 */
+	public int getDatabase() {
+		return redisInstance.getDatabase();
+	}
+
+	/**
 	 * Set expired time for the item with the specified key.
 	 * @param key: Redis key.
 	 * @param seconds: Expire seconds.
