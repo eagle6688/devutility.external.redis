@@ -8,27 +8,9 @@
 	<artifactId>devutility.external.redis</artifactId>
 	<version>3.1.1</version>
 	<packaging>jar</packaging>
-	<description>Some utilities for Jedis</description>
 	<url>https://github.com/eagle6688/devutility.external.redis</url>
-
-	<!-- License -->
-	<licenses>
-		<license>
-			<name>The Apache License, Version 2.0</name>
-			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-		</license>
-	</licenses>
-	<!-- License end -->
-
-	<!-- Developers -->
-	<developers>
-		<developer>
-			<name>Aldwin Su</name>
-			<email>fangyansu@163.com</email>
-			<timezone>+8</timezone>
-		</developer>
-	</developers>
-	<!-- Developers end -->
+	<name>${project.groupId}:${project.artifactId}</name>
+	<description>Some utilities for Jedis.</description>
 
 	<!-- scm -->
 	<scm>
@@ -39,22 +21,8 @@
 	</scm>
 	<!-- scm end -->
 
-	<!-- distributionManagement -->
-	<distributionManagement>
-		<snapshotRepository>
-			<id>ossrh</id>
-			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
-		</snapshotRepository>
-		<repository>
-			<id>ossrh</id>
-			<name>Maven Central Staging Repository</name>
-			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-		</repository>
-	</distributionManagement>
-	<!-- distributionManagement end -->
-
+	<!-- dependencies -->
 	<dependencies>
-		<!-- devutility -->
 		<dependency>
 			<groupId>com.github.eagle6688</groupId>
 			<artifactId>devutility.internal</artifactId>
@@ -65,22 +33,16 @@
 			<artifactId>devutility.external.json</artifactId>
 			<scope>provided</scope>
 		</dependency>
-		<!-- devutility end -->
-
-		<!-- Redis -->
 		<dependency>
 			<groupId>redis.clients</groupId>
 			<artifactId>jedis</artifactId>
 			<scope>provided</scope>
 		</dependency>
-		<!-- Redis end -->
-
-		<!-- Test -->
 		<dependency>
 			<groupId>com.fasterxml.jackson.datatype</groupId>
 			<artifactId>jackson-datatype-jsr310</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<!-- Test end -->
 	</dependencies>
+	<!-- dependencies end -->
 </project>
