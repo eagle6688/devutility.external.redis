@@ -48,6 +48,12 @@ public class RedisInstance {
 	 */
 	private int maxRetryCount = 3;
 
+	/**
+	 * Set the value for the {@code testOnBorrow} configuration attribute for pools created with this configuration
+	 * instance. Default is true.
+	 */
+	private boolean testOnBorrow = true;
+
 	public String getPassword() {
 		return password;
 	}
@@ -110,5 +116,17 @@ public class RedisInstance {
 
 	public void setMaxRetryCount(int maxRetryCount) {
 		this.maxRetryCount = maxRetryCount;
+	}
+
+	public boolean isTestOnBorrow() {
+		return testOnBorrow;
+	}
+
+	/**
+	 * Set the value for the {@code testOnBorrow} configuration attribute for pools created with this configuration
+	 * instance. Default is true.
+	 */
+	public void setTestOnBorrow(boolean testOnBorrow) {
+		this.testOnBorrow = testOnBorrow;
 	}
 }

@@ -1,4 +1,4 @@
-package devutility.external.redis.helpers.single.singleredisstringhelper;
+package devutility.external.redis.helper.single.singleredisstringhelper;
 
 import java.util.List;
 
