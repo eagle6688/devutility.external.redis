@@ -7,8 +7,7 @@ import devutility.external.redis.helper.SingleRedisHelper;
 import devutility.external.redis.model.SingleRedisInstance;
 import devutility.external.redis.utils.RedisStringUtils;
 import devutility.external.redis.utils.pool.JedisPoolUtil;
-import devutility.internal.lang.models.EntityField;
-
+import devutility.internal.model.EntityField;
 import redis.clients.jedis.Jedis;
 
 public class SingleRedisStringHelper extends SingleRedisHelper {

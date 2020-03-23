@@ -12,7 +12,7 @@ import devutility.internal.data.SearchUtils;
 import devutility.internal.lang.ArraysUtils;
 import devutility.internal.lang.ClassUtils;
 import devutility.internal.lang.StringUtils;
-import devutility.internal.lang.models.EntityField;
+import devutility.internal.model.EntityField;
 import devutility.internal.util.CollectionUtils;
 import devutility.internal.util.ListUtils;
 import redis.clients.jedis.Jedis;
