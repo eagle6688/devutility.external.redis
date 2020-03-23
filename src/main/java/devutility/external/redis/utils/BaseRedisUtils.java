@@ -3,7 +3,7 @@ package devutility.external.redis.utils;
 import java.util.Set;
 
 import devutility.external.redis.com.StatusCode;
-import devutility.external.redis.models.ClusterRedisInstance;
+import devutility.external.redis.model.ClusterRedisInstance;
 import devutility.internal.lang.StringUtils;
 import devutility.internal.security.Sha256Utils;
 import devutility.internal.util.CollectionUtils;

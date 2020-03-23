@@ -1,4 +1,4 @@
-package devutility.external.redis.models;
+package devutility.external.redis.model;
 
 public class SentinelRedisInstance extends ClusterRedisInstance {
 	/**

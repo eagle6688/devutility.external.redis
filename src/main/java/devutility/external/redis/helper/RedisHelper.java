@@ -1,6 +1,6 @@
-package devutility.external.redis.helpers;
+package devutility.external.redis.helper;
 
-import devutility.external.redis.models.RedisInstance;
+import devutility.external.redis.model.RedisInstance;
 
 public abstract class RedisHelper {
 	/**

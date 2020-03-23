@@ -1,7 +1,7 @@
 package devutility.external.redis;
 
-import devutility.external.redis.helpers.single.SingleRedisStringHelper;
-import devutility.external.redis.models.SingleRedisInstance;
+import devutility.external.redis.helper.single.SingleRedisStringHelper;
+import devutility.external.redis.model.SingleRedisInstance;
 
 public class RedisHelperFactory {
 	/**

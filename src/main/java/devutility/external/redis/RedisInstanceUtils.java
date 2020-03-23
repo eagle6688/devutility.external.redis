@@ -5,10 +5,10 @@ import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
 
-import devutility.external.redis.models.ClusterRedisInstance;
-import devutility.external.redis.models.RedisInstance;
-import devutility.external.redis.models.SentinelRedisInstance;
-import devutility.external.redis.models.SingleRedisInstance;
+import devutility.external.redis.model.ClusterRedisInstance;
+import devutility.external.redis.model.RedisInstance;
+import devutility.external.redis.model.SentinelRedisInstance;
+import devutility.external.redis.model.SingleRedisInstance;
 import devutility.internal.lang.ClassUtils;
 import devutility.internal.lang.StringUtils;
 import devutility.internal.util.PropertiesUtils;

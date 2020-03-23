@@ -3,9 +3,9 @@ package devutility.external.redis;
 import java.lang.reflect.InvocationTargetException;
 
 import devutility.external.redis.com.RedisQueueOption;
-import devutility.external.redis.helpers.single.SingleRedisStringHelper;
-import devutility.external.redis.models.SentinelRedisInstance;
-import devutility.external.redis.models.SingleRedisInstance;
+import devutility.external.redis.helper.single.SingleRedisStringHelper;
+import devutility.external.redis.model.SentinelRedisInstance;
+import devutility.external.redis.model.SingleRedisInstance;
 import devutility.external.redis.utils.pool.JedisPoolUtil;
 import devutility.internal.test.BaseTest;
 import devutility.internal.util.PropertiesUtils;

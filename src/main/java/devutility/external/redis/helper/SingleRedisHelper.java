@@ -1,7 +1,6 @@
-package devutility.external.redis.helpers.single;
+package devutility.external.redis.helper;
 
-import devutility.external.redis.helpers.RedisHelper;
-import devutility.external.redis.models.SingleRedisInstance;
+import devutility.external.redis.model.SingleRedisInstance;
 import devutility.external.redis.utils.BaseRedisUtils;
 import devutility.external.redis.utils.pool.JedisPoolUtil;
 import redis.clients.jedis.Jedis;

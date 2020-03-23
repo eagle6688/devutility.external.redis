@@ -1,9 +1,10 @@
-package devutility.external.redis.helpers.single;
+package devutility.external.redis.helper.single;
 
 import java.io.IOException;
 import java.util.List;
 
-import devutility.external.redis.models.SingleRedisInstance;
+import devutility.external.redis.helper.SingleRedisHelper;
+import devutility.external.redis.model.SingleRedisInstance;
 import devutility.external.redis.utils.RedisStringUtils;
 import devutility.external.redis.utils.pool.JedisPoolUtil;
 import devutility.internal.lang.models.EntityField;

@@ -1,6 +1,6 @@
 package devutility.external.redis.utils.pool;
 
-import devutility.external.redis.models.RedisInstance;
+import devutility.external.redis.model.RedisInstance;
 import redis.clients.jedis.JedisPoolConfig;
 
 public class JedisPoolConfigUtil {
@@ -11,6 +11,7 @@ public class JedisPoolConfigUtil {
 	 */
 	public static JedisPoolConfig jedisPoolConfig(RedisInstance redisInstance) {
 		JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
+		jedisPoolConfig.setTestOnBorrow(redisInstance.isTestOnBorrow());
 
 		if (redisInstance.getMaxConnections() != 0) {
 			jedisPoolConfig.setMaxTotal(redisInstance.getMaxConnections());

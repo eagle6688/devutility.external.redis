@@ -3,7 +3,7 @@ package devutility.external.redis.redisinstanceutils;
 import java.util.Properties;
 
 import devutility.external.redis.RedisInstanceUtils;
-import devutility.external.redis.models.SentinelRedisInstance;
+import devutility.external.redis.model.SentinelRedisInstance;
 import devutility.internal.test.BaseTest;
 import devutility.internal.test.TestExecutor;
 import devutility.internal.util.PropertiesUtils;

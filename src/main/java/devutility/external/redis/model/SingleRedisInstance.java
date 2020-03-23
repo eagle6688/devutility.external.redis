@@ -1,4 +1,4 @@
-package devutility.external.redis.models;
+package devutility.external.redis.model;
 
 import devutility.external.redis.com.Config;
 

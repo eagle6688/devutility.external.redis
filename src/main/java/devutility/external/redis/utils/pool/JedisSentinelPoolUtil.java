@@ -4,7 +4,7 @@ import java.util.Set;
 
 import devutility.external.redis.RedisHelperFactory;
 import devutility.external.redis.RedisInstanceUtils;
-import devutility.external.redis.models.SentinelRedisInstance;
+import devutility.external.redis.model.SentinelRedisInstance;
 import devutility.external.redis.utils.BaseRedisUtils;
 import devutility.internal.base.SingletonFactory;
 import devutility.internal.lang.StringUtils;

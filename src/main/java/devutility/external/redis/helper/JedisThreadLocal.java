@@ -1,4 +1,4 @@
-package devutility.external.redis.helpers;
+package devutility.external.redis.helper;
 
 import devutility.external.redis.exception.JedisFatalException;
 import devutility.external.redis.utils.BaseRedisUtils;
