@@ -98,6 +98,12 @@ public class RedisInstanceUtils {
 		if (maxRetryCount > 0) {
 			instance.setMaxRetryCount(maxRetryCount);
 		}
+
+		String testOnBorrowStr = PropertiesUtils.getProperty(properties, getPropertyKey(prefix, "testOnBorrow"));
+
+		if (StringUtils.isNotEmpty(testOnBorrowStr)) {
+			instance.setTestOnBorrow(Boolean.valueOf(testOnBorrowStr));
+		}
 	}
 
 	/**

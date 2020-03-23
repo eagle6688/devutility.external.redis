@@ -29,6 +29,7 @@ public class JedisPoolConfigUtil {
 			jedisPoolConfig.setMaxWaitMillis(redisInstance.getMaxWaitMillis());
 		}
 
+		jedisPoolConfig.setTestOnBorrow(redisInstance.isTestOnBorrow());
 		return jedisPoolConfig;
 	}
 }
