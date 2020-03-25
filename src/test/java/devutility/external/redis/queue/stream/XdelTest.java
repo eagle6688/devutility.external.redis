@@ -1,5 +1,6 @@
 package devutility.external.redis.queue.stream;
 
+import devutility.external.redis.model.StreamData;
 import devutility.internal.test.TestExecutor;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.StreamEntryID;
@@ -17,7 +18,7 @@ public class XdelTest extends BaseTestForStream {
 		StreamEntryID streamEntryID = new StreamEntryID("1572529192472-0");
 
 		try (Jedis jedis = jedis()) {
-			long result = jedis.xdel(CONFIG_KEY_STREAM, streamEntryID);
+			long result = jedis.xdel(StreamData.KEY, streamEntryID);
 			System.out.println(result);
 		} catch (Exception e) {
 			e.printStackTrace();

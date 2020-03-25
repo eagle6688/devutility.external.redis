@@ -21,8 +21,8 @@ import redis.clients.jedis.StreamEntryID;
 public class XreadGroupTest extends BaseTestForStream {
 	@Override
 	public void run() {
-		Entry<String, StreamEntryID> stream1 = new AbstractMap.SimpleEntry<String, StreamEntryID>(CONFIG_KEY_STREAM, new StreamEntryID("0-0"));
-		Entry<String, StreamEntryID> stream2 = new AbstractMap.SimpleEntry<String, StreamEntryID>(CONFIG_KEY_STREAM, null);
+		Entry<String, StreamEntryID> stream1 = new AbstractMap.SimpleEntry<String, StreamEntryID>(StreamData.KEY, new StreamEntryID("0-0"));
+		Entry<String, StreamEntryID> stream2 = new AbstractMap.SimpleEntry<String, StreamEntryID>(StreamData.KEY, null);
 
 		try (Jedis jedis = jedis()) {
 			@SuppressWarnings("unchecked")

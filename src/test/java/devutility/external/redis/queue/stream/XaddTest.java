@@ -10,7 +10,7 @@ public class XaddTest extends BaseTestForDuer {
 	@Override
 	public void run() {
 		try (Jedis jedis = jedis()) {
-			StreamEntryID streamEntryID = jedis.xadd(CONFIG_KEY_STREAM, null, StreamData.DATA);
+			StreamEntryID streamEntryID = jedis.xadd(StreamData.KEY, null, StreamData.DATA);
 			System.out.println(streamEntryID.toString());
 		} catch (Exception e) {
 			e.printStackTrace();

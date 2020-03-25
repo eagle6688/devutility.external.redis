@@ -20,7 +20,7 @@ public class XinfoConsumersTest extends BaseTestForDuer {
 	@Override
 	public void run() {
 		try (DevJedis devJedis = new DevJedis(jedis())) {
-			List<ConsumerInfo> list = devJedis.xInfoConsumers(CONFIG_KEY_STREAM, StreamData.GROUPNAME);
+			List<ConsumerInfo> list = devJedis.xInfoConsumers(StreamData.KEY, StreamData.GROUPNAME);
 
 			list.forEach(i -> {
 				System.out.println(String.format("name: %s, pending: %d, idle: %d", i.getName(), i.getPending(), i.getIdle()));

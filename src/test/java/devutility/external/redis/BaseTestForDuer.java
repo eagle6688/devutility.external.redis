@@ -36,11 +36,6 @@ public abstract class BaseTestForDuer extends BaseTest {
 	private final static String CONFIG_PREFIX_SENTINEL = "sentinel";
 
 	/**
-	 * Redis test key for stream.
-	 */
-	protected final static String CONFIG_KEY_STREAM = "test-stream-queue";
-
-	/**
 	 * SingleRedisInstance object.
 	 */
 	protected SingleRedisInstance singleRedisInstance = RedisInstanceUtils.get(CONFIG_FILE, CONFIG_PREFIX, SingleRedisInstance.class);
@@ -65,11 +60,27 @@ public abstract class BaseTestForDuer extends BaseTest {
 	 */
 	protected RedisQueueOption redisQueueOption = null;
 
+	/**
+	 * RedisQueueOption object.
+	 */
+	protected RedisQueueOption redisQueueOption2 = null;
+
 	public BaseTestForDuer() {
+		redisQueueOption = redisQueueOption("queue.option");
+		redisQueueOption2 = redisQueueOption("queue2.option");
+	}
+
+	/**
+	 * Get RedisQueueOption object.
+	 * @param prefix Prefix of
+	 * @return RedisQueueOption
+	 */
+	protected RedisQueueOption redisQueueOption(String prefix) {
 		try {
-			redisQueueOption = PropertiesUtils.toModel(CONFIG_FILE, "queue.option", RedisQueueOption.class);
+			return PropertiesUtils.toModel(CONFIG_FILE, prefix, RedisQueueOption.class);
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 			e.printStackTrace();
+			return null;
 		}
 	}
 

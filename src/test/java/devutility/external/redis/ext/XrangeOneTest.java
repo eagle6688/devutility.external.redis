@@ -2,6 +2,7 @@ package devutility.external.redis.ext;
 
 import java.util.Map;
 
+import devutility.external.redis.model.StreamData;
 import devutility.external.redis.queue.stream.BaseTestForStream;
 import devutility.internal.test.TestExecutor;
 import redis.clients.jedis.StreamEntryID;
@@ -19,7 +20,7 @@ public class XrangeOneTest extends BaseTestForStream {
 		StreamEntryID streamEntryID = new StreamEntryID("1572847649042-0");
 
 		try (DevJedis devJedis = new DevJedis(jedis())) {
-			Map<String, String> map = devJedis.xrangeOne(CONFIG_KEY_STREAM, streamEntryID);
+			Map<String, String> map = devJedis.xrangeOne(StreamData.KEY, streamEntryID);
 
 			if (map == null) {
 				System.out.println("No data!");

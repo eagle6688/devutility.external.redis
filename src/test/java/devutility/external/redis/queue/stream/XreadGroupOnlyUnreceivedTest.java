@@ -20,7 +20,7 @@ import redis.clients.jedis.StreamEntryID;
 public class XreadGroupOnlyUnreceivedTest extends BaseTestForStream {
 	@Override
 	public void run() {
-		Entry<String, StreamEntryID> stream = new AbstractMap.SimpleEntry<String, StreamEntryID>(CONFIG_KEY_STREAM, StreamEntryID.UNRECEIVED_ENTRY);
+		Entry<String, StreamEntryID> stream = new AbstractMap.SimpleEntry<String, StreamEntryID>(StreamData.KEY, StreamEntryID.UNRECEIVED_ENTRY);
 
 		try (Jedis jedis = jedis()) {
 			@SuppressWarnings("unchecked")
