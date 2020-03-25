@@ -46,6 +46,11 @@ public abstract class BaseTestForDuer extends BaseTest {
 	protected SingleRedisInstance singleRedisInstance = RedisInstanceUtils.get(CONFIG_FILE, CONFIG_PREFIX, SingleRedisInstance.class);
 
 	/**
+	 * SingleRedisInstance object.
+	 */
+	protected SingleRedisInstance singleRedisInstance2 = RedisInstanceUtils.get(CONFIG_FILE, "redis2", SingleRedisInstance.class);
+
+	/**
 	 * SingleRedisStringHelper object.
 	 */
 	protected SingleRedisStringHelper singleRedisStringHelper = RedisHelperFactory.singleRedisStringHelper(CONFIG_FILE, CONFIG_PREFIX);
@@ -70,10 +75,28 @@ public abstract class BaseTestForDuer extends BaseTest {
 
 	/**
 	 * Create an JedisPool object use singleRedisInstance;
+	 * @param redisInstance SingleRedisInstance object.
+	 * @return JedisPool
+	 */
+	protected JedisPool jedisPool(SingleRedisInstance redisInstance) {
+		return JedisPoolUtil.jedisPool(redisInstance);
+	}
+
+	/**
+	 * Create an JedisPool object use singleRedisInstance;
 	 * @return JedisPool
 	 */
 	protected JedisPool jedisPool() {
-		return JedisPoolUtil.jedisPool(singleRedisInstance);
+		return jedisPool(singleRedisInstance);
+	}
+
+	/**
+	 * Get Jedis object from JedisPool.
+	 * @param redisInstance SingleRedisInstance object.
+	 * @return Jedis
+	 */
+	protected Jedis jedis(SingleRedisInstance redisInstance) {
+		return JedisPoolUtil.jedis(redisInstance);
 	}
 
 	/**
@@ -81,6 +104,6 @@ public abstract class BaseTestForDuer extends BaseTest {
 	 * @return Jedis
 	 */
 	protected Jedis jedis() {
-		return JedisPoolUtil.jedis(singleRedisInstance);
+		return jedis(singleRedisInstance);
 	}
 }

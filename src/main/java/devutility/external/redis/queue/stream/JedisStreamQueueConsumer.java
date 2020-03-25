@@ -178,13 +178,13 @@ public class JedisStreamQueueConsumer extends JedisQueueConsumer implements Ackn
 		@SuppressWarnings("unchecked")
 		List<Entry<String, List<StreamEntry>>> list = devJedis.xreadGroup(groupName, redisQueueOption.getConsumerName(), 1, redisQueueOption.getWaitMilliseconds(), redisQueueOption.isNoNeedAck(), stream);
 
-		if (CollectionUtils.isNullOrEmpty(list) || list.size() != 1) {
-			throw new JedisFatalException("Illegal Entry data!");
+		if (CollectionUtils.isNullOrEmpty(list)) {
+			return;
 		}
 
 		List<StreamEntry> streamEntries = list.get(0).getValue();
 
-		if (CollectionUtils.isNullOrEmpty(streamEntries) || streamEntries.size() != 1) {
+		if (CollectionUtils.isNullOrEmpty(streamEntries)) {
 			throw new JedisFatalException("Illegal StreamEntry list!");
 		}
 
