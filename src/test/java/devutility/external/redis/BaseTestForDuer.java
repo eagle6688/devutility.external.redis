@@ -23,17 +23,17 @@ public abstract class BaseTestForDuer extends BaseTest {
 	/**
 	 * Config file name.
 	 */
-	private final static String CONFIG_FILE = "config.properties";
+	protected final static String CONFIG_FILE = "config.properties";
 
 	/**
 	 * Prefix of config item.
 	 */
-	private final static String CONFIG_PREFIX = "redis";
+	protected final static String CONFIG_PREFIX = "redis";
 
 	/**
 	 * Prefix of config items for sentinel.
 	 */
-	private final static String CONFIG_PREFIX_SENTINEL = "sentinel";
+	protected final static String CONFIG_PREFIX_SENTINEL = "sentinel";
 
 	/**
 	 * SingleRedisInstance object.
