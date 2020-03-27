@@ -9,7 +9,7 @@ import redis.clients.jedis.JedisSentinelPool;
 public class JedisSentinelPoolTest extends BaseTestForDuer {
 	@Override
 	public void run() {
-		JedisSentinelPool jedisSentinelPool = JedisSentinelPoolUtil.jedisSentinelPool(sentinel_RedisInstance);
+		JedisSentinelPool jedisSentinelPool = JedisSentinelPoolUtil.jedisSentinelPool(sentinelRedisInstance);
 		HostAndPort master = jedisSentinelPool.getCurrentHostMaster();
 		println(master.toString());
 	}

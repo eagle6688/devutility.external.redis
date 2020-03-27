@@ -1,14 +1,11 @@
 package devutility.external.redis;
 
-import java.lang.reflect.InvocationTargetException;
-
-import devutility.external.redis.com.RedisQueueOption;
 import devutility.external.redis.helper.single.SingleRedisStringHelper;
+import devutility.external.redis.model.RedisQueueOption;
 import devutility.external.redis.model.SentinelRedisInstance;
 import devutility.external.redis.model.SingleRedisInstance;
 import devutility.external.redis.utils.pool.JedisPoolUtil;
 import devutility.internal.test.BaseTest;
-import devutility.internal.util.PropertiesUtils;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
@@ -26,63 +23,34 @@ public abstract class BaseTestForDuer extends BaseTest {
 	protected final static String CONFIG_FILE = "config.properties";
 
 	/**
-	 * Prefix of config item.
-	 */
-	protected final static String CONFIG_PREFIX = "redis";
-
-	/**
-	 * Prefix of config items for sentinel.
-	 */
-	protected final static String CONFIG_PREFIX_SENTINEL = "sentinel";
-
-	/**
 	 * SingleRedisInstance object.
 	 */
-	protected SingleRedisInstance singleRedisInstance = RedisInstanceUtils.get(CONFIG_FILE, CONFIG_PREFIX, SingleRedisInstance.class);
-
-	/**
-	 * SingleRedisInstance object.
-	 */
-	protected SingleRedisInstance singleRedisInstance2 = RedisInstanceUtils.get(CONFIG_FILE, "redis2", SingleRedisInstance.class);
+	protected SingleRedisInstance singleRedisInstance = ConfigUtils.getRedisInstanceFromResources(CONFIG_FILE, "redis", SingleRedisInstance.class);
 
 	/**
 	 * SingleRedisStringHelper object.
 	 */
-	protected SingleRedisStringHelper singleRedisStringHelper = RedisHelperFactory.singleRedisStringHelper(CONFIG_FILE, CONFIG_PREFIX);
+	protected SingleRedisStringHelper singleRedisStringHelper = new SingleRedisStringHelper(singleRedisInstance);
 
 	/**
 	 * SentinelRedisInstance object.
 	 */
-	protected SentinelRedisInstance sentinel_RedisInstance = RedisInstanceUtils.get(CONFIG_FILE, CONFIG_PREFIX_SENTINEL, SentinelRedisInstance.class);
+	protected SentinelRedisInstance sentinelRedisInstance = ConfigUtils.getRedisInstanceFromResources(CONFIG_FILE, "sentinel", SentinelRedisInstance.class);
 
 	/**
 	 * RedisQueueOption object.
 	 */
-	protected RedisQueueOption redisQueueOption = null;
+	protected RedisQueueOption redisQueueOption = ConfigUtils.getRedisQueueOptionFromResources(CONFIG_FILE, "queue.option");
+
+	/**
+	 * SingleRedisInstance object.
+	 */
+	protected SingleRedisInstance singleRedisInstance2 = ConfigUtils.getRedisInstanceFromResources(CONFIG_FILE, "redis2", SingleRedisInstance.class);
 
 	/**
 	 * RedisQueueOption object.
 	 */
-	protected RedisQueueOption redisQueueOption2 = null;
-
-	public BaseTestForDuer() {
-		redisQueueOption = redisQueueOption("queue.option");
-		redisQueueOption2 = redisQueueOption("queue2.option");
-	}
-
-	/**
-	 * Get RedisQueueOption object.
-	 * @param prefix Prefix of
-	 * @return RedisQueueOption
-	 */
-	protected RedisQueueOption redisQueueOption(String prefix) {
-		try {
-			return PropertiesUtils.toModel(CONFIG_FILE, prefix, RedisQueueOption.class);
-		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
+	protected RedisQueueOption redisQueueOption2 = ConfigUtils.getRedisQueueOptionFromResources(CONFIG_FILE, "queue2.option");
 
 	/**
 	 * Create an JedisPool object use singleRedisInstance;

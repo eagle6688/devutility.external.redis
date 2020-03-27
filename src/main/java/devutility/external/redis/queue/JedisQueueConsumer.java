@@ -2,9 +2,9 @@ package devutility.external.redis.queue;
 
 import java.io.Closeable;
 
-import devutility.external.redis.com.RedisQueueOption;
 import devutility.external.redis.exception.JedisFatalException;
 import devutility.external.redis.ext.DevJedis;
+import devutility.external.redis.model.RedisQueueOption;
 import redis.clients.jedis.Jedis;
 
 /**

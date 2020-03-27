@@ -2,8 +2,8 @@ package devutility.external.redis.queue.stream;
 
 import java.io.IOException;
 
-import devutility.external.redis.com.RedisQueueOption;
 import devutility.external.redis.exception.JedisBrokenException;
+import devutility.external.redis.model.RedisQueueOption;
 import devutility.external.redis.queue.JedisQueueConsumer;
 import devutility.external.redis.utils.pool.JedisPoolUtil;
 import redis.clients.jedis.Jedis;

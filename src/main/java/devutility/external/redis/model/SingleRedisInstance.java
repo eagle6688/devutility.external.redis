@@ -46,6 +46,10 @@ public class SingleRedisInstance extends RedisInstance {
 	}
 
 	public void setDatabase(int database) {
+		if (database < 0) {
+			return;
+		}
+
 		this.database = database;
 	}
 

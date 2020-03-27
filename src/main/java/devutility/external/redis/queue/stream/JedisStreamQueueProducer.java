@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import devutility.external.redis.com.Config;
-import devutility.external.redis.com.RedisQueueOption;
+import devutility.external.redis.model.RedisQueueOption;
 import devutility.external.redis.queue.JedisQueueProducer;
 import devutility.internal.data.converter.Converter;
 import redis.clients.jedis.Jedis;

@@ -10,13 +10,13 @@ import java.util.Set;
 
 import devutility.external.redis.com.Config;
 import devutility.external.redis.com.QueueMode;
-import devutility.external.redis.com.RedisQueueOption;
 import devutility.external.redis.com.RedisType;
 import devutility.external.redis.com.StatusCode;
 import devutility.external.redis.com.StreamMessageType;
 import devutility.external.redis.exception.JedisBrokenException;
 import devutility.external.redis.exception.JedisFatalException;
 import devutility.external.redis.ext.model.ConsumerInfo;
+import devutility.external.redis.model.RedisQueueOption;
 import devutility.external.redis.queue.Acknowledger;
 import devutility.external.redis.queue.JedisQueueConsumer;
 import devutility.internal.lang.StringUtils;

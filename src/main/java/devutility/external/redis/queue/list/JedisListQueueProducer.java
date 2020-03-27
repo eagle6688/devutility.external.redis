@@ -3,7 +3,7 @@ package devutility.external.redis.queue.list;
 import java.util.ArrayList;
 import java.util.List;
 
-import devutility.external.redis.com.RedisQueueOption;
+import devutility.external.redis.model.RedisQueueOption;
 import devutility.external.redis.queue.JedisQueueProducer;
 import devutility.internal.data.converter.Converter;
 import redis.clients.jedis.Jedis;

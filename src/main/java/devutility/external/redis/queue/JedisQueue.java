@@ -1,6 +1,6 @@
 package devutility.external.redis.queue;
 
-import devutility.external.redis.com.RedisQueueOption;
+import devutility.external.redis.model.RedisQueueOption;
 import devutility.internal.lang.StringUtils;
 
 /**

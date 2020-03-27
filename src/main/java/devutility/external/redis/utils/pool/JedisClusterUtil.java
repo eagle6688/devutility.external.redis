@@ -2,8 +2,7 @@ package devutility.external.redis.utils.pool;
 
 import java.util.Set;
 
-import devutility.external.redis.RedisHelperFactory;
-import devutility.external.redis.RedisInstanceUtils;
+import devutility.external.redis.ConfigUtils;
 import devutility.external.redis.model.ClusterRedisInstance;
 import devutility.external.redis.utils.BaseRedisUtils;
 import devutility.internal.base.SingletonFactory;
@@ -30,7 +29,7 @@ public class JedisClusterUtil extends BaseRedisUtils {
 			return jedisCluster;
 		}
 
-		synchronized (RedisHelperFactory.class) {
+		synchronized (JedisClusterUtil.class) {
 			if (jedisCluster == null) {
 				jedisCluster = SingletonFactory.save(key, createJedisCluster(redisInstance));
 			}
@@ -46,7 +45,7 @@ public class JedisClusterUtil extends BaseRedisUtils {
 	 */
 	public static JedisCluster createJedisCluster(ClusterRedisInstance redisInstance) {
 		JedisPoolConfig jedisPoolConfig = JedisPoolConfigUtil.jedisPoolConfig(redisInstance);
-		Set<HostAndPort> clusterNodes = RedisInstanceUtils.hostAndPortSet(redisInstance.getNodes());
+		Set<HostAndPort> clusterNodes = ConfigUtils.hostAndPortSet(redisInstance.getNodes());
 
 		if (redisInstance.getCommandTimeout() != 0) {
 			return new JedisCluster(clusterNodes, redisInstance.getCommandTimeout(), jedisPoolConfig);

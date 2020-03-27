@@ -1,4 +1,6 @@
-package devutility.external.redis.com;
+package devutility.external.redis.model;
+
+import devutility.external.redis.com.QueueMode;
 
 /**
  * 

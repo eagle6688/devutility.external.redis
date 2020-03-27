@@ -115,6 +115,10 @@ public class RedisInstance {
 	}
 
 	public void setMaxRetryCount(int maxRetryCount) {
+		if (maxRetryCount < 1) {
+			return;
+		}
+
 		this.maxRetryCount = maxRetryCount;
 	}
 

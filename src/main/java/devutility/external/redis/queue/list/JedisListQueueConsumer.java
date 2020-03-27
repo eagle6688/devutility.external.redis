@@ -3,9 +3,9 @@ package devutility.external.redis.queue.list;
 import java.io.IOException;
 import java.util.List;
 
-import devutility.external.redis.com.RedisQueueOption;
 import devutility.external.redis.exception.JedisBrokenException;
 import devutility.external.redis.exception.JedisFatalException;
+import devutility.external.redis.model.RedisQueueOption;
 import devutility.external.redis.queue.JedisQueueConsumer;
 import devutility.external.redis.queue.JedisQueueConsumerEvent;
 import devutility.internal.util.CollectionUtils;

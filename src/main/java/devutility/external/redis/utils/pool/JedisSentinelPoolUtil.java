@@ -2,14 +2,12 @@ package devutility.external.redis.utils.pool;
 
 import java.util.Set;
 
-import devutility.external.redis.RedisHelperFactory;
-import devutility.external.redis.RedisInstanceUtils;
+import devutility.external.redis.ConfigUtils;
 import devutility.external.redis.model.SentinelRedisInstance;
 import devutility.external.redis.utils.BaseRedisUtils;
 import devutility.internal.base.SingletonFactory;
 import devutility.internal.lang.StringUtils;
 import devutility.internal.util.CollectionUtils;
-
 import redis.clients.jedis.HostAndPort;
 import redis.clients.jedis.JedisPoolConfig;
 import redis.clients.jedis.JedisSentinelPool;
@@ -32,7 +30,7 @@ public class JedisSentinelPoolUtil extends BaseRedisUtils {
 			return jedisSentinelPool;
 		}
 
-		synchronized (RedisHelperFactory.class) {
+		synchronized (JedisClusterUtil.class) {
 			if (jedisSentinelPool == null) {
 				jedisSentinelPool = SingletonFactory.save(key, createJedisSentinelPool(redisInstance));
 			}
@@ -48,7 +46,7 @@ public class JedisSentinelPoolUtil extends BaseRedisUtils {
 	 */
 	public static JedisSentinelPool createJedisSentinelPool(SentinelRedisInstance redisInstance) {
 		JedisPoolConfig jedisPoolConfig = JedisPoolConfigUtil.jedisPoolConfig(redisInstance);
-		Set<HostAndPort> sentinels = RedisInstanceUtils.hostAndPortSet(redisInstance.getNodes());
+		Set<HostAndPort> sentinels = ConfigUtils.hostAndPortSet(redisInstance.getNodes());
 		Set<String> sentinelNodes = CollectionUtils.mapToSet(sentinels, i -> i.toString());
 
 		if (redisInstance.getConnectionTimeoutMillis() != 0 && redisInstance.getPassword() != null) {
