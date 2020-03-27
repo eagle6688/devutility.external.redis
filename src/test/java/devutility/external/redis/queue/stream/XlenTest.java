@@ -1,6 +1,7 @@
 package devutility.external.redis.queue.stream;
 
 import devutility.external.redis.BaseTestForDuer;
+import devutility.external.redis.model.StreamData;
 import devutility.internal.test.TestExecutor;
 import redis.clients.jedis.Jedis;
 
@@ -15,7 +16,7 @@ public class XlenTest extends BaseTestForDuer {
 	@Override
 	public void run() {
 		try (Jedis jedis = jedis()) {
-			System.out.println(jedis.xlen(CONFIG_KEY_STREAM));
+			System.out.println(jedis.xlen(StreamData.KEY));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

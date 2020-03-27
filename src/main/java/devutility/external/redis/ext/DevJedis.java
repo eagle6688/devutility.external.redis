@@ -4,6 +4,7 @@ import java.io.Closeable;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -196,7 +197,7 @@ public class DevJedis implements Closeable {
 		List<Object> streamsEntries = devJedisClient.getObjectMultiBulkReply();
 
 		if (streamsEntries == null) {
-			return null;
+			return new LinkedList<>();
 		}
 
 		List<Entry<String, List<StreamEntry>>> result = new ArrayList<>(streamsEntries.size());

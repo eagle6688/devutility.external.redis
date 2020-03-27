@@ -16,7 +16,7 @@ public class XgroupCreateTest extends BaseTestForDuer {
 	@Override
 	public void run() {
 		try (Jedis jedis = jedis()) {
-			String result = jedis.xgroupCreate(CONFIG_KEY_STREAM, StreamData.GROUPNAME, null, true);
+			String result = jedis.xgroupCreate(StreamData.KEY, StreamData.GROUPNAME, null, true);
 			System.out.println(result);
 		} catch (Exception e) {
 			e.printStackTrace();

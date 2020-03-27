@@ -20,7 +20,7 @@ import redis.clients.jedis.StreamEntryID;
 public class XreadGroupWithBlockTest extends BaseTestForStream {
 	@Override
 	public void run() {
-		Entry<String, StreamEntryID> stream = new AbstractMap.SimpleEntry<String, StreamEntryID>(CONFIG_KEY_STREAM, null);
+		Entry<String, StreamEntryID> stream = new AbstractMap.SimpleEntry<String, StreamEntryID>(StreamData.KEY, null);
 
 		try (Jedis jedis = jedis()) {
 			@SuppressWarnings("unchecked")

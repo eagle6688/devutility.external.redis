@@ -18,13 +18,17 @@ import redis.clients.jedis.StreamEntryID;
  * @version: 2019-11-04 15:11:12
  */
 public class XreadGroupWithBlockTest extends BaseTestForStream {
+	private String key = StreamData.KEY;
+	private String groupName = StreamData.GROUPNAME;
+	private String consumerName = StreamData.CONSUMERNAME;
+
 	@Override
 	public void run() {
-		Entry<String, StreamEntryID> stream = new AbstractMap.SimpleEntry<String, StreamEntryID>(CONFIG_KEY_STREAM, null);
+		Entry<String, StreamEntryID> stream = new AbstractMap.SimpleEntry<String, StreamEntryID>(key, null);
 
-		try (DevJedis jedis = new DevJedis(jedis())) {
+		try (DevJedis jedis = new DevJedis(jedis(singleRedisInstance2))) {
 			@SuppressWarnings("unchecked")
-			List<Entry<String, List<StreamEntry>>> list = jedis.xreadGroup(StreamData.GROUPNAME, StreamData.CONSUMERNAME, 1, 20000, false, stream);
+			List<Entry<String, List<StreamEntry>>> list = jedis.xreadGroup(groupName, consumerName, 1, 2000, false, stream);
 			handleXreadGroup(list);
 		} catch (Exception e) {
 			e.printStackTrace();

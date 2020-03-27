@@ -23,27 +23,27 @@ public abstract class BaseTestForDuer extends BaseTest {
 	/**
 	 * Config file name.
 	 */
-	private final static String CONFIG_FILE = "config.properties";
+	protected final static String CONFIG_FILE = "config.properties";
 
 	/**
 	 * Prefix of config item.
 	 */
-	private final static String CONFIG_PREFIX = "redis";
+	protected final static String CONFIG_PREFIX = "redis";
 
 	/**
 	 * Prefix of config items for sentinel.
 	 */
-	private final static String CONFIG_PREFIX_SENTINEL = "sentinel";
-
-	/**
-	 * Redis test key for stream.
-	 */
-	protected final static String CONFIG_KEY_STREAM = "test-stream-queue";
+	protected final static String CONFIG_PREFIX_SENTINEL = "sentinel";
 
 	/**
 	 * SingleRedisInstance object.
 	 */
 	protected SingleRedisInstance singleRedisInstance = RedisInstanceUtils.get(CONFIG_FILE, CONFIG_PREFIX, SingleRedisInstance.class);
+
+	/**
+	 * SingleRedisInstance object.
+	 */
+	protected SingleRedisInstance singleRedisInstance2 = RedisInstanceUtils.get(CONFIG_FILE, "redis2", SingleRedisInstance.class);
 
 	/**
 	 * SingleRedisStringHelper object.
@@ -60,12 +60,37 @@ public abstract class BaseTestForDuer extends BaseTest {
 	 */
 	protected RedisQueueOption redisQueueOption = null;
 
+	/**
+	 * RedisQueueOption object.
+	 */
+	protected RedisQueueOption redisQueueOption2 = null;
+
 	public BaseTestForDuer() {
+		redisQueueOption = redisQueueOption("queue.option");
+		redisQueueOption2 = redisQueueOption("queue2.option");
+	}
+
+	/**
+	 * Get RedisQueueOption object.
+	 * @param prefix Prefix of
+	 * @return RedisQueueOption
+	 */
+	protected RedisQueueOption redisQueueOption(String prefix) {
 		try {
-			redisQueueOption = PropertiesUtils.toModel(CONFIG_FILE, "queue.option", RedisQueueOption.class);
+			return PropertiesUtils.toModel(CONFIG_FILE, prefix, RedisQueueOption.class);
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 			e.printStackTrace();
+			return null;
 		}
+	}
+
+	/**
+	 * Create an JedisPool object use singleRedisInstance;
+	 * @param redisInstance SingleRedisInstance object.
+	 * @return JedisPool
+	 */
+	protected JedisPool jedisPool(SingleRedisInstance redisInstance) {
+		return JedisPoolUtil.jedisPool(redisInstance);
 	}
 
 	/**
@@ -73,7 +98,16 @@ public abstract class BaseTestForDuer extends BaseTest {
 	 * @return JedisPool
 	 */
 	protected JedisPool jedisPool() {
-		return JedisPoolUtil.jedisPool(singleRedisInstance);
+		return jedisPool(singleRedisInstance);
+	}
+
+	/**
+	 * Get Jedis object from JedisPool.
+	 * @param redisInstance SingleRedisInstance object.
+	 * @return Jedis
+	 */
+	protected Jedis jedis(SingleRedisInstance redisInstance) {
+		return JedisPoolUtil.jedis(redisInstance);
 	}
 
 	/**
@@ -81,6 +115,6 @@ public abstract class BaseTestForDuer extends BaseTest {
 	 * @return Jedis
 	 */
 	protected Jedis jedis() {
-		return JedisPoolUtil.jedis(singleRedisInstance);
+		return jedis(singleRedisInstance);
 	}
 }

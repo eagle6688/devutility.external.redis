@@ -19,7 +19,7 @@ public class XackTest extends BaseTestForDuer {
 		StreamEntryID streamEntryID = new StreamEntryID("1572529192472-0");
 
 		try (Jedis jedis = jedis()) {
-			long result = jedis.xack(CONFIG_KEY_STREAM, StreamData.GROUPNAME, streamEntryID);
+			long result = jedis.xack(StreamData.KEY, StreamData.GROUPNAME, streamEntryID);
 			System.out.println(result);
 		} catch (Exception e) {
 			e.printStackTrace();

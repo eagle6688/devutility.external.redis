@@ -3,6 +3,7 @@ package devutility.external.redis.queue.stream;
 import java.util.List;
 import java.util.Map;
 
+import devutility.external.redis.model.StreamData;
 import devutility.internal.test.TestExecutor;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.StreamEntry;
@@ -25,7 +26,7 @@ public class XrangeTest extends BaseTestForStream {
 			 * After user uses xack method to ack one message, it still can fetch from Redis with Jedis xrange method. But if user
 			 * uses xdel method to del one message, it can't fetch again.
 			 */
-			List<StreamEntry> list = jedis.xrange(CONFIG_KEY_STREAM, streamEntryID, streamEntryID, 1);
+			List<StreamEntry> list = jedis.xrange(StreamData.KEY, streamEntryID, streamEntryID, 1);
 
 			list.forEach(i -> {
 				System.out.println(String.format("ID: %s", i.getID().toString()));

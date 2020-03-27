@@ -18,11 +18,11 @@ public class XpendingTest extends BaseTestForStream {
 	@Override
 	public void run() {
 		try (Jedis jedis = jedis()) {
-			List<StreamPendingEntry> list = jedis.xpending(CONFIG_KEY_STREAM, StreamData.GROUPNAME, null, null, 10, StreamData.CONSUMERNAME);
+			List<StreamPendingEntry> list = jedis.xpending(StreamData.KEY, StreamData.GROUPNAME, null, null, 10, StreamData.CONSUMERNAME);
 			System.out.println("With consumer name...");
 			log(list);
 
-			list = jedis.xpending(CONFIG_KEY_STREAM, StreamData.GROUPNAME, null, null, 10, null);
+			list = jedis.xpending(StreamData.KEY, StreamData.GROUPNAME, null, null, 10, null);
 			System.out.println("Without consumer name...");
 			log(list);
 		} catch (Exception e) {
