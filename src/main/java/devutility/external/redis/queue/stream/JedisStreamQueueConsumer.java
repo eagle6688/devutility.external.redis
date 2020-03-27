@@ -179,6 +179,7 @@ public class JedisStreamQueueConsumer extends JedisQueueConsumer implements Ackn
 		List<Entry<String, List<StreamEntry>>> list = devJedis.xreadGroup(groupName, redisQueueOption.getConsumerName(), 1, redisQueueOption.getWaitMilliseconds(), redisQueueOption.isNoNeedAck(), stream);
 
 		if (CollectionUtils.isNullOrEmpty(list)) {
+			log("Listening end without any message received!");
 			return;
 		}
 
