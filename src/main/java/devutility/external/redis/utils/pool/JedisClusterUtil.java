@@ -5,7 +5,7 @@ import java.util.Set;
 import devutility.external.redis.ConfigUtils;
 import devutility.external.redis.model.ClusterRedisInstance;
 import devutility.external.redis.utils.BaseRedisUtils;
-import devutility.internal.base.SingletonFactory;
+import devutility.internal.com.SingletonFactory;
 import devutility.internal.lang.StringUtils;
 import redis.clients.jedis.HostAndPort;
 import redis.clients.jedis.JedisCluster;

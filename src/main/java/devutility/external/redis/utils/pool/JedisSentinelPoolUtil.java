@@ -5,7 +5,7 @@ import java.util.Set;
 import devutility.external.redis.ConfigUtils;
 import devutility.external.redis.model.SentinelRedisInstance;
 import devutility.external.redis.utils.BaseRedisUtils;
-import devutility.internal.base.SingletonFactory;
+import devutility.internal.com.SingletonFactory;
 import devutility.internal.lang.StringUtils;
 import devutility.internal.util.CollectionUtils;
 import redis.clients.jedis.HostAndPort;

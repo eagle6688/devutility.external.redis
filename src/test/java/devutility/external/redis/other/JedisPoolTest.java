@@ -1,6 +1,6 @@
 package devutility.external.redis.other;
 
-import devutility.internal.base.SingletonFactory;
+import devutility.internal.com.SingletonFactory;
 import devutility.internal.test.BaseTest;
 import devutility.internal.test.TestExecutor;
 import redis.clients.jedis.JedisPool;
