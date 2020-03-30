@@ -1,4 +1,4 @@
-package devutility.external.redis.utils.pool.redisbaseutils;
+package devutility.external.redis.utils.pool.jedisbaseutils;
 
 import devutility.external.redis.BaseTestForDuer;
 import devutility.external.redis.utils.JedisStringUtils;
