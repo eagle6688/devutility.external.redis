@@ -1,4 +1,4 @@
-package devutility.external.redis.utils;
+package devutility.external.redis.ext.com;
 
 import redis.clients.jedis.util.SafeEncoder;
 

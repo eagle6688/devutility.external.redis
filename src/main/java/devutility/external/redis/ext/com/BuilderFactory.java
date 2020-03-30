@@ -10,7 +10,6 @@ import java.util.Map;
 import devutility.external.redis.exception.JedisFatalException;
 import devutility.external.redis.ext.model.ConsumerInfo;
 import devutility.external.redis.ext.model.GroupInfo;
-import devutility.external.redis.utils.RedisStreamUtils;
 import devutility.internal.data.converter.ConverterUtils;
 import redis.clients.jedis.Builder;
 import redis.clients.jedis.StreamEntry;

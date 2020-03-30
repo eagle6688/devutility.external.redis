@@ -1,6 +1,6 @@
 package devutility.external.redis;
 
-import devutility.external.redis.helper.single.SingleRedisStringHelper;
+import devutility.external.redis.helper.single.SingleJedisStringHelper;
 import devutility.external.redis.model.RedisQueueOption;
 import devutility.external.redis.model.SentinelRedisInstance;
 import devutility.external.redis.model.SingleRedisInstance;
@@ -30,7 +30,7 @@ public abstract class BaseTestForDuer extends BaseTest {
 	/**
 	 * SingleRedisStringHelper object.
 	 */
-	protected SingleRedisStringHelper singleRedisStringHelper = new SingleRedisStringHelper(singleRedisInstance);
+	protected SingleJedisStringHelper singleRedisStringHelper = new SingleJedisStringHelper(singleRedisInstance);
 
 	/**
 	 * SentinelRedisInstance object.

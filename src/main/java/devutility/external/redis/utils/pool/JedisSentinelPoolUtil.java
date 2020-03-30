@@ -4,7 +4,7 @@ import java.util.Set;
 
 import devutility.external.redis.ConfigUtils;
 import devutility.external.redis.model.SentinelRedisInstance;
-import devutility.external.redis.utils.BaseRedisUtils;
+import devutility.external.redis.utils.BaseJedisUtils;
 import devutility.internal.com.SingletonFactory;
 import devutility.internal.lang.StringUtils;
 import devutility.internal.util.CollectionUtils;
@@ -12,7 +12,7 @@ import redis.clients.jedis.HostAndPort;
 import redis.clients.jedis.JedisPoolConfig;
 import redis.clients.jedis.JedisSentinelPool;
 
-public class JedisSentinelPoolUtil extends BaseRedisUtils {
+public class JedisSentinelPoolUtil extends BaseJedisUtils {
 	/**
 	 * Get a singleton JedisSentinelPool object.
 	 * @param redisInstance SentinelRedisInstance object.

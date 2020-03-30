@@ -1,11 +1,12 @@
-package devutility.external.redis.helper;
+package devutility.external.redis.helper.single;
 
+import devutility.external.redis.helper.RedisHelper;
 import devutility.external.redis.model.SingleRedisInstance;
-import devutility.external.redis.utils.BaseRedisUtils;
+import devutility.external.redis.utils.BaseJedisUtils;
 import devutility.external.redis.utils.pool.JedisPoolUtil;
 import redis.clients.jedis.Jedis;
 
-public abstract class SingleRedisHelper extends RedisHelper {
+public abstract class SingleJedisHelper extends RedisHelper {
 	/**
 	 * RedisInstance object
 	 */
@@ -15,7 +16,7 @@ public abstract class SingleRedisHelper extends RedisHelper {
 	 * Constructor
 	 * @param redisInstance
 	 */
-	public SingleRedisHelper(SingleRedisInstance redisInstance) {
+	public SingleJedisHelper(SingleRedisInstance redisInstance) {
 		super(redisInstance);
 		this.redisInstance = redisInstance;
 	}
@@ -44,7 +45,7 @@ public abstract class SingleRedisHelper extends RedisHelper {
 	 */
 	public boolean expire(String key, int seconds) {
 		try (Jedis jedis = JedisPoolUtil.jedis(redisInstance)) {
-			return BaseRedisUtils.expire(jedis, key, seconds);
+			return BaseJedisUtils.expire(jedis, key, seconds);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
@@ -58,7 +59,7 @@ public abstract class SingleRedisHelper extends RedisHelper {
 	 */
 	public boolean remove(String key) {
 		try (Jedis jedis = JedisPoolUtil.jedis(redisInstance)) {
-			return BaseRedisUtils.remove(jedis, key);
+			return BaseJedisUtils.remove(jedis, key);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;

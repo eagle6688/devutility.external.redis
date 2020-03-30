@@ -16,7 +16,7 @@ import redis.clients.jedis.Jedis;
  * @author: Aldwin Su
  * @version: 2019-09-29 22:25:51
  */
-public abstract class BaseRedisUtils {
+public abstract class BaseJedisUtils {
 	/**
 	 * Set expired time for the item with the specified key.
 	 * @param jedis Jedis object.

@@ -1,7 +1,7 @@
 package devutility.external.redis.helper;
 
 import devutility.external.redis.exception.JedisFatalException;
-import devutility.external.redis.utils.BaseRedisUtils;
+import devutility.external.redis.utils.BaseJedisUtils;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
@@ -48,7 +48,7 @@ public class JedisThreadLocal {
 				jedis.connect();
 			}
 
-			if (BaseRedisUtils.select(jedis, database)) {
+			if (BaseJedisUtils.select(jedis, database)) {
 				return jedis;
 			}
 		}
@@ -58,7 +58,7 @@ public class JedisThreadLocal {
 			JEDIS_THREADLOCAL.set(jedis);
 		}
 
-		if (!BaseRedisUtils.select(jedis, database)) {
+		if (!BaseJedisUtils.select(jedis, database)) {
 			throw new JedisFatalException("Can't select database in Redis!");
 		}
 
