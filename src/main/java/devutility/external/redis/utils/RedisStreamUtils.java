@@ -1,6 +1,5 @@
 package devutility.external.redis.utils;
 
-import redis.clients.jedis.Jedis;
 import redis.clients.jedis.util.SafeEncoder;
 
 /**
@@ -10,7 +9,7 @@ import redis.clients.jedis.util.SafeEncoder;
  * @author: Aldwin Su
  * @version: 2019-10-31 20:33:50
  */
-public class JedisStreamUtils {
+public class RedisStreamUtils {
 	/**
 	 * Convert Redis response to String type.
 	 * @param data Redis response data.
@@ -25,15 +24,6 @@ public class JedisStreamUtils {
 			return String.valueOf(data);
 		}
 
-		return null;
-	}
-
-	/**
-	 * Get group name of Jedis Stream queue.
-	 * @param jedis Jedis object with selected database index.
-	 * @return String
-	 */
-	public static String getGroupName(Jedis jedis) {
 		return null;
 	}
 }

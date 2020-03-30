@@ -10,7 +10,7 @@ import java.util.Map;
 import devutility.external.redis.exception.JedisFatalException;
 import devutility.external.redis.ext.model.ConsumerInfo;
 import devutility.external.redis.ext.model.GroupInfo;
-import devutility.external.redis.utils.JedisStreamUtils;
+import devutility.external.redis.utils.RedisStreamUtils;
 import devutility.internal.data.converter.ConverterUtils;
 import redis.clients.jedis.Builder;
 import redis.clients.jedis.StreamEntry;
@@ -43,10 +43,10 @@ public final class BuilderFactory {
 				}
 
 				GroupInfo model = new GroupInfo();
-				model.setName(JedisStreamUtils.convertToString(object.get(1)));
+				model.setName(RedisStreamUtils.convertToString(object.get(1)));
 				model.setConsumers(ConverterUtils.objectTolong(object.get(3)));
 				model.setPending(ConverterUtils.objectTolong(object.get(5)));
-				model.setLastDeliveredId(new StreamEntryID(JedisStreamUtils.convertToString(object.get(7))));
+				model.setLastDeliveredId(new StreamEntryID(RedisStreamUtils.convertToString(object.get(7))));
 				list.add(model);
 			}
 
@@ -72,7 +72,7 @@ public final class BuilderFactory {
 				}
 
 				ConsumerInfo model = new ConsumerInfo();
-				model.setName(JedisStreamUtils.convertToString(object.get(1)));
+				model.setName(RedisStreamUtils.convertToString(object.get(1)));
 				model.setPending(ConverterUtils.objectTolong(object.get(3)));
 				model.setIdle(ConverterUtils.objectToint(object.get(5)));
 				list.add(model);
