@@ -38,7 +38,7 @@ public class RedisStringUtils extends BaseRedisUtils {
 		}
 
 		if (expire > 0) {
-			return jedis.expire(key, expire) != 1;
+			return jedis.expire(key, expire) == 1;
 		}
 
 		return true;
