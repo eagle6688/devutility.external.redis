@@ -1,6 +1,5 @@
 package devutility.external.redis.ext;
 
-import java.io.Closeable;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,7 +26,7 @@ import redis.clients.jedis.util.SafeEncoder;
  * @author: Aldwin Su
  * @version: 2019-10-31 20:47:56
  */
-public class DevJedis implements Closeable {
+public class DevJedis implements AutoCloseable {
 	/**
 	 * Jedis object.
 	 */
