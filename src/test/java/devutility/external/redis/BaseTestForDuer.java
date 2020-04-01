@@ -58,7 +58,7 @@ public abstract class BaseTestForDuer extends BaseTest {
 	/**
 	 * RedisQueueOption object.
 	 */
-	protected RedisQueueOption redisQueueOption = null;
+	protected RedisQueueOption redisQueueOption = new RedisQueueOption();
 
 	/**
 	 * RedisQueueOption object.
@@ -66,7 +66,14 @@ public abstract class BaseTestForDuer extends BaseTest {
 	protected RedisQueueOption redisQueueOption2 = null;
 
 	public BaseTestForDuer() {
-		redisQueueOption = redisQueueOption("queue.option");
+		redisQueueOption.setKey("QUEUE-PART_ORDER-EMAIL");
+		redisQueueOption.setDatabase(0);
+		redisQueueOption.setApproximateLength(true);
+		redisQueueOption.setGroupName("DEFAULT-GROUP");
+		redisQueueOption.setConsumerName("Hyperscale-Email-Consumer1");
+		redisQueueOption.setAutoAck(true);
+		redisQueueOption.setWaitMilliseconds(3000);
+
 		redisQueueOption2 = redisQueueOption("queue2.option");
 	}
 

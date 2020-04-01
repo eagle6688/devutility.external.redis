@@ -27,6 +27,13 @@ public class StreamConsumerEvent extends BaseStreamConsumerEvent {
 
 	private boolean process(StreamEntryID streamEntryId) {
 		System.out.println(String.format("Id: %s normal process！", streamEntryId.toString()));
+
+		try {
+			Thread.sleep(5000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
 		return true;
 	}
 }

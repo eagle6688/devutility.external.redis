@@ -1,5 +1,7 @@
 package devutility.external.redis.queue;
 
+import java.io.Closeable;
+
 import devutility.external.redis.com.RedisQueueOption;
 import devutility.external.redis.exception.JedisFatalException;
 import devutility.external.redis.ext.DevJedis;
@@ -12,7 +14,7 @@ import redis.clients.jedis.Jedis;
  * @author: Aldwin Su
  * @version: 2019-09-25 19:24:50
  */
-public abstract class JedisQueueConsumer extends JedisQueue implements AutoCloseable {
+public abstract class JedisQueueConsumer extends JedisQueue implements Closeable {
 	/**
 	 * Jedis object to read data from Redis.
 	 */

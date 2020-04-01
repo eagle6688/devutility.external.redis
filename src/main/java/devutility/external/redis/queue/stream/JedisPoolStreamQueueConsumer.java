@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import devutility.external.redis.com.RedisQueueOption;
 import devutility.external.redis.exception.JedisBrokenException;
+import devutility.external.redis.queue.Acknowledger;
 import devutility.external.redis.queue.JedisQueueConsumer;
 import devutility.external.redis.utils.pool.JedisPoolUtil;
 import redis.clients.jedis.Jedis;
@@ -35,10 +36,12 @@ public class JedisPoolStreamQueueConsumer extends JedisQueueConsumer {
 
 	@Override
 	public void listen() throws Exception {
+		Acknowledger acknowledger = new JedisPoolStreamQueueAcknowledger(jedisPool, redisQueueOption);
+
 		while (isActive()) {
 			Jedis jedis = JedisPoolUtil.jedis(jedisPool, redisQueueOption.getDatabase());
 
-			try (JedisStreamQueueConsumer consumer = new JedisStreamQueueConsumer(jedis, redisQueueOption, (JedisStreamQueueConsumerEvent) consumerEvent)) {
+			try (JedisStreamQueueConsumer consumer = new JedisStreamQueueConsumer(jedis, redisQueueOption, acknowledger, (JedisStreamQueueConsumerEvent) consumerEvent)) {
 				consumer.listen();
 			} catch (Exception e) {
 				if (e instanceof JedisBrokenException) {

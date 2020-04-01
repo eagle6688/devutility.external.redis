@@ -18,7 +18,7 @@ public class JedisPoolStreamQueueConsumerTest extends BaseTestForDuer {
 
 	@Override
 	public void run() {
-		try (JedisQueueConsumer consumer = new JedisPoolStreamQueueConsumer(jedisPool(singleRedisInstance2), redisQueueOption2, consumerEvent)) {
+		try (JedisQueueConsumer consumer = new JedisPoolStreamQueueConsumer(jedisPool(singleRedisInstance), redisQueueOption, consumerEvent)) {
 			consumer.listen();
 		} catch (Exception e) {
 			e.printStackTrace();

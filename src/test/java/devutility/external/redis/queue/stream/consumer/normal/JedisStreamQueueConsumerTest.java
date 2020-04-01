@@ -4,7 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 
 import devutility.external.json.JsonUtils;
 import devutility.external.redis.BaseTestForDuer;
+import devutility.external.redis.queue.Acknowledger;
 import devutility.external.redis.queue.JedisQueueConsumer;
+import devutility.external.redis.queue.stream.JedisPoolStreamQueueAcknowledger;
 import devutility.external.redis.queue.stream.JedisStreamQueueConsumer;
 import devutility.external.redis.queue.stream.JedisStreamQueueConsumerEvent;
 import devutility.internal.test.TestExecutor;
@@ -27,7 +29,9 @@ public class JedisStreamQueueConsumerTest extends BaseTestForDuer {
 			e1.printStackTrace();
 		}
 
-		try (JedisQueueConsumer consumer = new JedisStreamQueueConsumer(jedis(), redisQueueOption, consumerEvent)) {
+		Acknowledger acknowledger = new JedisPoolStreamQueueAcknowledger(jedisPool(), redisQueueOption);
+
+		try (JedisQueueConsumer consumer = new JedisStreamQueueConsumer(jedis(), redisQueueOption, acknowledger, consumerEvent)) {
 			consumer.listen();
 		} catch (Exception e) {
 			e.printStackTrace();
