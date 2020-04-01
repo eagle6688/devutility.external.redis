@@ -35,11 +35,6 @@ import redis.clients.jedis.StreamPendingEntry;
  */
 public class JedisStreamQueueConsumer extends JedisQueueConsumer implements Acknowledger {
 	/**
-	 * Group name.
-	 */
-	protected String groupName;
-
-	/**
 	 * Consumed StreamEntryID strings.
 	 */
 	private Set<String> consumedIds = new LinkedHashSet<String>();
@@ -52,7 +47,6 @@ public class JedisStreamQueueConsumer extends JedisQueueConsumer implements Ackn
 	 */
 	public JedisStreamQueueConsumer(final Jedis jedis, final RedisQueueOption redisQueueOption, final JedisStreamQueueConsumerEvent consumerEvent) {
 		super(jedis, redisQueueOption, consumerEvent);
-		this.groupName = redisQueueOption.getGroupName();
 		consumerEvent.setAcknowledger(this);
 	}
 
@@ -91,7 +85,7 @@ public class JedisStreamQueueConsumer extends JedisQueueConsumer implements Ackn
 	protected void validate(RedisType type) {
 		super.validate();
 
-		if (StringUtils.isNullOrEmpty(groupName)) {
+		if (StringUtils.isNullOrEmpty(redisQueueOption.getGroupName())) {
 			throw new IllegalArgumentException("Group name can't be empty!");
 		}
 
@@ -115,7 +109,7 @@ public class JedisStreamQueueConsumer extends JedisQueueConsumer implements Ackn
 			return;
 		}
 
-		if (!devJedis.isGroupExist(redisQueueOption.getKey(), groupName)) {
+		if (!devJedis.isGroupExist(redisQueueOption.getKey(), redisQueueOption.getGroupName())) {
 			initializeGroup();
 		}
 	}
@@ -124,7 +118,7 @@ public class JedisStreamQueueConsumer extends JedisQueueConsumer implements Ackn
 	 * Initialize consumer group.
 	 */
 	private void initializeGroup() {
-		if (devJedis.createGroup(redisQueueOption.getKey(), groupName) != StatusCode.OK) {
+		if (devJedis.createGroup(redisQueueOption.getKey(), redisQueueOption.getGroupName()) != StatusCode.OK) {
 			throw new JedisFatalException("Create group failed!");
 		}
 	}
@@ -133,7 +127,7 @@ public class JedisStreamQueueConsumer extends JedisQueueConsumer implements Ackn
 	 * Process entries in Pending list.
 	 */
 	private void processPending() {
-		ConsumerInfo consumerInfo = devJedis.getConsumerInfo(redisQueueOption.getKey(), groupName, redisQueueOption.getConsumerName());
+		ConsumerInfo consumerInfo = devJedis.getConsumerInfo(redisQueueOption.getKey(), redisQueueOption.getGroupName(), redisQueueOption.getConsumerName());
 
 		/**
 		 * New consumer.
@@ -152,7 +146,7 @@ public class JedisStreamQueueConsumer extends JedisQueueConsumer implements Ackn
 		}
 
 		for (int i = 0; i < pageSize; i++) {
-			List<StreamPendingEntry> list = jedis.xpending(redisQueueOption.getKey(), groupName, startId, null, count, redisQueueOption.getConsumerName());
+			List<StreamPendingEntry> list = jedis.xpending(redisQueueOption.getKey(), redisQueueOption.getGroupName(), startId, null, count, redisQueueOption.getConsumerName());
 
 			for (StreamPendingEntry item : list) {
 				Map<String, String> streamEntryMap = devJedis.xrangeOne(redisQueueOption.getKey(), item.getID());
@@ -176,7 +170,7 @@ public class JedisStreamQueueConsumer extends JedisQueueConsumer implements Ackn
 		Entry<String, StreamEntryID> stream = new AbstractMap.SimpleEntry<String, StreamEntryID>(redisQueueOption.getKey(), StreamEntryID.UNRECEIVED_ENTRY);
 
 		@SuppressWarnings("unchecked")
-		List<Entry<String, List<StreamEntry>>> list = devJedis.xreadGroup(groupName, redisQueueOption.getConsumerName(), 1, redisQueueOption.getWaitMilliseconds(), redisQueueOption.isNoNeedAck(), stream);
+		List<Entry<String, List<StreamEntry>>> list = devJedis.xreadGroup(redisQueueOption.getGroupName(), redisQueueOption.getConsumerName(), 1, redisQueueOption.getWaitMilliseconds(), redisQueueOption.isNoNeedAck(), stream);
 
 		if (CollectionUtils.isNullOrEmpty(list)) {
 			log("Listening end without any message received!");
@@ -253,11 +247,11 @@ public class JedisStreamQueueConsumer extends JedisQueueConsumer implements Ackn
 	@Override
 	public void ack(StreamEntryID streamEntryId) {
 		if (QueueMode.P2P == redisQueueOption.getMode()) {
-			devJedis.xack(redisQueueOption.getKey(), groupName, streamEntryId);
+			devJedis.xack(redisQueueOption.getKey(), redisQueueOption.getGroupName(), streamEntryId);
 			return;
 		}
 
-		jedis.xack(redisQueueOption.getKey(), groupName, streamEntryId);
+		jedis.xack(redisQueueOption.getKey(), redisQueueOption.getGroupName(), streamEntryId);
 	}
 
 	@Override

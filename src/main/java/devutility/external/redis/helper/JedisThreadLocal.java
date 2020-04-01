@@ -43,12 +43,18 @@ public class JedisThreadLocal {
 
 		Jedis jedis = JEDIS_THREADLOCAL.get();
 
-		if (jedis != null && !jedis.getClient().isBroken()) {
-			if (!jedis.isConnected()) {
-				jedis.connect();
-			}
+		if (jedis != null && jedis.getClient() != null) {
+			if (jedis.getClient().isBroken()) {
+				jedis.close();
+			} else {
+				if (!jedis.isConnected()) {
+					jedis.connect();
+				}
 
-			if (BaseJedisUtils.select(jedis, database)) {
+				if (!BaseJedisUtils.select(jedis, database)) {
+					throw new JedisFatalException("Redis object can't select database!");
+				}
+
 				return jedis;
 			}
 		}
@@ -59,7 +65,7 @@ public class JedisThreadLocal {
 		}
 
 		if (!BaseJedisUtils.select(jedis, database)) {
-			throw new JedisFatalException("Can't select database in Redis!");
+			throw new JedisFatalException("Redis object can't select database!");
 		}
 
 		return jedis;

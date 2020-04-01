@@ -65,7 +65,7 @@ public class RedisQueueOption {
 	/**
 	 * Automatic ack message.
 	 */
-	private boolean autoAck;
+	private boolean autoAck = true;
 
 	/**
 	 * Page size for read pending data, default is 1.
