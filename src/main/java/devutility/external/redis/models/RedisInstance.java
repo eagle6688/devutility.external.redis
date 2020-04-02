@@ -29,6 +29,12 @@ public class RedisInstance {
 	private int maxIdle;
 
 	/**
+	 * Max idle milliseconds for each Jedis link, default value 0 is not limited. This item is not belong to JedisPoolConfig
+	 * object.
+	 */
+	private int maxIdleMills;
+
+	/**
 	 * Max waiting milliseconds when get a redis connection, -1 is not limitation.
 	 */
 	private long maxWaitMillis;
@@ -84,6 +90,14 @@ public class RedisInstance {
 
 	public void setMaxIdle(int maxIdle) {
 		this.maxIdle = maxIdle;
+	}
+
+	public int getMaxIdleMills() {
+		return maxIdleMills;
+	}
+
+	public void setMaxIdleMills(int maxIdleMills) {
+		this.maxIdleMills = maxIdleMills;
 	}
 
 	public long getMaxWaitMillis() {
