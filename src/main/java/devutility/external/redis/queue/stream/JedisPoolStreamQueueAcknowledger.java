@@ -39,7 +39,9 @@ public class JedisPoolStreamQueueAcknowledger implements Acknowledger {
 	public void ack(StreamEntryID streamEntryId) {
 		try (Jedis jedis = jedisPool.getResource()) {
 			if (QueueMode.P2P == redisQueueOption.getMode()) {
-				new DevJedis(jedis).xack(redisQueueOption.getKey(), redisQueueOption.getGroupName(), streamEntryId);
+				@SuppressWarnings("resource")
+				DevJedis devJedis = new DevJedis(jedis);
+				devJedis.xack(redisQueueOption.getKey(), redisQueueOption.getGroupName(), streamEntryId);
 			} else {
 				jedis.xack(redisQueueOption.getKey(), redisQueueOption.getGroupName(), streamEntryId);
 			}

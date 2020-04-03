@@ -36,6 +36,11 @@ public abstract class BaseTestForDuer extends BaseTest {
 	protected final static String CONFIG_PREFIX_SENTINEL = "sentinel";
 
 	/**
+	 * JedisPool object.
+	 */
+	protected static JedisPool JEDIS_POOL = null;
+
+	/**
 	 * SingleRedisInstance object.
 	 */
 	protected SingleRedisInstance singleRedisInstance = RedisInstanceUtils.get(CONFIG_FILE, CONFIG_PREFIX, SingleRedisInstance.class);
@@ -75,6 +80,8 @@ public abstract class BaseTestForDuer extends BaseTest {
 		redisQueueOption.setWaitMilliseconds(3000);
 
 		redisQueueOption2 = redisQueueOption("queue2.option");
+
+		JEDIS_POOL = jedisPool();
 	}
 
 	/**

@@ -1,7 +1,7 @@
 package devutility.external.redis.helpers;
 
 import devutility.external.redis.exception.JedisFatalException;
-import devutility.external.redis.models.JedisThreadItem;
+import devutility.external.redis.models.JedisThreadLocalItem;
 import devutility.external.redis.utils.BaseRedisUtils;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
@@ -17,7 +17,7 @@ public class JedisThreadLocal {
 	/**
 	 * ThreadLocal object to save Jedis object.
 	 */
-	private static ThreadLocal<JedisThreadItem> JEDIS_THREADLOCAL = new ThreadLocal<>();
+	private static ThreadLocal<JedisThreadLocalItem> JEDIS_THREADLOCAL = new ThreadLocal<>();
 
 	/**
 	 * JedisPool object.
@@ -37,6 +37,10 @@ public class JedisThreadLocal {
 	public JedisThreadLocal(JedisPool jedisPool, int maxIdleMillis) {
 		this.jedisPool = jedisPool;
 		this.maxIdleMillis = maxIdleMillis;
+
+		if (this.jedisPool == null) {
+			throw new IllegalArgumentException("jedisPool can't be null!");
+		}
 	}
 
 	/**
@@ -48,117 +52,55 @@ public class JedisThreadLocal {
 	}
 
 	/**
-	 * Get Jedis object from ThreadLocal.
-	 * @param database Redis database number
+	 * Get an Jedis object from ThreadLocal or create a new one from JedisPool object.
 	 * @return Jedis
 	 */
-	public Jedis get(int database) {
-		if (jedisPool == null) {
-			throw new IllegalArgumentException("jedisPool can't be null!");
-		}
+	public Jedis get() {
+		JedisThreadLocalItem threadLocalItem = JEDIS_THREADLOCAL.get();
 
-		JedisThreadItem jedisThreadItem = JEDIS_THREADLOCAL.get();
+		if (threadLocalItem != null) {
+			Jedis jedis = threadLocalItem.getJedis(maxIdleMillis);
 
-		if (jedisThreadItem != null && jedisThreadItem.getJedis() != null) {
-			Jedis jedis = jedisThreadItem.getJedis();
-
-			if (jedisThreadItem.isExpired(maxIdleMillis)) {
-				try {
-					jedis.ping();
-				} catch (Exception e) {
-					jedis.close();
-				}
-			}
-
-			if (jedis.getClient().isBroken()) {
-				jedis.close();
-			} else {
-				if (!jedis.isConnected()) {
-					jedis.connect();
-				}
-
-				if (!BaseRedisUtils.select(jedis, database)) {
-					throw new JedisFatalException("Redis object can't select database!");
-				}
-
-				jedisThreadItem.setLastUseTime(System.currentTimeMillis());
+			if (jedis != null) {
 				return jedis;
 			}
 		}
 
 		synchronized (JEDIS_THREADLOCAL) {
-			jedisThreadItem = new JedisThreadItem(jedisPool.getResource());
-			JEDIS_THREADLOCAL.set(jedisThreadItem);
+			threadLocalItem = new JedisThreadLocalItem(jedisPool.getResource());
+			JEDIS_THREADLOCAL.set(threadLocalItem);
 		}
 
-		if (!BaseRedisUtils.select(jedisThreadItem.getJedis(), database)) {
+		return threadLocalItem.getJedis();
+	}
+
+	/**
+	 * Get Jedis object from ThreadLocal.
+	 * @param database Redis database number
+	 * @return Jedis
+	 */
+	public Jedis get(int database) {
+		Jedis jedis = get();
+
+		if (!BaseRedisUtils.select(jedis, database)) {
 			throw new JedisFatalException("Redis object can't select database!");
 		}
 
-		return jedisThreadItem.getJedis();
+		return jedis;
 	}
 
 	/**
 	 * Close Jedis connection and remove it from ThreadLocal.
 	 */
 	public void close() {
-		JedisThreadItem jedisThreadItem = JEDIS_THREADLOCAL.get();
+		JedisThreadLocalItem threadLocalItem = JEDIS_THREADLOCAL.get();
 
-		if (jedisThreadItem == null || jedisThreadItem.getJedis() == null) {
+		if (threadLocalItem == null) {
 			return;
 		}
 
-		Jedis jedis = jedisThreadItem.getJedis();
-
-		try {
-			jedis.close();
-			jedis.resetState();
-		} catch (Exception e) {
-			System.out.println("Close Jedis failed!");
-		}
-
-		jedis = null;
+		threadLocalItem.close();
 		JEDIS_THREADLOCAL.remove();
-	}
-
-	private Jedis getAvailableJedis(JedisThreadItem jedisThreadItem, int database) {
-		if (jedisThreadItem == null || jedisThreadItem.getJedis() == null) {
-			return null;
-		}
-
-		Jedis jedis = jedisThreadItem.getJedis();
-
-		if (jedisThreadItem.isExpired(maxIdleMillis)) {
-			try {
-				jedis.ping();
-			} catch (Exception e) {
-				jedis.close();
-				return null;
-			}
-
-			if (!BaseRedisUtils.select(jedis, database)) {
-				throw new JedisFatalException("Redis object can't select database!");
-			}
-
-			return jedis;
-		}
-
-		if (jedis.getClient().isBroken()) {
-			jedis.close();
-		} else {
-			if (!jedis.isConnected()) {
-				jedis.connect();
-			}
-
-			if (!BaseRedisUtils.select(jedis, database)) {
-				throw new JedisFatalException("Redis object can't select database!");
-			}
-
-			jedisThreadItem.setLastUseTime(System.currentTimeMillis());
-			return jedis;
-		}
-
-		return null;
 	}
 
 	public JedisPool getJedisPool() {
