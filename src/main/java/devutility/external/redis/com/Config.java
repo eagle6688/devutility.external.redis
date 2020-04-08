@@ -9,9 +9,10 @@ package devutility.external.redis.com;
  */
 public class Config {
 	/**
-	 * JedisPool cache key format. {@code First %s is class name, the second %s is host value, the third %d is port number}
+	 * Cache key format for JedisPool.
+	 * {@code First %s is class name, the second %s is host value, the third %d is port number}
 	 */
-	public final static String JEDISPOOL_CACHE_KEY_FORMAT = "%s.%s.%d";
+	public final static String CACHE_KEY_FORMAT_JEDISPOOL = "%s.%s.%d";
 
 	/**
 	 * Default item key in stream queue.

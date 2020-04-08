@@ -54,6 +54,6 @@ public class SingleRedisInstance extends RedisInstance {
 	}
 
 	public String cacheKey() {
-		return String.format(Config.JEDISPOOL_CACHE_KEY_FORMAT, RedisInstance.class.getName(), getHost(), getPort());
+		return String.format(Config.CACHE_KEY_FORMAT_JEDISPOOL, RedisInstance.class.getName(), getHost(), getPort());
 	}
 }
