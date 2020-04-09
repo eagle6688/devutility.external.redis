@@ -12,7 +12,7 @@ import redis.clients.jedis.StreamEntryID;
 public interface Acknowledger {
 	/**
 	 * Acknowledge one message.
-	 * @param streamEntryId: StreamEntryID object.
+	 * @param streamEntryId StreamEntryID object.
 	 */
 	void ack(StreamEntryID streamEntryId);
 }

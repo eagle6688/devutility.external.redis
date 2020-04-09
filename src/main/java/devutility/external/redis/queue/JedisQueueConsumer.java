@@ -33,7 +33,7 @@ public abstract class JedisQueueConsumer extends JedisQueue implements Closeable
 	/**
 	 * Exception start time in milliseconds.
 	 */
-	protected long exceptionStartMillis = System.currentTimeMillis();
+	private long exceptionStartMillis = System.currentTimeMillis();
 
 	/**
 	 * Count of exceptions from consuming function.
