@@ -5,7 +5,7 @@ import java.util.Set;
 import devutility.external.redis.com.StatusCode;
 import devutility.external.redis.model.ClusterRedisInstance;
 import devutility.internal.lang.StringUtils;
-import devutility.internal.security.Sha256Utils;
+import devutility.internal.security.cipher.Sha256Utils;
 import devutility.internal.util.CollectionUtils;
 import redis.clients.jedis.Jedis;
 
