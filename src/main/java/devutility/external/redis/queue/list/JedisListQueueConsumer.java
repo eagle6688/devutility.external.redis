@@ -3,7 +3,7 @@ package devutility.external.redis.queue.list;
 import java.io.IOException;
 import java.util.List;
 
-import devutility.external.redis.exception.JedisBrokenException;
+import devutility.external.redis.exception.JedisConnectionException;
 import devutility.external.redis.exception.JedisFatalException;
 import devutility.external.redis.model.RedisQueueOption;
 import devutility.external.redis.queue.JedisQueueConsumer;
@@ -50,7 +50,7 @@ public final class JedisListQueueConsumer extends JedisQueueConsumer {
 				process();
 			} catch (Exception e) {
 				if (jedis.getClient().isBroken()) {
-					throw new JedisBrokenException(e);
+					throw new JedisConnectionException(e);
 				}
 
 				if (e instanceof JedisFatalException) {

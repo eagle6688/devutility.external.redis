@@ -13,7 +13,7 @@ import devutility.external.redis.com.QueueMode;
 import devutility.external.redis.com.RedisType;
 import devutility.external.redis.com.StatusCode;
 import devutility.external.redis.com.StreamMessageType;
-import devutility.external.redis.exception.JedisBrokenException;
+import devutility.external.redis.exception.JedisConnectionException;
 import devutility.external.redis.exception.JedisFatalException;
 import devutility.external.redis.ext.model.ConsumerInfo;
 import devutility.external.redis.model.RedisQueueOption;
@@ -62,11 +62,11 @@ public class JedisStreamQueueConsumer extends JedisQueueConsumer implements Ackn
 				process();
 			} catch (Exception e) {
 				if (!isReasonableException()) {
-					throw new JedisFatalException("Exceptions count excced the setting exceptionLimit in RedisQueueOption object.", e);
+					throw new JedisFatalException("Exceptions count excced the setting exceptionLimit and exceptionIntervalMillis in RedisQueueOption object.", e);
 				}
 
 				if (jedis.getClient().isBroken()) {
-					throw new JedisBrokenException(e);
+					throw new JedisConnectionException(e);
 				}
 
 				if (e instanceof JedisFatalException) {
