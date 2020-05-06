@@ -6,7 +6,7 @@
 		<version>1.1.13</version>
 	</parent>
 	<artifactId>devutility.external.redis</artifactId>
-	<version>3.1.6</version>
+	<version>3.1.7</version>
 	<packaging>jar</packaging>
 	<description>Some utilities for Jedis</description>
 	<url>https://github.com/eagle6688/devutility.external.redis</url>

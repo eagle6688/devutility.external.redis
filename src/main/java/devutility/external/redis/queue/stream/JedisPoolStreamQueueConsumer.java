@@ -52,7 +52,17 @@ public class JedisPoolStreamQueueConsumer extends JedisQueueConsumer {
 
 				throw e;
 			}
+
+			retryInterval();
 		}
+	}
+
+	private void retryInterval() throws InterruptedException {
+		if (redisQueueOption.getConnectionRetryInterval() < 1) {
+			return;
+		}
+
+		Thread.sleep(redisQueueOption.getConnectionRetryInterval());
 	}
 
 	@Override
