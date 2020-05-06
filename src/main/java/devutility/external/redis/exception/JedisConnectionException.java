@@ -7,17 +7,17 @@ package devutility.external.redis.exception;
  * @author: Aldwin Su
  * @version: 2019-09-25 22:18:07
  */
-public class JedisBrokenException extends RuntimeException {
+public class JedisConnectionException extends RuntimeException {
 	/**
 	 * @Fields serialVersionUID
 	 */
 	private static final long serialVersionUID = 730169046333177260L;
 
-	public JedisBrokenException(String message, Exception cause) {
+	public JedisConnectionException(String message, Exception cause) {
 		super(message, cause);
 	}
 
-	public JedisBrokenException(Exception cause) {
+	public JedisConnectionException(Exception cause) {
 		this(cause.getMessage(), cause);
 	}
 }

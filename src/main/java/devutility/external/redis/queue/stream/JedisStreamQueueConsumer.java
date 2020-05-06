@@ -13,7 +13,7 @@ import devutility.external.redis.com.RedisQueueOption;
 import devutility.external.redis.com.RedisType;
 import devutility.external.redis.com.StatusCode;
 import devutility.external.redis.com.StreamMessageType;
-import devutility.external.redis.exception.JedisBrokenException;
+import devutility.external.redis.exception.JedisConnectionException;
 import devutility.external.redis.exception.JedisFatalException;
 import devutility.external.redis.ext.model.ConsumerInfo;
 import devutility.external.redis.queue.Acknowledger;
@@ -71,7 +71,7 @@ public class JedisStreamQueueConsumer extends JedisQueueConsumer {
 				}
 
 				if (jedis.getClient().isBroken()) {
-					throw new JedisBrokenException(e);
+					throw new JedisConnectionException(e);
 				}
 
 				if (e instanceof JedisFatalException) {
