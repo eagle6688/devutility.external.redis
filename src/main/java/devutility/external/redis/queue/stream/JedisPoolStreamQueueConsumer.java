@@ -45,20 +45,11 @@ public class JedisPoolStreamQueueConsumer extends JedisQueueConsumer {
 					throw e;
 				}
 
-				log("System try to create a new connection and continue working due to broken Jedis connection with the following information:");
-				log(e.getCause());
+				log("System try to create a new connection and continue working due to broken Jedis connection with the following information:", e);
 			}
 
 			retryInterval();
 		}
-	}
-
-	private void retryInterval() throws InterruptedException {
-		if (redisQueueOption.getConnectionRetryInterval() < 1) {
-			return;
-		}
-
-		Thread.sleep(redisQueueOption.getConnectionRetryInterval());
 	}
 
 	@Override

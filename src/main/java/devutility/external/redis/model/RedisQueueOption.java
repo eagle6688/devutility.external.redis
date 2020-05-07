@@ -83,9 +83,10 @@ public class RedisQueueOption {
 	private int exceptionIntervalMillis = 10000;
 
 	/**
-	 * Exception limit in interval time, system will stop monitor once the exceptionCount exeed this value.
+	 * Max exceptions count during interval time, system will stop monitor once the exceptions count exeed this value.
+	 * Default 0 means no limitation.
 	 */
-	private int exceptionLimit = 10;
+	private int exceptionLimit = 0;
 
 	/**
 	 * In debug mode, system will print all of debug information. Default is false.

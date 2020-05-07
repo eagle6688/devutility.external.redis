@@ -17,7 +17,7 @@ import devutility.internal.util.CollectionUtils;
 import devutility.internal.util.ListUtils;
 import redis.clients.jedis.Jedis;
 
-public class JedisStringUtils extends BaseJedisUtils {
+public class JedisStringUtils extends JedisUtils {
 	/**
 	 * Set string value.
 	 * @param jedis Jedis object.

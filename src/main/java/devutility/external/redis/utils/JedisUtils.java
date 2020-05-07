@@ -16,7 +16,7 @@ import redis.clients.jedis.Jedis;
  * @author: Aldwin Su
  * @version: 2019-09-29 22:25:51
  */
-public abstract class BaseJedisUtils {
+public class JedisUtils {
 	/**
 	 * Set expired time for the item with the specified key.
 	 * @param jedis Jedis object.
@@ -82,6 +82,15 @@ public abstract class BaseJedisUtils {
 		}
 
 		return StatusCode.isOk(jedis.select(database));
+	}
+
+	/**
+	 * Is current Jedis connection broken or not?
+	 * @param jedis Jedis object.
+	 * @return boolean
+	 */
+	public static boolean isBrokenJedis(Jedis jedis) {
+		return !jedis.isConnected() || jedis.getClient().isBroken();
 	}
 
 	/**

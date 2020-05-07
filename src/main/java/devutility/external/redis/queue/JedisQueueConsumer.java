@@ -1,8 +1,8 @@
 package devutility.external.redis.queue;
 
 import java.io.Closeable;
+import java.util.concurrent.atomic.AtomicInteger;
 
-import devutility.external.redis.exception.JedisFatalException;
 import devutility.external.redis.ext.DevJedis;
 import devutility.external.redis.model.RedisQueueOption;
 import redis.clients.jedis.Jedis;
@@ -31,6 +31,11 @@ public abstract class JedisQueueConsumer extends JedisQueue implements Closeable
 	protected JedisQueueConsumerEvent consumerEvent;
 
 	/**
+	 * Status, default is true.
+	 */
+	private boolean active = true;
+
+	/**
 	 * Exception start time in milliseconds.
 	 */
 	private long exceptionStartMillis = System.currentTimeMillis();
@@ -38,17 +43,7 @@ public abstract class JedisQueueConsumer extends JedisQueue implements Closeable
 	/**
 	 * Count of exceptions from consuming function.
 	 */
-	protected int exceptionCount;
-
-	/**
-	 * Status, default is true.
-	 */
-	private boolean active = true;
-
-	/**
-	 * Connection retried times.
-	 */
-	private int connectionRetriedTimes;
+	private AtomicInteger exceptionCount = new AtomicInteger(0);
 
 	/**
 	 * Constructor
@@ -82,50 +77,46 @@ public abstract class JedisQueueConsumer extends JedisQueue implements Closeable
 	public abstract void listen() throws Exception;
 
 	/**
-	 * Connect Redis server.
-	 * @throws InterruptedException from Thread sleep method.
+	 * Reasonable exception means exceptions count from consuming function not exceed the exceptionLimit value(in
+	 * redisQueueOption object) in exceptionIntervalMillis time.
+	 * @return boolean
 	 */
-	protected void connect(Jedis jedis) throws InterruptedException {
-		if (jedis.getClient() == null || jedis.getClient().isBroken()) {
-			throw new JedisFatalException("Jedis connection has broken.");
+	protected boolean isReasonableConsumerException() {
+		/**
+		 * No limitation.
+		 */
+		if (redisQueueOption.getExceptionIntervalMillis() == 0 || redisQueueOption.getExceptionLimit() == 0) {
+			return true;
 		}
 
-		if (jedis.isConnected()) {
-			return;
+		long currentTime = System.currentTimeMillis();
+		long intervalTime = currentTime - exceptionStartMillis;
+
+		if (intervalTime > redisQueueOption.getExceptionIntervalMillis()) {
+			this.exceptionStartMillis = currentTime;
+			this.exceptionCount.set(0);
+			return true;
 		}
 
-		if (connectionRetriedTimes >= redisQueueOption.getConnectionRetryTimes()) {
-			throw new JedisFatalException("Exceed max connection retry times.");
+		int count = this.exceptionCount.incrementAndGet();
+
+		if (count <= redisQueueOption.getExceptionLimit()) {
+			return true;
 		}
 
-		Thread.sleep(redisQueueOption.getWaitMilliseconds());
-		connectionRetriedTimes++;
-		jedis.connect();
-		connect(jedis);
+		return false;
 	}
 
 	/**
-	 * Print log messages.
-	 * @param message Log message.
+	 * Retry connect Redis after interval time.
+	 * @throws InterruptedException from Thread.sleep
 	 */
-	protected void log(String message) {
-		if (!redisQueueOption.isDebug()) {
+	protected void retryInterval() throws InterruptedException {
+		if (redisQueueOption.getConnectionRetryInterval() < 1) {
 			return;
 		}
 
-		System.out.println(message);
-	}
-
-	/**
-	 * Print log messages.
-	 * @param cause Throwable object.
-	 */
-	protected void log(Throwable cause) {
-		if (!redisQueueOption.isDebug()) {
-			return;
-		}
-
-		cause.printStackTrace(System.out);
+		Thread.sleep(redisQueueOption.getConnectionRetryInterval());
 	}
 
 	/**
@@ -137,43 +128,11 @@ public abstract class JedisQueueConsumer extends JedisQueue implements Closeable
 		this.devJedis.setJedis(jedis);
 	}
 
-	/**
-	 * Reasonable exception means exceptions count from consuming function not exceed the exceptionLimit value(in
-	 * redisQueueOption object) in exceptionIntervalMillis time.
-	 * @return boolean
-	 */
-	protected boolean isReasonableException() {
-		long currentTime = System.currentTimeMillis();
-		long intervalTime = currentTime - exceptionStartMillis;
-
-		if (intervalTime > redisQueueOption.getExceptionIntervalMillis()) {
-			this.exceptionStartMillis = currentTime;
-			this.exceptionCount = 0;
-			return true;
-		}
-
-		this.exceptionCount += 1;
-
-		if (this.exceptionCount <= redisQueueOption.getExceptionLimit()) {
-			return true;
-		}
-
-		return false;
-	}
-
 	public boolean isActive() {
 		return active;
 	}
 
 	protected void setActive(boolean active) {
 		this.active = active;
-	}
-
-	public int getConnectionRetriedTimes() {
-		return connectionRetriedTimes;
-	}
-
-	protected void setConnectionRetriedTimes(int connectionRetriedTimes) {
-		this.connectionRetriedTimes = connectionRetriedTimes;
 	}
 }

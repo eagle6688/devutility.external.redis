@@ -8,6 +8,7 @@ import devutility.external.redis.exception.JedisFatalException;
 import devutility.external.redis.model.RedisQueueOption;
 import devutility.external.redis.queue.JedisQueueConsumer;
 import devutility.external.redis.queue.JedisQueueConsumerEvent;
+import devutility.external.redis.utils.JedisUtils;
 import devutility.internal.util.CollectionUtils;
 import redis.clients.jedis.Jedis;
 
@@ -49,8 +50,15 @@ public final class JedisListQueueConsumer extends JedisQueueConsumer {
 			try {
 				process();
 			} catch (Exception e) {
-				if (jedis.getClient().isBroken()) {
+				/**
+				 * Connection issue should be handled firstly.
+				 */
+				if (JedisUtils.isBrokenJedis(jedis)) {
 					throw new JedisConnectionException(e);
+				}
+
+				if (!isReasonableConsumerException()) {
+					throw new JedisFatalException("Exceptions count excced the setting exceptionLimit and exceptionIntervalMillis in RedisQueueOption object.", e);
 				}
 
 				if (e instanceof JedisFatalException) {
@@ -67,7 +75,6 @@ public final class JedisListQueueConsumer extends JedisQueueConsumer {
 	 * @throws InterruptedException
 	 */
 	private void process() throws InterruptedException {
-		connect(jedis);
 		List<String> list = jedis.brpop(redisQueueOption.getWaitMilliseconds(), redisQueueOption.getKey());
 
 		if (CollectionUtils.isNullOrEmpty(list)) {
@@ -93,7 +100,6 @@ public final class JedisListQueueConsumer extends JedisQueueConsumer {
 	@Override
 	public void close() throws IOException {
 		setActive(false);
-		setConnectionRetriedTimes(0);
 		jedis.close();
 	}
 }

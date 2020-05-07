@@ -13,11 +13,28 @@ public class JedisConnectionException extends RuntimeException {
 	 */
 	private static final long serialVersionUID = 730169046333177260L;
 
+	/**
+	 * Constructor
+	 * @param message Exception message.
+	 * @param cause Exception object.
+	 */
 	public JedisConnectionException(String message, Exception cause) {
 		super(message, cause);
 	}
 
+	/**
+	 * Constructor
+	 * @param cause Exception object.
+	 */
 	public JedisConnectionException(Exception cause) {
 		this(cause.getMessage(), cause);
+	}
+
+	/**
+	 * Constructor
+	 * @param message Exception message.
+	 */
+	public JedisConnectionException(String message) {
+		super(message);
 	}
 }
