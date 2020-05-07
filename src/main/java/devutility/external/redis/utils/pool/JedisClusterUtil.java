@@ -5,14 +5,14 @@ import java.util.Set;
 import devutility.external.redis.RedisHelperFactory;
 import devutility.external.redis.RedisInstanceUtils;
 import devutility.external.redis.models.ClusterRedisInstance;
-import devutility.external.redis.utils.BaseRedisUtils;
+import devutility.external.redis.utils.JedisUtils;
 import devutility.internal.base.SingletonFactory;
 import devutility.internal.lang.StringUtils;
 import redis.clients.jedis.HostAndPort;
 import redis.clients.jedis.JedisCluster;
 import redis.clients.jedis.JedisPoolConfig;
 
-public class JedisClusterUtil extends BaseRedisUtils {
+public class JedisClusterUtil extends JedisUtils {
 	/**
 	 * Get a singleton JedisCluster object.
 	 * @param redisInstance ClusterRedisInstance object.
