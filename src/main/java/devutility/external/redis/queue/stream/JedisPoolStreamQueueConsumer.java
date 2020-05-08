@@ -38,20 +38,26 @@ public class JedisPoolStreamQueueConsumer extends JedisQueueConsumer {
 		Acknowledger acknowledger = new JedisPoolStreamQueueAcknowledger(jedisPool, redisQueueOption);
 
 		while (isActive()) {
-			Jedis jedis = JedisPoolUtil.jedis(jedisPool, redisQueueOption.getDatabase());
-
-			try (JedisStreamQueueConsumer consumer = new JedisStreamQueueConsumer(jedis, redisQueueOption, acknowledger, (JedisStreamQueueConsumerEvent) consumerEvent)) {
+			try (JedisStreamQueueConsumer consumer = new JedisStreamQueueConsumer(getJedis(), redisQueueOption, acknowledger, (JedisStreamQueueConsumerEvent) consumerEvent)) {
 				consumer.listen();
 			} catch (Exception e) {
 				if (!isExceptionRetryApproved(e)) {
 					throw e;
 				}
 
-				log("System try to create a new connection and continue working due to broken Jedis connection with the following information:", e);
+				log("System try to create a new connection and continue working due to the following information:", e);
 			}
 
 			retryInterval();
 		}
+	}
+
+	/**
+	 * Return an Jedis object.
+	 * @return Jedis
+	 */
+	private Jedis getJedis() {
+		return JedisPoolUtil.jedis(jedisPool, redisQueueOption.getDatabase());
 	}
 
 	@Override
