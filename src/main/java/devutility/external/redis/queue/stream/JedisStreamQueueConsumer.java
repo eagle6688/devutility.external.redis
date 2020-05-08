@@ -18,6 +18,7 @@ import devutility.external.redis.exception.JedisFatalException;
 import devutility.external.redis.ext.model.ConsumerInfo;
 import devutility.external.redis.queue.Acknowledger;
 import devutility.external.redis.queue.JedisQueueConsumer;
+import devutility.external.redis.utils.JedisUtils;
 import devutility.internal.lang.StringUtils;
 import devutility.internal.util.CollectionUtils;
 import redis.clients.jedis.Jedis;
@@ -66,20 +67,22 @@ public class JedisStreamQueueConsumer extends JedisQueueConsumer {
 				processPending();
 				process();
 			} catch (Exception e) {
-				if (!isReasonableException()) {
-					throw new JedisFatalException("Exceptions count excced the setting exceptionLimit in RedisQueueOption object.", e);
-				}
-
-				if (jedis.getClient().isBroken()) {
+				/**
+				 * Connection issue should be handled firstly.
+				 */
+				if (JedisUtils.isBrokenJedis(jedis)) {
 					throw new JedisConnectionException(e);
 				}
 
-				if (e instanceof JedisFatalException) {
+				if (e instanceof JedisFatalException || isExceptionRetryApproved(e)) {
 					throw e;
 				}
 
+				if (!isReasonableConsumerException()) {
+					throw new JedisFatalException("Exceptions count excced the setting exceptionLimit and exceptionIntervalMillis in RedisQueueOption object.", e);
+				}
+
 				log(e);
-				connect(jedis);
 			}
 		}
 	}

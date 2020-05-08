@@ -3,7 +3,9 @@ package devutility.external.redis.queue;
 import java.io.Closeable;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import devutility.external.redis.com.ExceptionRetryApprover;
 import devutility.external.redis.com.RedisQueueOption;
+import devutility.external.redis.exception.JedisConnectionException;
 import devutility.external.redis.ext.DevJedis;
 import redis.clients.jedis.Jedis;
 
@@ -29,6 +31,11 @@ public abstract class JedisQueueConsumer extends JedisQueue implements Closeable
 	 * Custom consumer event implementation.
 	 */
 	protected JedisQueueConsumerEvent consumerEvent;
+
+	/**
+	 * Approve Exception object or not?
+	 */
+	private ExceptionRetryApprover exceptionRetryApprover;
 
 	/**
 	 * Status, default is true.
@@ -120,12 +127,33 @@ public abstract class JedisQueueConsumer extends JedisQueue implements Closeable
 	}
 
 	/**
+	 * Does Exception object need retry or not?
+	 * @param exception Exception object.
+	 * @return boolean
+	 */
+	protected boolean isExceptionRetryApproved(Exception exception) {
+		if (this.exceptionRetryApprover != null && this.exceptionRetryApprover.isApproved(exception)) {
+			return true;
+		}
+
+		return exception instanceof JedisConnectionException;
+	}
+
+	/**
 	 * Set Jedis object.
 	 * @param jedis Jedis object to listen queue.
 	 */
 	public void setJedis(Jedis jedis) {
 		this.jedis = jedis;
 		this.devJedis.setJedis(jedis);
+	}
+
+	public ExceptionRetryApprover getExceptionRetryApprover() {
+		return exceptionRetryApprover;
+	}
+
+	public void setExceptionRetryApprover(ExceptionRetryApprover exceptionRetryApprover) {
+		this.exceptionRetryApprover = exceptionRetryApprover;
 	}
 
 	public boolean isActive() {

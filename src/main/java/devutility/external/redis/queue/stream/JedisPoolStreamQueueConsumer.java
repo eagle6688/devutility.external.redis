@@ -3,7 +3,6 @@ package devutility.external.redis.queue.stream;
 import java.io.IOException;
 
 import devutility.external.redis.com.RedisQueueOption;
-import devutility.external.redis.exception.JedisConnectionException;
 import devutility.external.redis.queue.Acknowledger;
 import devutility.external.redis.queue.JedisQueueConsumer;
 import devutility.external.redis.utils.pool.JedisPoolUtil;
@@ -44,24 +43,15 @@ public class JedisPoolStreamQueueConsumer extends JedisQueueConsumer {
 			try (JedisStreamQueueConsumer consumer = new JedisStreamQueueConsumer(jedis, redisQueueOption, acknowledger, (JedisStreamQueueConsumerEvent) consumerEvent)) {
 				consumer.listen();
 			} catch (Exception e) {
-				if (e instanceof JedisConnectionException) {
-					log("System try to create a new connection and continue working due to broken Jedis connection with the following information:");
-					log(e.getCause());
-				} else {
+				if (!isExceptionRetryApproved(e)) {
 					throw e;
 				}
+
+				log("System try to create a new connection and continue working due to broken Jedis connection with the following information:", e);
 			}
 
 			retryInterval();
 		}
-	}
-
-	private void retryInterval() throws InterruptedException {
-		if (redisQueueOption.getConnectionRetryInterval() < 1) {
-			return;
-		}
-
-		Thread.sleep(redisQueueOption.getConnectionRetryInterval());
 	}
 
 	@Override
