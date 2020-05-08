@@ -57,12 +57,24 @@ public abstract class JedisQueueConsumer extends JedisQueue implements Closeable
 	 * @param jedis Jedis object.
 	 * @param redisQueueOption Configuration of Redis queue.
 	 * @param consumerEvent JedisQueueConsumerEvent object.
+	 * @param exceptionRetryApprover ExceptionRetryApprover object.
 	 */
-	public JedisQueueConsumer(Jedis jedis, RedisQueueOption redisQueueOption, JedisQueueConsumerEvent consumerEvent) {
+	public JedisQueueConsumer(Jedis jedis, RedisQueueOption redisQueueOption, JedisQueueConsumerEvent consumerEvent, ExceptionRetryApprover exceptionRetryApprover) {
 		super(redisQueueOption);
 		this.jedis = jedis;
 		this.devJedis = new DevJedis(jedis);
 		this.consumerEvent = consumerEvent;
+		this.exceptionRetryApprover = exceptionRetryApprover;
+	}
+
+	/**
+	 * Constructor
+	 * @param jedis Jedis object.
+	 * @param redisQueueOption Configuration of Redis queue.
+	 * @param consumerEvent JedisQueueConsumerEvent object.
+	 */
+	public JedisQueueConsumer(Jedis jedis, RedisQueueOption redisQueueOption, JedisQueueConsumerEvent consumerEvent) {
+		this(jedis, redisQueueOption, consumerEvent, null);
 	}
 
 	/**

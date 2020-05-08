@@ -73,13 +73,4 @@ public abstract class JedisQueue {
 			cause.printStackTrace(System.err);
 		}
 	}
-
-	/**
-	 * Print log messages.
-	 * @param message Log message.
-	 * @param exception Exception object.
-	 */
-	protected void log(String message, Exception exception) {
-		log(message, exception.getCause());
-	}
 }

@@ -9,6 +9,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import devutility.external.redis.com.Config;
+import devutility.external.redis.com.ExceptionRetryApprover;
 import devutility.external.redis.com.RedisQueueOption;
 import devutility.external.redis.com.RedisType;
 import devutility.external.redis.com.StatusCode;
@@ -49,11 +50,22 @@ public class JedisStreamQueueConsumer extends JedisQueueConsumer {
 	 * @param jedis Jedis object to read data from Redis.
 	 * @param redisQueueOption RedisQueueOption object.
 	 * @param consumerEvent Custom consumer event implementation.
+	 * @param exceptionRetryApprover ExceptionRetryApprover object.
 	 */
-	public JedisStreamQueueConsumer(final Jedis jedis, final RedisQueueOption redisQueueOption, final Acknowledger acknowledger, final JedisStreamQueueConsumerEvent consumerEvent) {
-		super(jedis, redisQueueOption, consumerEvent);
+	public JedisStreamQueueConsumer(final Jedis jedis, final RedisQueueOption redisQueueOption, final Acknowledger acknowledger, final JedisStreamQueueConsumerEvent consumerEvent, final ExceptionRetryApprover exceptionRetryApprover) {
+		super(jedis, redisQueueOption, consumerEvent, exceptionRetryApprover);
 		this.acknowledger = acknowledger;
 		consumerEvent.setAcknowledger(acknowledger);
+	}
+
+	/**
+	 * Constructor
+	 * @param jedis Jedis object to read data from Redis.
+	 * @param redisQueueOption RedisQueueOption object.
+	 * @param consumerEvent Custom consumer event implementation.
+	 */
+	public JedisStreamQueueConsumer(final Jedis jedis, final RedisQueueOption redisQueueOption, final Acknowledger acknowledger, final JedisStreamQueueConsumerEvent consumerEvent) {
+		this(jedis, redisQueueOption, acknowledger, consumerEvent, null);
 	}
 
 	@Override

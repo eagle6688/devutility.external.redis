@@ -13,6 +13,9 @@ public class ConnectionRetry4ApproverTest extends BaseTestForDuer {
 
 	@Override
 	public void run() {
+		redisQueueOption.setExceptionIntervalMillis(6000);
+		redisQueueOption.setExceptionLimit(2);
+
 		ExceptionRetryApprover exceptionRetryApprover = (exception) -> {
 			return exception instanceof JedisDataException;
 		};

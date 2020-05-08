@@ -31,9 +31,8 @@ public class JedisPoolStreamQueueConsumer extends JedisQueueConsumer {
 	 * @param exceptionRetryApprover ExceptionRetryApprover object.
 	 */
 	public JedisPoolStreamQueueConsumer(JedisPool jedisPool, RedisQueueOption redisQueueOption, JedisStreamQueueConsumerEvent consumerEvent, ExceptionRetryApprover exceptionRetryApprover) {
-		super(null, redisQueueOption, consumerEvent);
+		super(null, redisQueueOption, consumerEvent, exceptionRetryApprover);
 		this.jedisPool = jedisPool;
-		setExceptionRetryApprover(exceptionRetryApprover);
 	}
 
 	/**
@@ -51,7 +50,7 @@ public class JedisPoolStreamQueueConsumer extends JedisQueueConsumer {
 		Acknowledger acknowledger = new JedisPoolStreamQueueAcknowledger(jedisPool, redisQueueOption);
 
 		while (isActive()) {
-			try (JedisStreamQueueConsumer consumer = new JedisStreamQueueConsumer(getJedis(), redisQueueOption, acknowledger, (JedisStreamQueueConsumerEvent) consumerEvent)) {
+			try (JedisStreamQueueConsumer consumer = new JedisStreamQueueConsumer(getJedis(), redisQueueOption, acknowledger, (JedisStreamQueueConsumerEvent) consumerEvent, getExceptionRetryApprover())) {
 				consumer.listen();
 			} catch (Exception e) {
 				if (!isExceptionRetryApproved(e)) {
