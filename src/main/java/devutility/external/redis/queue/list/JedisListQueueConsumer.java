@@ -4,13 +4,13 @@ import java.io.IOException;
 import java.util.List;
 
 import devutility.external.redis.com.RedisQueueOption;
-import devutility.external.redis.exception.JedisConnectionException;
 import devutility.external.redis.exception.JedisFatalException;
 import devutility.external.redis.queue.JedisQueueConsumer;
 import devutility.external.redis.queue.JedisQueueConsumerEvent;
 import devutility.external.redis.utils.JedisUtils;
 import devutility.internal.util.CollectionUtils;
 import redis.clients.jedis.Jedis;
+import redis.clients.jedis.exceptions.JedisConnectionException;
 
 /**
  * 

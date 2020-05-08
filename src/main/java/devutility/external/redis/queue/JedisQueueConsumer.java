@@ -5,9 +5,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import devutility.external.redis.com.ExceptionRetryApprover;
 import devutility.external.redis.com.RedisQueueOption;
-import devutility.external.redis.exception.JedisConnectionException;
 import devutility.external.redis.ext.DevJedis;
 import redis.clients.jedis.Jedis;
+import redis.clients.jedis.exceptions.JedisConnectionException;
 
 /**
  * 

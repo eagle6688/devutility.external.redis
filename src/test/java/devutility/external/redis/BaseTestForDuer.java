@@ -63,30 +63,47 @@ public abstract class BaseTestForDuer extends BaseTest {
 	/**
 	 * RedisQueueOption object.
 	 */
-	protected RedisQueueOption redisQueueOption = new RedisQueueOption();
+	protected RedisQueueOption redisQueueOption = null;
 
 	/**
 	 * RedisQueueOption object.
 	 */
 	protected RedisQueueOption redisQueueOption2 = null;
 
+	/**
+	 * Constructor
+	 */
 	public BaseTestForDuer() {
+		JEDIS_POOL = jedisPool();
+		redisQueueOption = redisQueueOption();
+		redisQueueOption2 = redisQueueOption4Job();
+	}
+
+	private RedisQueueOption redisQueueOption() {
+		RedisQueueOption redisQueueOption = new RedisQueueOption();
+		redisQueueOption.setKey("TEST-STREAM-QUEUE");
+		redisQueueOption.setDatabase(3);
+		redisQueueOption.setApproximateLength(true);
+		redisQueueOption.setGroupName("TEST-GROUP");
+		redisQueueOption.setConsumerName("TEST-CONSUMER");
+		redisQueueOption.setConnectionRetryInterval(3000);
+		return redisQueueOption;
+	}
+
+	private RedisQueueOption redisQueueOption4Job() {
+		RedisQueueOption redisQueueOption = new RedisQueueOption();
 		redisQueueOption.setKey("QUEUE-PART_ORDER-EMAIL");
 		redisQueueOption.setDatabase(0);
 		redisQueueOption.setApproximateLength(true);
 		redisQueueOption.setGroupName("DEFAULT-GROUP");
 		redisQueueOption.setConsumerName("Hyperscale-Email-Consumer1");
-		redisQueueOption.setAutoAck(true);
 		redisQueueOption.setWaitMilliseconds(3000);
-
-		redisQueueOption2 = redisQueueOption("queue2.option");
-
-		JEDIS_POOL = jedisPool();
+		return redisQueueOption;
 	}
 
 	/**
-	 * Get RedisQueueOption object.
-	 * @param prefix Prefix of
+	 * Get an RedisQueueOption object.
+	 * @param prefix Prefix of configuration.
 	 * @return RedisQueueOption
 	 */
 	protected RedisQueueOption redisQueueOption(String prefix) {

@@ -13,7 +13,6 @@ import devutility.external.redis.com.RedisQueueOption;
 import devutility.external.redis.com.RedisType;
 import devutility.external.redis.com.StatusCode;
 import devutility.external.redis.com.StreamMessageType;
-import devutility.external.redis.exception.JedisConnectionException;
 import devutility.external.redis.exception.JedisFatalException;
 import devutility.external.redis.ext.model.ConsumerInfo;
 import devutility.external.redis.queue.Acknowledger;
@@ -25,6 +24,7 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.StreamEntry;
 import redis.clients.jedis.StreamEntryID;
 import redis.clients.jedis.StreamPendingEntry;
+import redis.clients.jedis.exceptions.JedisConnectionException;
 
 /**
  * 

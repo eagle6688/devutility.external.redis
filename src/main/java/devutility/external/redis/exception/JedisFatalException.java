@@ -1,5 +1,7 @@
 package devutility.external.redis.exception;
 
+import redis.clients.jedis.exceptions.JedisException;
+
 /**
  * 
  * JedisFatalException
@@ -7,11 +9,11 @@ package devutility.external.redis.exception;
  * @author: Aldwin Su
  * @version: 2019-09-22 00:11:32
  */
-public class JedisFatalException extends RuntimeException {
+public class JedisFatalException extends JedisException {
 	/**
 	 * @Fields serialVersionUID
 	 */
-	private static final long serialVersionUID = 7965277650720222517L;
+	private static final long serialVersionUID = -1497505979726088205L;
 
 	/**
 	 * Constructor

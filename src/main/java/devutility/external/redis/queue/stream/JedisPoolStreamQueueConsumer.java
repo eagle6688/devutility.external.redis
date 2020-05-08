@@ -2,6 +2,7 @@ package devutility.external.redis.queue.stream;
 
 import java.io.IOException;
 
+import devutility.external.redis.com.ExceptionRetryApprover;
 import devutility.external.redis.com.RedisQueueOption;
 import devutility.external.redis.queue.Acknowledger;
 import devutility.external.redis.queue.JedisQueueConsumer;
@@ -27,10 +28,22 @@ public class JedisPoolStreamQueueConsumer extends JedisQueueConsumer {
 	 * @param jedisPool JedisPool object to get Jedis object.
 	 * @param redisQueueOption RedisQueueOption object.
 	 * @param consumerEvent JedisQueueConsumerEvent object.
+	 * @param exceptionRetryApprover ExceptionRetryApprover object.
 	 */
-	public JedisPoolStreamQueueConsumer(JedisPool jedisPool, RedisQueueOption redisQueueOption, JedisStreamQueueConsumerEvent consumerEvent) {
+	public JedisPoolStreamQueueConsumer(JedisPool jedisPool, RedisQueueOption redisQueueOption, JedisStreamQueueConsumerEvent consumerEvent, ExceptionRetryApprover exceptionRetryApprover) {
 		super(null, redisQueueOption, consumerEvent);
 		this.jedisPool = jedisPool;
+		setExceptionRetryApprover(exceptionRetryApprover);
+	}
+
+	/**
+	 * Constructor
+	 * @param jedisPool JedisPool object to get Jedis object.
+	 * @param redisQueueOption RedisQueueOption object.
+	 * @param consumerEvent JedisQueueConsumerEvent object.
+	 */
+	public JedisPoolStreamQueueConsumer(JedisPool jedisPool, RedisQueueOption redisQueueOption, JedisStreamQueueConsumerEvent consumerEvent) {
+		this(jedisPool, redisQueueOption, consumerEvent, null);
 	}
 
 	@Override

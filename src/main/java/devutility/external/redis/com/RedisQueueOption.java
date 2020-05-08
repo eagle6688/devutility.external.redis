@@ -87,9 +87,9 @@ public class RedisQueueOption {
 	private int exceptionLimit = 0;
 
 	/**
-	 * In debug mode, system will print all of debug information. Default is false.
+	 * In debug mode, system will print all of debug information. Default is true.
 	 */
-	private boolean debug;
+	private boolean debug = true;
 
 	/**
 	 * Constructor
