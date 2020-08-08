@@ -3,7 +3,7 @@ package devutility.external.redis.utils.pool;
 import devutility.external.redis.com.StatusCode;
 import devutility.external.redis.exception.JedisFatalException;
 import devutility.external.redis.model.SingleRedisInstance;
-import devutility.internal.com.SingletonFactory;
+import devutility.internal.cache.MemoryCache;
 import devutility.internal.lang.StringUtils;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
@@ -28,7 +28,7 @@ public class JedisPoolUtil {
 		}
 
 		String key = redisInstance.cacheKey();
-		JedisPool jedisPool = SingletonFactory.get(key, JedisPool.class);
+		JedisPool jedisPool = MemoryCache.get(key);
 
 		if (jedisPool != null) {
 			return jedisPool;
@@ -36,7 +36,7 @@ public class JedisPoolUtil {
 
 		synchronized (JedisPoolUtil.class) {
 			if (jedisPool == null) {
-				jedisPool = SingletonFactory.save(key, createJedisPool(redisInstance));
+				jedisPool = MemoryCache.set(key, createJedisPool(redisInstance)).getValue();
 			}
 		}
 

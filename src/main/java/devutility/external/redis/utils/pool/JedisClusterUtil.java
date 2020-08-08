@@ -5,7 +5,7 @@ import java.util.Set;
 import devutility.external.redis.ConfigUtils;
 import devutility.external.redis.model.ClusterRedisInstance;
 import devutility.external.redis.utils.JedisUtils;
-import devutility.internal.com.SingletonFactory;
+import devutility.internal.cache.MemoryCache;
 import devutility.internal.lang.StringUtils;
 import redis.clients.jedis.HostAndPort;
 import redis.clients.jedis.JedisCluster;
@@ -23,7 +23,7 @@ public class JedisClusterUtil extends JedisUtils {
 		}
 
 		String key = getCacheKeyForClusterRedis(redisInstance);
-		JedisCluster jedisCluster = SingletonFactory.get(key, JedisCluster.class);
+		JedisCluster jedisCluster = MemoryCache.get(key);
 
 		if (jedisCluster != null) {
 			return jedisCluster;
@@ -31,7 +31,7 @@ public class JedisClusterUtil extends JedisUtils {
 
 		synchronized (JedisClusterUtil.class) {
 			if (jedisCluster == null) {
-				jedisCluster = SingletonFactory.save(key, createJedisCluster(redisInstance));
+				jedisCluster = MemoryCache.set(key, createJedisCluster(redisInstance)).getValue();
 			}
 		}
 

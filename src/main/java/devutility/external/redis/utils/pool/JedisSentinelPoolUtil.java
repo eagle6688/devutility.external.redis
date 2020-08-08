@@ -5,7 +5,7 @@ import java.util.Set;
 import devutility.external.redis.ConfigUtils;
 import devutility.external.redis.model.SentinelRedisInstance;
 import devutility.external.redis.utils.JedisUtils;
-import devutility.internal.com.SingletonFactory;
+import devutility.internal.cache.MemoryCache;
 import devutility.internal.lang.StringUtils;
 import devutility.internal.util.CollectionUtils;
 import redis.clients.jedis.HostAndPort;
@@ -24,7 +24,7 @@ public class JedisSentinelPoolUtil extends JedisUtils {
 		}
 
 		String key = getCacheKeyForClusterRedis(redisInstance);
-		JedisSentinelPool jedisSentinelPool = SingletonFactory.get(key, JedisSentinelPool.class);
+		JedisSentinelPool jedisSentinelPool = MemoryCache.get(key);
 
 		if (jedisSentinelPool != null) {
 			return jedisSentinelPool;
@@ -32,7 +32,7 @@ public class JedisSentinelPoolUtil extends JedisUtils {
 
 		synchronized (JedisClusterUtil.class) {
 			if (jedisSentinelPool == null) {
-				jedisSentinelPool = SingletonFactory.save(key, createJedisSentinelPool(redisInstance));
+				jedisSentinelPool = MemoryCache.set(key, createJedisSentinelPool(redisInstance)).getValue();
 			}
 		}
 

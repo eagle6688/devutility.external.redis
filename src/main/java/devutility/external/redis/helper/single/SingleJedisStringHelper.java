@@ -6,7 +6,7 @@ import java.util.List;
 import devutility.external.redis.model.SingleRedisInstance;
 import devutility.external.redis.utils.JedisStringUtils;
 import devutility.external.redis.utils.pool.JedisPoolUtil;
-import devutility.internal.model.EntityField;
+import devutility.internal.model.ObjectField;
 import redis.clients.jedis.Jedis;
 
 public class SingleJedisStringHelper extends SingleJedisHelper {
@@ -149,7 +149,7 @@ public class SingleJedisStringHelper extends SingleJedisHelper {
 	 * @return boolean
 	 * @throws Exception
 	 */
-	public <T> boolean setList(String key, List<T> list, int expire, List<EntityField> entityFields) throws Exception {
+	public <T> boolean setList(String key, List<T> list, int expire, List<ObjectField> entityFields) throws Exception {
 		try (Jedis jedis = JedisPoolUtil.jedis(redisInstance)) {
 			return JedisStringUtils.setList(jedis, key, list, expire, entityFields);
 		} catch (Exception e) {
@@ -221,7 +221,7 @@ public class SingleJedisStringHelper extends SingleJedisHelper {
 	 * @return boolean
 	 * @throws Exception
 	 */
-	public <T> boolean pagingSetList(String key, int pageSize, List<T> list, int expire, List<EntityField> entityFields) throws Exception {
+	public <T> boolean pagingSetList(String key, int pageSize, List<T> list, int expire, List<ObjectField> entityFields) throws Exception {
 		try (Jedis jedis = JedisPoolUtil.jedis(redisInstance)) {
 			return JedisStringUtils.pagingSetList(jedis, key, pageSize, list, expire, entityFields);
 		} catch (Exception e) {

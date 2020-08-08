@@ -12,7 +12,7 @@ import devutility.internal.data.SearchUtils;
 import devutility.internal.lang.ArraysUtils;
 import devutility.internal.lang.ClassUtils;
 import devutility.internal.lang.StringUtils;
-import devutility.internal.model.EntityField;
+import devutility.internal.model.ObjectField;
 import devutility.internal.util.CollectionUtils;
 import devutility.internal.util.ListUtils;
 import redis.clients.jedis.Jedis;
@@ -132,7 +132,7 @@ public class JedisStringUtils extends JedisUtils {
 	 * @return boolean
 	 * @throws Exception
 	 */
-	public static <T> boolean setList(Jedis jedis, String key, List<T> list, int expire, List<EntityField> entityFields) throws Exception {
+	public static <T> boolean setList(Jedis jedis, String key, List<T> list, int expire, List<ObjectField> entityFields) throws Exception {
 		String[][] arrays = ListUtils.toArrays(list, entityFields);
 		return setObject(jedis, key, arrays, expire);
 	}
@@ -149,7 +149,7 @@ public class JedisStringUtils extends JedisUtils {
 	 * @throws Exception
 	 */
 	public static <T> boolean setList(Jedis jedis, String key, List<T> list, int expire, List<String> excludeFields, Class<T> clazz) throws Exception {
-		List<EntityField> entityFields = ClassUtils.getSortedAndNonExcludedEntityFields(excludeFields, clazz);
+		List<ObjectField> entityFields = ClassUtils.getSortedAndNonExcludedEntityFields(excludeFields, clazz);
 		return setList(jedis, key, list, expire, entityFields);
 	}
 
@@ -174,7 +174,7 @@ public class JedisStringUtils extends JedisUtils {
 	 * @return {@code List<T>}
 	 * @throws Exception From getObject and ListUtils.toEntities.
 	 */
-	public static <T> List<T> getList(Jedis jedis, String key, List<EntityField> entityFields, Class<T> clazz) throws Exception {
+	public static <T> List<T> getList(Jedis jedis, String key, List<ObjectField> entityFields, Class<T> clazz) throws Exception {
 		String[][] arrays = getObject(jedis, key, String[][].class);
 		return ListUtils.toEntities(arrays, clazz, entityFields);
 	}
@@ -191,7 +191,7 @@ public class JedisStringUtils extends JedisUtils {
 	 * @return boolean
 	 * @throws Exception
 	 */
-	public static <T> boolean pagingSetList(Jedis jedis, String key, int pageSize, List<T> list, int expire, List<EntityField> entityFields) throws Exception {
+	public static <T> boolean pagingSetList(Jedis jedis, String key, int pageSize, List<T> list, int expire, List<ObjectField> entityFields) throws Exception {
 		if (pageSize < 1 || list == null) {
 			throw new IllegalArgumentException("Illegal parameters!");
 		}
@@ -228,7 +228,7 @@ public class JedisStringUtils extends JedisUtils {
 	 * @throws Exception
 	 */
 	public static <T> boolean pagingSetList(Jedis jedis, String key, int pageSize, List<T> list, int expire, List<String> excludeFields, Class<T> clazz) throws Exception {
-		List<EntityField> entityFields = ClassUtils.getSortedAndNonExcludedEntityFields(excludeFields, clazz);
+		List<ObjectField> entityFields = ClassUtils.getSortedAndNonExcludedEntityFields(excludeFields, clazz);
 		return pagingSetList(jedis, key, pageSize, list, expire, entityFields);
 	}
 
@@ -254,7 +254,7 @@ public class JedisStringUtils extends JedisUtils {
 		}
 
 		List<T> list = new LinkedList<>();
-		List<EntityField> entityFields = ClassUtils.getSortedEntityFields(clazz);
+		List<ObjectField> entityFields = ClassUtils.getSortedEntityFields(clazz);
 
 		for (int index = 0; index < pagesCount; index++) {
 			String pageKey = pagingDataKey(key, index);
